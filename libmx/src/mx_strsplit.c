@@ -1,12 +1,6 @@
 #include "libmx.h"
 
-static int mx_count_letters(const char *str, char c)
-{
-    int i = 0;
-    for(;str[i] != '\0' && str[i] != c; ++i);
-    
-    return i;
-}
+static int mx_count_letters(const char *str, char c);
 
 char **mx_strsplit(const char *s, char c)
 {
@@ -33,4 +27,12 @@ char **mx_strsplit(const char *s, char c)
     arr[i] = NULL;
     
     return arr;
+}
+
+static int mx_count_letters(const char *str, char c)
+{
+    int i = 0;
+    for(;str[i] != '\0' && str[i] != c; ++i);
+    
+    return i;
 }

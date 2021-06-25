@@ -1,5 +1,5 @@
 #include "libmx.h"
-    
+
 char *mx_strndup(const char *s1, size_t n)
 {
     char *result = NULL;
@@ -14,7 +14,7 @@ char *mx_strndup(const char *s1, size_t n)
         result = mx_strdup(s1);
     else {
         result = mx_strnew(n);
-        mx_strncpy(result, s1, n);
+        result = mx_strncpy(result, s1, n);
     }
     
     return result;

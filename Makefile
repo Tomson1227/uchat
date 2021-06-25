@@ -1,14 +1,11 @@
-NAME		= uchat
+SERVER_DIR = ./server/
+SERVER_NAME = uchat_server
 
-SRC_DIR		= src/
-OBJ_DIR		= obj/
-INC_DIR		= inc/
+CLIENT_DIR = ./client/
+CLIENT_NAME = uchat
 
-SRC_DIRS	= $(notdir $(wildcard $(SRC_DIR)*))
-SRC_PATH	= $(foreach dirs, $(SRC_DIRS), $(SRC_DIR)$(dirs))
-SRC			= $(foreach path, $(SRC_PATH), $(wildcard $(path)/*.c))
-OBJ			= $(SRC:src/%.c=$(OBJ_DIR)%.o)
-INC_H		= $(wildcard $(INC_DIR)*.h)
+SERVER_BIN = $(join $(SERVER_DIR), $(SERVER_NAME))
+CLIENT_BIN = $(join $(CLIENT_DIR), $(CLIENT_NAME))
 
 LIB_DIR		= .
 LIB_LIST	= libmx
@@ -17,45 +14,44 @@ LIB_DIRS	= $(foreach libdirs, $(LIB_LIST), $(LIB_DIR)/$(libdirs)/)
 LIB_BIN		= $(join $(LIB_DIRS), $(addsuffix .a, $(LIB_LIST)))
 LIB_INC		= $(addsuffix $(INC_DIR), $(LIB_DIRS))
 
-CC			= clang
-GFLAGS		= -std=c11 -pipe -Wall -Wextra -Werror -Wpedantic\
-	-Wno-unused-command-line-argument -Wno-unused-variable \
-	-Wno-unused-function -Wno-unused-parameter -g -lpthread
+COMPILE	= $(CC) $(GFLAGS) $(IFLAGS) $(LIB_BIN)
+MAKE_M	= make -sf Makefile -C
+RM		= /bin/rm -rf
 
-IFLAGS		= $(addprefix -I, $(LIB_INC) $(INC_DIR))
+all: $(LIB_BIN) $(SERVER_BIN) $(CLIENT_BIN) start_server
+	@mv -f $(CLIENT_BIN) .
+	@./$(CLIENT_NAME) 127.0.0.1
 
-COMPILE		= $(CC) $(GFLAGS) $(IFLAGS) $(LIB_BIN)
-MAKE_M		= make -sf Makefile -C
-RM			= /bin/rm -rf
+start_server:
+	@mv -f $(SERVER_BIN) .
+	@gnome-terminal --command=./$(SERVER_NAME)
+	@sleep 1
 
-all: $(NAME)
+$(SERVER_BIN):
+	@$(MAKE_M) $(SERVER_DIR)
 
-$(NAME): $(LIB_LIST) $(OBJ_DIR) $(OBJ) 
-	@$(COMPILE) $(OBJ) -o $(NAME) -L./libmx -lmx
-	@printf "\r\33[2K$@ \033[35;1mcreated\033[0m\n"
+$(CLIENT_BIN):
+	@$(MAKE_M) $(CLIENT_DIR)
 
 $(LIB_BIN): $(LIB_LIST)
 
 $(LIB_LIST): $(LIB_DIRS)
 	@$(MAKE_M) $(LIB_DIR)/$@
 
-$(OBJ_DIR):
-	@mkdir -p $@ $(foreach dir, $(SRC_DIRS), $@/$(dir))
-
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC_H) $(LIB_BIN)
-	@$(COMPILE) -L./libmx -lmx -o $@ -c $<
-	@printf "\r\33[2K$(NAME) \033[37;1mcompile \033[0m$(<:$(SRC_DIR)/%.c=%)"
-
 clean:
 	@$(MAKE_M) $(LIB_DIR)/$(LIB_LIST) $@
-	@$(RM) $(OBJ_DIR)
-	@printf "obj in $(NAME) \033[36;1mdeleted\033[0m\n"
+	@$(MAKE_M) $(SERVER_DIR) $@
+	@$(MAKE_M) $(CLIENT_DIR) $@
+	@$(RM) $(OBJ_DIR) $(SERVER_NAME) $(CLIENT_NAME)
 
 uninstall:
 	@$(MAKE_M) $(LIB_DIR)/$(LIB_LIST) $@
-	@$(RM) $(OBJ_DIR) $(NAME)
-	@printf "$(NAME) \033[36;1muninstalled\033[0m\n"
+	@$(MAKE_M) $(SERVER_DIR) $@
+	@$(MAKE_M) $(CLIENT_DIR) $@
 
 reinstall: uninstall all
 
 .PHONY: all clean uninstall reinstall $(LIB_LIST)
+
+
+#	netstat -anp --tcp | grep ./server/uchat_server

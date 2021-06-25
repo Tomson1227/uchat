@@ -91,12 +91,10 @@ t_list *mx_sort_list(t_list *lst, bool(*cmp)(void*, void*)); //done (100/100)
 
 //My functions
 int mx_tolower(int c);
-bool mx_isalpha(char c);
 bool mx_isdigit(char c);
 bool mx_isspace(char c);
 int mx_atoi(const char *str);
 void mx_print_error(char *error);
-int mx_count_chars(char *str, char src);
 int mx_strncmp(const char *src, const char *str, size_t n);
 void mx_print_list(char ***list, char *dilim1, char *dilim2);
 char *mx_itoa(long long number);
