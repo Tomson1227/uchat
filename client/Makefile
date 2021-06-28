@@ -13,6 +13,7 @@ CC = gcc
 CFLAGS = -std=c11 -g
 CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic -g
 FLAGS = $(CCFLAGS) -I $(IDIR)
+TEST_FLAGS = $(CCFLAGS)
 
 #headers
 DEPS := $(wildcard $(IDIR)/*.h)
@@ -41,7 +42,7 @@ $(NAME): $(OBJS)
 #make test
 $(TEST): $(TEST_SRCS)
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
-	@$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(TEST_FLAGS) $< -o $@
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
 
 
