@@ -1,7 +1,2 @@
-.DS_Store
-.vscode
-*.o
-./obj
-./libmx/obj
-libmx.a
-uchat
+test_*
+uchat_*
