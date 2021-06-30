@@ -24,7 +24,8 @@ all: $(LIB_BIN) $(SERVER_BIN) $(CLIENT_BIN) start_server
 
 start_server:
 	@mv -f $(SERVER_BIN) .
-	@gnome-terminal --command=./$(SERVER_NAME)
+	@open -a Terminal "./$(SERVER_NAME)" #macOS
+	# @gnome-terminal --command=./$(SERVER_NAME)
 	@sleep 1
 
 $(SERVER_BIN):

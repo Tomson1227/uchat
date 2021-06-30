@@ -18,9 +18,10 @@ LIB_INC		= $(addsuffix $(INC_DIR), $(LIB_DIRS))
 CC			= clang
 GFLAGS		= -std=c11 -pipe -Wall -Wextra -Werror -Wpedantic\
 	-Wno-unused-command-line-argument -Wno-unused-variable \
-	-Wno-unused-function -Wno-unused-parameter -g -lpthread
+	-Wno-unused-function -Wno-unused-parameter -g
 
 IFLAGS		= $(addprefix -I, $(LIB_INC) $(INC_DIR))
+
 
 COMPILE		= $(CC) $(GFLAGS) $(IFLAGS) $(LIB_BIN)
 MAKE_M		= make -sf Makefile -C
@@ -29,7 +30,7 @@ RM			= /bin/rm -rf
 all: $(NAME)
 
 $(NAME): $(LIB_LIST) $(OBJ_DIR) $(OBJ) 
-	@$(COMPILE) $(OBJ) -o $(NAME) -L../libmx -lmx
+	@$(COMPILE) $(OBJ) -o $(NAME) -L../libmx -lmx 
 	@printf "\r\33[2K$@ \033[35;1mcreated\033[0m\n"
 
 $(LIB_BIN): $(LIB_LIST)

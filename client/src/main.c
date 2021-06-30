@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    memset(recvBuff, '0',sizeof(recvBuff));
+    memset(recvBuff, '0', sizeof(recvBuff));
 
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Error : Could not create socket \n");
@@ -27,12 +27,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+    if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
        printf("\n Error : Connect Failed \n");
        return 1;
     }
 
-    while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0) {
+    while ((n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0) {
         recvBuff[n] = 0;
 
         if(fputs(recvBuff, stdout) == EOF) {

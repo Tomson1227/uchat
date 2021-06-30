@@ -18,7 +18,7 @@ LIB_INC		= $(addsuffix $(INC_DIR), $(LIB_DIRS))
 CC			= clang
 GFLAGS		= -std=c11 -pipe -Wall -Wextra -Werror -Wpedantic\
 	-Wno-unused-command-line-argument -Wno-unused-variable \
-	-Wno-unused-function -Wno-unused-parameter -g -lpthread
+	-Wno-unused-function -Wno-unused-parameter -g
 
 IFLAGS		= $(addprefix -I, $(LIB_INC) $(INC_DIR))
 
