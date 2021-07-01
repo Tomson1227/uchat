@@ -1,0 +1,47 @@
+window {
+	background-color: #000000;
+}
+
+#chat_search_entry {
+	background-color: #000000;
+	color: #00FF00;
+	border-color: #003300;
+	font-family: "FreeMono";
+	font-size: 14px;
+}
+
+#chat_search_entry:focus {
+	border-color: #00FF00;
+}
+
+#chat_message_entry {
+	background-color: #000000;
+	color: #00FF00;
+	border-color: #003300;
+	font-family: "FreeMono";
+	font-size: 18px;
+}
+
+#chat_message_entry:focus {
+	border-color: #00FF00;
+}
+
+#chat_settings_settings_btn {
+	background-color: #000000;
+	color: #00FF00;
+}
+
+#chat_settings_users_btn {
+	background-color: #000000;
+	color: #00FF00;
+}
+
+#chat_settings_terminal_btn {
+	background-color: #000000;
+	color: #00FF00;
+}
+
+#chat_send_btn {
+	background-color: #000000;
+	color: #00FF00;
+}
