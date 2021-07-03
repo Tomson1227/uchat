@@ -4,9 +4,14 @@
                         /* Test version of server */
 /********************************************************************************/
 
-#define MAX_CLIENTS 30
+#define MAX_CLIENTS 10
 #define MAX_BUFFER  1025
 #define MAX_LISTEN_SOCKETS 50
+
+typedef struct s_sockets {
+	int fd;
+	time_t begin;
+}			   t_sockets;
 
 typedef struct s_server {
     bool run;
@@ -15,19 +20,16 @@ typedef struct s_server {
     int poll_size;
     int poll_number;
     int master_socket;
-    int client_socket[MAX_CLIENTS];
     struct pollfd fds[MAX_CLIENTS + 1];
     struct sockaddr_in address; 
+	t_sockets sockets[MAX_CLIENTS + 1];
 }              t_server;
 
 void init_server(t_server *server)
 {
     server->run = true;
     server->option = 1;
-    server->timeout = (3 * 60 * 1000); // 3 min.
-
-    for(int i = 0; i < MAX_CLIENTS; ++i)  
-        server->client_socket[i] = 0;
+    server->timeout = (100); // 5 sec.
 
     if((server->master_socket = socket(AF_INET , SOCK_STREAM , 0)) < 0) {  
         perror("socket failed");  
@@ -66,7 +68,23 @@ void init_server(t_server *server)
     }
 }
 
-void set_poll_fd(struct pollfd *fds, int fd, int index)
+void print_sockets(t_server *server)
+{
+	RESTORE_CURSOR_POS;
+	
+	time_t curent_time = time(NULL);
+
+	for(int index = 1; index <= MAX_CLIENTS; ++index) {
+		printf("SOCKET %3d: ", index);
+		
+		if(server->fds[index].fd != -1)
+			printf("%s %4d TIME = %ld\n", STATUS_CONNECTED, server->fds[index].fd, (curent_time - server->sockets[index].begin));
+		else
+			printf("\033[37;2m[FREE]\033[0m\n");
+	}
+}
+
+void set_pollin_fd(struct pollfd *fds, int fd, int index)
 {
     fds[index].fd = fd;
     fds[index].events = POLLIN;
@@ -75,61 +93,59 @@ void set_poll_fd(struct pollfd *fds, int fd, int index)
 
 void init_poll_set(t_server *server) 
 {
-    memset(server->fds, 0, sizeof(server->fds));
-    set_poll_fd(server->fds, server->master_socket, 0);
-    server->poll_size = 1;
+    set_pollin_fd(server->fds, server->master_socket, 0);
+
+	for(size_t index = 1; index <= MAX_CLIENTS; ++index)
+	    set_pollin_fd(server->fds, -1, index);
+
+    server->poll_size = MAX_CLIENTS + 1;
 }
 
-int get_free_socket(int socket[MAX_CLIENTS])
+int get_free_socket(struct pollfd *fds)
 {
-    for(int index = 0; index < MAX_CLIENTS; ++index) {
-        if(!socket[index])
+    for(int index = 1; index <= MAX_CLIENTS; ++index)
+        if(fds[index].fd == -1)
             return index;
-    }
 
     return -1;
 }
 
+void disconnect_socket(t_server *server, int index)
+{
+	close(server->fds[index].fd);
+	server->fds[index].fd = -1;
+}
+
+void process_request(t_server *server, int index)
+{
+	if(!(server->fds[index].revents & POLLIN))
+		return;
+
+	char buffer[1025];
+	char *responce = "Hello from server\n";
+
+	if((recv(server->fds[index].fd, buffer, sizeof(buffer), 0)) < 0) {
+		if(errno != EWOULDBLOCK) {
+			perror("recv failed");
+		}
+	}
+
+	printf(CSI "1E" "%s" CSI "1F", buffer);
+
+	if(send(server->fds[index].fd, responce, strlen(responce), 0) < 0)
+		perror("send failed");
+
+	server->poll_number--;
+}
+
 void process_poll_recvest(t_server *server)
 {
-    for(int index = 1; server->poll_number; ++index) {
-        if(!server->fds[index].revents)
-            continue;
-
-        int connection = true;
-
-        while(connection) {
-            char buffer[MAX_BUFFER];
-
-            //read buffer
-            if((recv(server->fds[index].fd, buffer, sizeof(buffer), 0)) < 0) {
-                if(errno != EWOULDBLOCK) {
-                    perror("recv failed");
-                    connection = false;
-                }
-
-                break;
-            }
-
-            //process request
-            // process_request();
-
-            //reply
-            char *answer = "test responce\n";
-
-            if(send(server->fds[index].fd, answer, strlen(answer), 0) < 0) {
-                perror("send failed");
-                connection = false;
-                break;
-            }
-        }
-    }
-
     if(server->fds[0].revents) {
+		server->poll_number--;
         int free_socket;
-        int new_sd = accept(server->master_socket, NULL, NULL);
+        int new_sd = 0;
 
-        while(new_sd != -1) {
+        while(new_sd >= 0) {
             if((new_sd = accept(server->master_socket, NULL, NULL)) < 0) {
                 if(errno != EWOULDBLOCK) {
                     perror("accept failed");
@@ -139,16 +155,25 @@ void process_poll_recvest(t_server *server)
                 break;
             }
 
-            if((free_socket = get_free_socket(server->client_socket)) >= 0)
-                set_poll_fd(server->fds, new_sd, free_socket);
+            if((free_socket = get_free_socket(server->fds)) >= 0) {
+                set_pollin_fd(server->fds, new_sd, free_socket);
+				server->sockets[free_socket].fd = new_sd;
+				time(&server->sockets[free_socket].begin);
+				send(new_sd, "Connected\n", 10, 0);
+			}
             else {
-                printf("all sockets busy\n");
+				printf("\nNEW CONNECTION %4d \033[31;1m[DECLINED]\033[0m", new_sd);
                 close(new_sd);
                 break;
             }
-
-            new_sd = accept(server->master_socket, NULL, NULL);
         }
+    }
+
+    for(int index = 1; index <= MAX_CLIENTS && server->poll_number; ++index) {
+        if(!server->fds[index].revents)
+            continue;
+
+		process_request(server, index);
     }
 }
 
@@ -157,96 +182,19 @@ int main(int argc , char *argv[])
     t_server server;
     init_server(&server);
     init_poll_set(&server);
+	SAVE_CURSOR_POS;
+	print_sockets(&server);
 
     while(server.run) {
         if((server.poll_number = poll(server.fds, server.poll_size, server.timeout)) < 0)
             perror("poll error");
         else if(server.poll_number > 0) {
-            process_poll_recvest(&server);
+			process_poll_recvest(&server);
         }
+
+		print_sockets(&server);
     }
 }
-
-
-/********************************************************************************/
-                        /* Standart Socket Example */
-/********************************************************************************/
-/*
-
-int main(int argc, char *argv[]) {
-    printf("\033[33;1mINITIALISE SERVER\033[0m\n");
-    int listenfd = 0, connfd = 0;
-    struct sockaddr_in serv_addr;
-
-    char sendBuff[1025];
-    time_t ticks;
-
-    //domain: AF_INET (IPv4), AF_INET6 (IPv6); type: SOCK_STREAM (TCP), SOCK_DGRAM (UDP); protocol: 0 - Internet Protocol (IP) 
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    memset(&serv_addr, '0', sizeof(serv_addr));
-    memset(sendBuff, '0', sizeof(sendBuff));
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_addr.sin_port = htons(5000);
-
-    bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
-
-    listen(listenfd, 10);
-    printf("\r\033[32;1mRUN SERVER\033[0m\n");
-
-    //initialise poll structure
-    struct pollfd pollfds[2];
-
-    pollfds[0].fd = listenfd;
-    pollfds[0].events = POLL_IN;
-    
-    pollfds[1].fd = STDIN_FILENO;
-    pollfds[1].events = POLL_IN;
-
-    while(1) {
-        int poll_status = poll(pollfds, 2, 1000);
-
-        if(poll_status == -1) {
-            //ERROR
-        }
-        else if(poll_status == 0) {
-            //TIMEOUT
-        }
-        else {
-            if(pollfds[0].revents & POLLIN ) { //socet processing
-                pollfds[0].revents = 0;
-                
-                connfd = accept(listenfd, NULL, NULL);
-
-                //READ CLIENT REQUEST
-
-                //UNSWER
-                write(connfd, sendBuff, strlen(sendBuff));
-
-                close(connfd);
-            }
-
-            if(pollfds[1].revents & POLLOUT ) { //server standart input processing 
-                pollfds[1].revents = 0;
-            }
-        }
-    }
-
-    printf("\033[31;1mSTOP SERVER\033[0m\n");
-
-    return EXIT_SUCCESS;
-}
-*/
-
-
-
-
-
-
-
-
 
 /********************************************************************************/
                         /* Advanced Socket Example */

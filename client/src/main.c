@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in serv_addr;
 
     if(argc != 2) {
-        printf("\n Usage: %s <ip of server> \n",argv[0]);
+        printf("\n Usage: %s <ip of server> \n", argv[0]);
         return 1;
     }
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(5000);
 
-    if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0) {
+    if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr) <= 0) {
         printf("\n inet_pton error occured\n");
         return 1;
     }
@@ -32,12 +32,17 @@ int main(int argc, char *argv[]) {
        return 1;
     }
 
-    while ((n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0) {
-        recvBuff[n] = 0;
+    while((n = recv(sockfd, recvBuff, sizeof(recvBuff), 0)) > 0) {
+        recvBuff[n] = '\0';        
+        printf("Recived: %s", recvBuff);
+        
+        sleep(1);
+        char *request = "Request";
+        printf("To send: %s\n", request);
 
-        if(fputs(recvBuff, stdout) == EOF) {
-            printf("\n Error : Fputs error\n");
-        }
+        send(sockfd, request, sizeof(request), 0);
+        
+        sleep(1);
     }
 
     if(n < 0) {
