@@ -28,7 +28,7 @@ OBJS = $(subst $(SDIR),$(ODIR),$(_OBJS))
 all: $(NAME)
 
 #make objects
-$(OBJS): $(SRCS) $(DEPS)
+$(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
 	@mkdir -p obj
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
 	$(CC) $(FLAGS) -c $< -o $@

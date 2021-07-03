@@ -10,9 +10,10 @@ TDIR = test
 
 #compiler settings
 CC = gcc
-CFLAGS = -std=c11 -g
-CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic -g
-FLAGS = $(CCFLAGS) -I $(IDIR)
+CFLAGS = -std=c11
+CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic
+PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0` -rdynamic
+FLAGS = $(CFLAGS) -I $(IDIR)
 TEST_FLAGS = $(CCFLAGS)
 
 #headers
@@ -28,14 +29,15 @@ OBJS = $(subst $(SDIR),$(ODIR),$(_OBJS))
 all: $(NAME)
 
 #make objects
-$(OBJS): $(SRCS) $(DEPS)
+$(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
+	@echo $(SRCS)
 	@mkdir -p obj
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
-	$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(FLAGS) -c $< -o $@ $(PKGCONFIG)
 
 #make excecutable
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) $^ -o $@
+	$(CC) $(FLAGS) $^ -o $@ $(PKGCONFIG)
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
 	@printf "Usage: ./$@ [filename]\n"
 
