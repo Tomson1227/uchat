@@ -1,61 +1,46 @@
-NAME		= uchat
+#dependencies
+SERVER_DIR = server
+CLIENT_DIR = client
+SERVER = uchat_server
+CLIENT = uchat_client
+TEST_SERVER = test_server
+TEST_CLIENT = test_client
 
-SRC_DIR		= src/
-OBJ_DIR		= obj/
-INC_DIR		= inc/
 
-SRC_DIRS	= $(notdir $(wildcard $(SRC_DIR)*))
-SRC_PATH	= $(foreach dirs, $(SRC_DIRS), $(SRC_DIR)$(dirs))
-SRC			= $(foreach path, $(SRC_PATH), $(wildcard $(path)/*.c))
-OBJ			= $(SRC:src/%.c=$(OBJ_DIR)%.o)
-INC_H		= $(wildcard $(INC_DIR)*.h)
+#TARGETS
+all: $(SERVER) $(CLIENT)
 
-LIB_DIR		= .
-LIB_LIST	= libmx
+$(SERVER):
+	make -C $(SERVER_DIR)
+	mv $(SERVER_DIR)/$@ ./$@
 
-LIB_DIRS	= $(foreach libdirs, $(LIB_LIST), $(LIB_DIR)/$(libdirs)/)
-LIB_BIN		= $(join $(LIB_DIRS), $(addsuffix .a, $(LIB_LIST)))
-LIB_INC		= $(addsuffix $(INC_DIR), $(LIB_DIRS))
+$(CLIENT):
+	make -C $(CLIENT_DIR)
+	mv $(CLIENT_DIR)/$@ ./$@
 
-CC			= clang
-GFLAGS		= -std=c11 -pipe -Wall -Wextra -Werror -Wpedantic\
-	-Wno-unused-command-line-argument -Wno-unused-variable \
-	-Wno-unused-function -Wno-unused-parameter -g -lpthread
+#TESTS
+test: $(TEST_SERVER) $(TEST_CLIENT)
 
-IFLAGS		= $(addprefix -I, $(LIB_INC) $(INC_DIR))
+$(TEST_SERVER):
+	@make $@ -C $(SERVER_DIR)
+	@mv $(SERVER_DIR)/$@ ./$@
 
-COMPILE		= $(CC) $(GFLAGS) $(IFLAGS) $(LIB_BIN)
-MAKE_M		= make -sf Makefile -C
-RM			= /bin/rm -rf
+$(TEST_CLIENT):
+	@make $@ -C $(CLIENT_DIR)
+	@mv $(CLIENT_DIR)/$@ ./$@
 
-all: $(NAME)
+.PHONY: clean uninstall reinstall
 
-$(NAME): $(LIB_LIST) $(OBJ_DIR) $(OBJ) 
-	@$(COMPILE) $(OBJ) -o $(NAME) -L./libmx -lmx
-	@printf "\r\33[2K$@ \033[35;1mcreated\033[0m\n"
-
-$(LIB_BIN): $(LIB_LIST)
-
-$(LIB_LIST): $(LIB_DIRS)
-	@$(MAKE_M) $(LIB_DIR)/$@
-
-$(OBJ_DIR):
-	@mkdir -p $@ $(foreach dir, $(SRC_DIRS), $@/$(dir))
-
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC_H) $(LIB_BIN)
-	@$(COMPILE) -L./libmx -lmx -o $@ -c $<
-	@printf "\r\33[2K$(NAME) \033[37;1mcompile \033[0m$(<:$(SRC_DIR)/%.c=%)"
-
+#remove all temp files
 clean:
-	@$(MAKE_M) $(LIB_DIR)/$(LIB_LIST) $@
-	@$(RM) $(OBJ_DIR)
-	@printf "obj in $(NAME) \033[36;1mdeleted\033[0m\n"
+	@make $@ -C $(SERVER_DIR)
+	@make $@ -C $(CLIENT_DIR)
 
+#delete all files
 uninstall:
-	@$(MAKE_M) $(LIB_DIR)/$(LIB_LIST) $@
-	@$(RM) $(OBJ_DIR) $(NAME)
-	@printf "$(NAME) \033[36;1muninstalled\033[0m\n"
+	@make $@ -C $(SERVER_DIR)
+	@make $@ -C $(CLIENT_DIR)
+	@rm -f $(TEST_SERVER) $(TEST_CLIENT) $(SERVER) $(CLIENT)
 
+#rebuild project
 reinstall: uninstall all
-
-.PHONY: all clean uninstall reinstall $(LIB_LIST)
