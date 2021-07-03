@@ -8,6 +8,7 @@ typedef struct
     GtkEntry *password;
     GtkWidget *g_lbl_hello;
     GtkWidget *g_lbl_count;
+    GtkWidget *g_lbl_error;
     GtkGrid *log_in;
     GtkGrid *sign_up;
     GtkStack *stack;
@@ -18,7 +19,7 @@ typedef struct
     GtkButton *btn_back;
 } app_widgets;
 
-void load_css(void);
+void load_css_style(void);
 void on_window_main_destroy(void);
 void on_btn_log_in_clicked(GtkButton *btn_log_in, app_widgets *wdgts);
 void on_username_activate(GtkEntry *username, app_widgets *wdgts);
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
     gtk_init(&argc, &argv);
     load_css();
     builder = gtk_builder_new();
-    gtk_builder_add_from_file (builder, "client/glades/window_main.glade", NULL);
+    gtk_builder_add_from_file (builder, "../glades/window_main.glade", NULL);
 
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
     gtk_builder_connect_signals(builder, widgets);
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
     widgets->sign_up = GTK_GRID(gtk_builder_get_object(builder, "sign_up"));
     widgets->g_lbl_hello = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_hello"));
     widgets->g_lbl_count = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_count"));
+    widgets->g_lbl_error = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_error"));
     widgets->username = GTK_ENTRY(gtk_builder_get_object(builder, "username"));
     widgets->password = GTK_ENTRY(gtk_builder_get_object(builder, "password"));
     widgets->password_sign_up = GTK_ENTRY(gtk_builder_get_object(builder, "password_sign_up"));
@@ -60,7 +62,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void load_css()
+void load_css_style()
 {
     GtkCssProvider *provider;
     GdkDisplay *display;
@@ -70,7 +72,7 @@ void load_css()
     display = gdk_display_get_default();
     screen = gdk_display_get_default_screen(display);
 
-    const gchar *css_style_file = "client/styles/style.css";
+    const gchar *css_style_file = "../styles/style.css";
     GFile *css_fp = g_file_new_for_path(css_style_file);
     GError *error = 0;
     gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
@@ -109,6 +111,9 @@ void on_password_activate(GtkEntry *password, app_widgets *wdgts)
 {
     char buffer_for_username[128];
     char buffer_for_password[128];
+
+    gtk_label_set_text(GTK_LABEL(wdgts->g_lbl_error), "username and password do not match");
+
     sprintf(buffer_for_username, "%s", gtk_entry_get_text(wdgts->username));
     sprintf(buffer_for_password, "%s", gtk_entry_get_text(wdgts->password));
     printf("you entered username: %s\n", (const gchar*) buffer_for_username);
@@ -149,3 +154,5 @@ void on_btn_back_clicked(GtkButton *btn_back, GtkStack *stack, app_widgets *wdgt
     gtk_stack_set_visible_child_full ( stack, "log_in", 0);
     g_print ( "Switching to %s.\n", gtk_stack_get_visible_child_name (stack));
 }
+
+    //gtk_label_set_text(GTK_LABEL(g_lbl_error), "username and password do not match");
