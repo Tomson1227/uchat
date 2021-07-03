@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 
-void load_css() {
+void load_css_main() {
     GtkCssProvider *provider;
     GdkDisplay *display;
     GdkScreen *screen;
@@ -19,7 +19,7 @@ void load_css() {
     g_object_unref(provider);
 }
 
-int main(int argc, char **argv)
+int chat_window(int argc, char **argv)
 {
     GtkBuilder *builder;
     GtkWidget *window;
@@ -33,11 +33,11 @@ int main(int argc, char **argv)
 
     gtk_init(&argc, &argv);
 
-    load_css();
-    gtk_css_provider_load_from_path(provider, "styles/main.css", NULL);
+    load_css_main();
+    gtk_css_provider_load_from_path(provider, "client/styles/main.css", NULL);
 
     builder = gtk_builder_new();
-    gtk_builder_add_from_file (builder, "chat_window.glade", NULL);
+    gtk_builder_add_from_file (builder, "client/glades/chat_window.glade", NULL);
 
     window = GTK_WIDGET(gtk_builder_get_object(builder, "chat_main"));
     chat_search_entry = GTK_WIDGET(gtk_builder_get_object(builder, "chat_search_entry"));

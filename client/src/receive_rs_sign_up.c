@@ -1,4 +1,4 @@
-//#include "../libraries/cJSON/cJSON.h"
+#include "cJSON.h"
 #include <stdio.h>
 
 /*SIGNUP
@@ -7,7 +7,7 @@
     "status": SINGUP_OK | SIGNUP_USER_EXIST | SINGUP_FAIL,
 }*/
 
-void receive_rs_log_in(const char * const string)
+void receive_rs_sign_up(const char * const string)
 {
     //receiving signup responce from server
     // recv(sock, buffer, buffer_size, IP);

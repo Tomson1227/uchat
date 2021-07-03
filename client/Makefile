@@ -8,12 +8,16 @@ ODIR = obj
 SDIR = src
 TDIR = test
 
+#lib includes
+LIBDIR = ../libs/cJSON/inc
+LIB = ../libs/cJSON.a
+
 #compiler settings
 CC = gcc
 CFLAGS = -std=c11
 CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic
 PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0` -rdynamic
-FLAGS = $(CFLAGS) -I $(IDIR)
+FLAGS = $(CFLAGS) -I $(IDIR) $(addprefix -I, $(LIBDIR))
 TEST_FLAGS = $(CCFLAGS)
 
 #headers
@@ -37,7 +41,7 @@ $(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
 
 #make excecutable
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) $^ -o $@ $(PKGCONFIG)
+	$(CC) $(FLAGS) $^ -o $@ $(LIB) $(PKGCONFIG)
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
 	@printf "Usage: ./$@ [filename]\n"
 

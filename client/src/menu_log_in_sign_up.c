@@ -25,7 +25,7 @@ void on_password_activate(GtkEntry *password, app_widgets *wdgts);
 void on_btn_sign_up_clicked(GtkButton *btn_sign_up, GtkStack *stack, app_widgets *wdgts);
 void on_btn_sign_up_sign_up_clicked(GtkButton *btn_sign_up_sign_up, app_widgets *wdgts);
 
-int main(int argc, char *argv[])
+int login_window(int argc, char *argv[])
 {
     GtkBuilder      *builder; 
     GtkWidget       *window;
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     gtk_init(&argc, &argv);
     load_css();
     builder = gtk_builder_new();
-    gtk_builder_add_from_file (builder, "window_main.glade", NULL);
+    gtk_builder_add_from_file (builder, "client/glades/window_main.glade", NULL);
 
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
     gtk_builder_connect_signals(builder, widgets);
@@ -69,7 +69,7 @@ void load_css()
     display = gdk_display_get_default();
     screen = gdk_display_get_default_screen(display);
 
-    const gchar *css_style_file = "style.css";
+    const gchar *css_style_file = "client/styles/style.css";
     GFile *css_fp = g_file_new_for_path(css_style_file);
     GError *error = 0;
     gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);

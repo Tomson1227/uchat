@@ -11,8 +11,6 @@
 #include <sys/types.h>
 #include <time.h>
 
-#include "libmx.h"
-
 typedef enum s_request_type
 {
     REQUEST_LOGIN,

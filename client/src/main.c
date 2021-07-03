@@ -1,6 +1,14 @@
-// #include <stdio.h>
+#include <stdio.h>
 
-// int main(void) {
-//     printf("Hello client\n");
-//     return 0;
-// }
+int login_window(int argc, char *argv[]);
+int chat_window(int argc, char **argv);
+
+
+int main(int argc, char *argv[]) {
+
+    login_window(argc, argv);
+    chat_window(argc, argv);
+
+
+    return 0;
+}
