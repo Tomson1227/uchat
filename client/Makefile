@@ -9,7 +9,7 @@ SDIR = src
 TDIR = test
 
 #lib includes
-LIBDIR = ../libs/cJSON/inc
+LIBDIR = ../libs/cJSON/inc 
 LIB = ../libs/cJSON.a
 
 #compiler settings
@@ -50,7 +50,6 @@ $(TEST): $(TEST_SRCS)
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
 	$(CC) $(TEST_FLAGS) $< -o $@
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
-
 
 .PHONY: clean uninstall reinstall
 

@@ -3,17 +3,23 @@
 
 typedef struct 
 {
+    /*entries*/
     GtkEntry *username;
     GtkEntry *password;
-    GtkWidget *g_lbl_hello;
-    GtkWidget *g_lbl_count;
-    GtkGrid *log_in;
-    GtkGrid *sign_up;
-    GtkStack *stack;
     GtkEntry *username_sign_up;
     GtkEntry *password_sign_up;
     GtkEntry *repeat_password_sign_up;
+    /*labels*/
+    GtkWidget *g_lbl_hello;
+    GtkWidget *g_lbl_count;
+    GtkWidget *g_lbl_error_display;
+    /*grids*/
+    GtkGrid *log_in;
+    GtkGrid *sign_up;
     GtkGrid *grid;
+    /*stacks*/
+    GtkStack *stack;
+    /*buttons*/
     GtkButton *btn_back;
 } app_widgets;
 
@@ -38,11 +44,14 @@ int login_window(int argc, char *argv[])
 
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
     gtk_builder_connect_signals(builder, widgets);
-
+    /*grids*/
     widgets->log_in = GTK_GRID(gtk_builder_get_object(builder, "log_in"));
     widgets->sign_up = GTK_GRID(gtk_builder_get_object(builder, "sign_up"));
+    /*labels*/
     widgets->g_lbl_hello = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_hello"));
     widgets->g_lbl_count = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_count"));
+    widgets->g_lbl_error_display = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_error_display"));
+    /*entries*/
     widgets->username = GTK_ENTRY(gtk_builder_get_object(builder, "username"));
     widgets->password = GTK_ENTRY(gtk_builder_get_object(builder, "password"));
     widgets->password_sign_up = GTK_ENTRY(gtk_builder_get_object(builder, "password_sign_up"));
@@ -77,7 +86,7 @@ void load_css()
     g_object_unref(provider);
 }
 
-// called when window is closed
+//called when window is closed
 void on_window_main_destroy()
 {
     gtk_main_quit();
@@ -123,8 +132,6 @@ void on_btn_sign_up_clicked(GtkButton *btn_sign_up, GtkStack *stack, app_widgets
     
     gtk_stack_set_visible_child_full ( stack, "sign_up", 0);
     g_print ( "Switching to %s.\n", gtk_stack_get_visible_child_name (stack));
-    //clear log in entries
-    
 }
 
 void on_btn_sign_up_sign_up_clicked(GtkButton *btn_sign_up_sign_up, app_widgets *wdgts)
@@ -135,6 +142,13 @@ void on_btn_sign_up_sign_up_clicked(GtkButton *btn_sign_up_sign_up, app_widgets 
     sprintf(buffer_for_username, "%s", gtk_entry_get_text(wdgts->username_sign_up));
     sprintf(buffer_for_password, "%s", gtk_entry_get_text(wdgts->password_sign_up));
     sprintf(buffer_for_password_repated, "%s", gtk_entry_get_text(wdgts->repeat_password_sign_up));
+    
+    if (strcmp(buffer_for_password, buffer_for_password_repated) != 0) 
+        gtk_label_set_text(GTK_LABEL(wdgts->g_lbl_error_display), "passwords do not match");
+    else if (strcmp(buffer_for_password, buffer_for_password_repated) == 0 && strlen(buffer_for_password) < 6)
+        gtk_label_set_text(GTK_LABEL(wdgts->g_lbl_error_display), "password should inlcude more than 6 symbols");
+    else gtk_label_set_text(GTK_LABEL(wdgts->g_lbl_error_display), "");
+
     printf("you entered username: %s\n", (const gchar*) buffer_for_username);
     printf("you entered password: %s\n", (const gchar*) buffer_for_password);
     printf("you repeated password: %s\n", (const gchar*) buffer_for_password_repated);
@@ -145,6 +159,6 @@ void on_btn_back_clicked(GtkButton *btn_back, GtkStack *stack, app_widgets *wdgt
     g_return_if_fail(GTK_IS_BUTTON(btn_back));
     g_return_if_fail(GTK_IS_STACK(stack));
     
-    gtk_stack_set_visible_child_full ( stack, "log_in", 0);
-    g_print ( "Switching to %s.\n", gtk_stack_get_visible_child_name (stack));
+    gtk_stack_set_visible_child_full (stack, "log_in", 0);
+    g_print("Switching to %s.\n", gtk_stack_get_visible_child_name (stack));
 }
