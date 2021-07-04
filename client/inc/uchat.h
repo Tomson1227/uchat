@@ -11,6 +11,8 @@
 #include <sys/types.h>
 #include <time.h>
 
+#include "connection.h"
+
 typedef enum s_request_type
 {
     REQUEST_LOGIN,
@@ -23,12 +25,12 @@ typedef enum s_response_type
     RESPONSE_SIGNUP
 } t_response_type;
 
-typedef enum s_response_login_type
+typedef enum s_request_login_type
 {
     LOGIN_OK,
     LOGIN_WRONG_USER,
     LOGIN_WRONG_PASS
-}   t_response_login_type;
+}   t_request_login_type;
 
 typedef enum s_response_login_type
 {
