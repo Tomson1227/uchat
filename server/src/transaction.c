@@ -1,20 +1,5 @@
 #include "transaction.h"
 
-char *login_convert(t_login_request *request)
-{
-    char *line;
-    size_t line_length = snprintf(NULL, 0, "%u;%s;%s\n", request->request, 
-                                  request->user_logit, request->password);
-
-    if(!(line = (char *) calloc(line_length, sizeof(char))))
-        perror("allocation fail");
-
-    sprintf(line, "%u;%s;%s\n", request->request, request->user_logit, 
-            request->password);
-
-    return line;
-}
-
 char *server_responce(t_server_responce *response)
 {
     char *line;
@@ -57,7 +42,51 @@ void *read_response(char *line)
     }
 }
 
-// read_request(t_login_request *reqvese, char *line)
-// {
-//     sscanf(line, "%[^;]%u;%[^;]%s", requese->request, requese->user_logit, requese);
-// }
+char *login_convert(t_user_request *request)
+{
+    char *line;
+    size_t line_length = snprintf(NULL, 0, "%u;%s;%s\n", request->request, 
+                                  request->user_logit, request->password);
+
+    if(!(line = (char *) calloc(line_length, sizeof(char))))
+        perror("allocation fail");
+
+    sprintf(line, "%u;%s;%s\n", request->request, request->user_logit, 
+            request->password);
+
+    return line;
+}
+
+//@ pointer - point to created structure
+//@ type - type of pass structure (see t_struct_type)
+//# return pointer to corespond server structure or NULL if fail
+void *send_request(void *pointer, t_struct_type type, int *sockfd)
+{
+    char *line = NULL; 
+
+    switch(type) {
+        case login_request:
+        case signup_request:
+            line = login_convert((t_user_request *) pointer);
+            break;
+        default:
+            break;
+    }
+
+    // connection(sockfd);
+
+    if(send(*sockfd, line, strlen(line), 0) < 0) {
+        perror("tansmit fail");
+        return NULL;
+    }
+
+    // return read_response();
+    return NULL;
+}
+
+void connection(int *sockfd)
+{
+    if(!getpeername(*sockfd, NULL, NULL))
+        ;
+        // reconect();
+}

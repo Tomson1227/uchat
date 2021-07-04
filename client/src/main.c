@@ -2,6 +2,7 @@
 
 int main(int argc, char *argv[]) {
     int sockfd = 0, n = 0;
+    int count = 0;
     char recvBuff[1024];
     struct sockaddr_in serv_addr;
 
@@ -33,12 +34,20 @@ int main(int argc, char *argv[]) {
     }
 
     while((n = recv(sockfd, recvBuff, sizeof(recvBuff), 0)) > 0) {
+
+        if(count == 10) {
+            close(sockfd);
+            break;
+        }
+
         recvBuff[n] = '\0';        
+
         printf("Recived: %s", recvBuff);
         
         sleep(1);
-        char *request = "Request";
-        printf("To send: %s\n", request);
+        char request[20];
+        sprintf(request, "Request: %d\n", count++);
+        printf("To send: %s", request);
 
         send(sockfd, request, sizeof(request), 0);
         

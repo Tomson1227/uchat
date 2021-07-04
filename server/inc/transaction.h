@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <locale.h>
+#include <string.h>
+#include <sys/poll.h>
+#include <sys/socket.h> 
 
 #ifdef __linux__
     #include <malloc.h> // For Linux
@@ -11,6 +14,11 @@
 #else
     #include <malloc/malloc.h> //For macOS
 #endif
+
+typedef enum e_struct_type {
+    login_request,
+    signup_request
+}            t_struct_type;
 
 typedef enum e_api {
     REQUEST_LOGIN,
@@ -26,13 +34,11 @@ typedef enum e_status {
     SINGUP_FAIL
 }            t_status;
 
-typedef struct s_login_request {
+typedef struct s_user_request {
     t_api request;
     char *user_logit;
     char *password;
-}              t_login_request;
-
-#define t_signup_request  t_login_request
+}              t_user_request;
 
 typedef struct s_server_response {
     t_api response;
@@ -42,4 +48,4 @@ typedef struct s_server_response {
 
 void *read_response(char *line);
 char *server_responce(t_server_responce *response);
-char *login_convert(t_login_request *request);
+char *login_convert(t_user_request *request);
