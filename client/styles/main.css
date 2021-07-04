@@ -1,5 +1,6 @@
 window {
 	background-color: #000000;
+	background-image: none;
 }
 
 #chat_search_entry {

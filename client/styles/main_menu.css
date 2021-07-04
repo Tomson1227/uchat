@@ -1,0 +1,20 @@
+window
+{
+    background-color: black;
+    background-image: url("https://s3.wi-fi.ru/cp3o/6qiTThDwYVggn6Ltb3hQAzue?response-content-type=image%2Fjpeg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+button
+{
+    /* font: Helvetica; */
+    color: rgb(0, 255, 0);
+    border-radius: 100;
+    outline-color: rgb(0, 255, 0);
+}
+label
+{
+    color:rgb(0, 255, 0);
+}

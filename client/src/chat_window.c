@@ -5,7 +5,7 @@ void load_css_main() {
     GdkDisplay *display;
     GdkScreen *screen;
 
-    const gchar *css_style_file = "main.css";
+    const gchar *css_style_file = "client/styles/main.css";
     GFile *css_fp = g_file_new_for_path(css_style_file);
     GError *error = NULL;
 
