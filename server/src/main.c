@@ -4,27 +4,6 @@
                         /* Test version of server */
 /********************************************************************************/
 
-#define MAX_CLIENTS 10
-#define MAX_BUFFER  1025
-#define MAX_LISTEN_SOCKETS 50
-
-typedef struct s_sockets {
-	int fd;
-	time_t begin;
-}			   t_sockets;
-
-typedef struct s_server {
-    bool run;
-    int option;
-    int timeout;
-    int poll_size;
-    int poll_number;
-    int master_socket;
-    struct pollfd fds[MAX_CLIENTS + 1];
-    struct sockaddr_in address; 
-	t_sockets sockets[MAX_CLIENTS + 1];
-}              t_server;
-
 void init_server(t_server *server)
 {
     server->run = true;
