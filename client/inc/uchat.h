@@ -12,6 +12,7 @@
 #include <time.h>
 
 #include "connection.h"
+#include "queue.h"
 
 typedef enum s_request_type
 {

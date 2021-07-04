@@ -8,20 +8,24 @@ int main(int argc, char *argv[]) {
 
     check_args(argc, argv);
     t_config *config = setup_address(argv[1], argv[2]);
-    client_connect(config);
-    launch_threads(config);
-    config->send_buf = malloc(sizeof(char) * 128);
+    connection_setup(config);
 
+    //SPAMMER
     int num = 0;
     while (1) {
-        //simulate data interchange
-        sprintf(config->send_buf, "Sending request no %d", num);
-        config->send_singal = 1;
-        num++;
-        while(0 == config->send_singal) {
-            //wait for signal being sent
-        }
+        char *temp = (char*)calloc(128, sizeof(char));
+        sprintf(temp, "Sending request no %d", num++);
+        enQueue(config->queue_send, temp);
+        printf("[SPAMMER]   Queued: %s\n", temp);
         sleep(1);
+        // if (0 == num % 10) {
+        //     //dequeue
+        //     while(!QueueisEmpty(config->queue_send)) {
+        //     char *dq = deQueue(config->queue_send);
+        //     printf("[SPAMMER]   Dequeued: %s\n", dq);
+        //     free(dq);
+        //     }
+        // }
     }
 
     //login_window(argc, argv);

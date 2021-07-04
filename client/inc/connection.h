@@ -11,6 +11,7 @@
 #include <pthread.h>
 
 #include "cJSON.h"
+#include "queue.h"
 
 /* Typedefs */
 typedef struct s_config {
@@ -20,11 +21,12 @@ typedef struct s_config {
     pthread_t recv_thread;
     int recv_singal;
     int send_singal;
-    char *send_buf;
-    char *recv_buf;
+    queue_t *queue_send;
+    queue_t *queue_recv;
 }               t_config;
 
 /* Functions */
+void connection_setup(t_config *config);
 t_config *setup_address(char *port, char *address);
 void client_connect(t_config *config);
 void check_args(int argc, char *argv[]);
