@@ -17,7 +17,7 @@
 #include <sys/ioctl.h>
 #include <sys/poll.h>
 #include <pthread.h>
-
+#include <fcntl.h>
 
 #include "cJSON.h"
 #include "transaction.h"
@@ -101,9 +101,8 @@ typedef struct s_server {
     t_socket_list *socket_head;
 }              t_server;
 
-
-void new_socket(t_socket_list **head, int fd);
-void print_socket_list(t_socket_list *head);
+t_socket_list *new_socket(t_server *server, int fd);
+void sockets_status(t_socket_list *head);
 void disconect_socket(t_socket_list *address);
 void del_socket_list(t_socket_list **head);
 

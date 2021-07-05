@@ -1,8 +1,18 @@
 #include "uchat_server2.h"
 
-void pipesig_hendler(void)
+bool SetSocketBlockingEnabled(int fd, bool blocking)
 {
-    return;
+   if (fd < 0) return false;
+
+#ifdef _WIN32
+   unsigned long mode = blocking ? 0 : 1;
+   return (ioctlsocket(fd, FIONBIO, &mode) == 0) ? true : false;
+#else
+   int flags = fcntl(fd, F_GETFL, 0);
+   if (flags == -1) return false;
+   flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
+   return (fcntl(fd, F_SETFL, flags) == 0) ? true : false;
+#endif
 }
 
 void *thread_socket(void *pointer)
@@ -10,25 +20,28 @@ void *thread_socket(void *pointer)
     t_socket_list *socket = (t_socket_list *) pointer;
     int poll_request;
     struct pollfd fd = {socket->fd, POLLIN, 0};
+    socket->status = true;
     time(&socket->begin);
     
     while(1) {
         if((poll_request = poll(&fd, 1, 10 * 1000)) < 0) {
             close(fd.fd);
-            return 0;
+            return NULL;
         }   
         else if(poll_request > 0) {
 
         }
         else {
             disconect_socket(socket);
-            return 0;
+            return NULL;
         }
     }
 }
 
 void init_server(t_server *server)
 {
+    server->socket_head = NULL;
+
     if((server->fd = socket(AF_INET , SOCK_STREAM , 0)) < 0) {  
         perror("socket failed");  
         exit(EXIT_FAILURE);  
@@ -40,6 +53,8 @@ void init_server(t_server *server)
         exit(EXIT_FAILURE);
     }  
     
+    SetSocketBlockingEnabled(server->fd, true);
+
     if(ioctl(server->fd, FIONBIO, (char *) &server->option) < 0) {
         perror("ioctl failed");
         close(server->fd);
@@ -55,11 +70,16 @@ void init_server(t_server *server)
         exit(EXIT_FAILURE);  
     }
 
+    SetSocketBlockingEnabled(server->fd, false);
+
     if(listen(server->fd, MAX_LISTEN_SOCKETS) < 0) {
         perror("listen failed");
         close(server->fd);
         exit(-1);
     }
+
+    new_socket(server, server->fd);
+    server->socket_head->status = true;
 }
 
 int main(int argc , char *argv[])
@@ -73,14 +93,12 @@ int main(int argc , char *argv[])
 	SAVE_CURSOR_POS;
 
     while(true) {
-        if((poll(&fd, 1, 1000)) < 0)
+        if((poll(&fd, 1, 200)) < 0)
             perror("poll error");
         else if(fd.revents & POLLIN) {
             int new_sd = 0;
 
             while(new_sd >= 0) {
-                printf("TP1\n");
-
                 if((new_sd = accept(server.fd, NULL, NULL)) < 0) {
                     if(errno != EWOULDBLOCK) {
                         perror("accept failed");
@@ -89,18 +107,13 @@ int main(int argc , char *argv[])
                     break;
                 }
 
-                printf("TP2\n");
                 pthread_t tid; /* идентификатор потока */
                 pthread_attr_t attr; /* атрибуты потока */
                 pthread_attr_init(&attr);
-                new_socket(&server.socket_head, new_sd);
-                pthread_create(&tid, &attr, thread_socket, server.socket_head);
-                print_socket_list(server.socket_head);
-                printf("TP3\n");
+                pthread_create(&tid, &attr, thread_socket, new_socket(&server, new_sd));
             }
-            printf("TP4\n");
         }
-        printf("TP5\n");
-        print_socket_list(server.socket_head);
+
+        sockets_status(server.socket_head);
     }
 }
