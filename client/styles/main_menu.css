@@ -10,11 +10,11 @@ window
 button
 {
     /* font: Helvetica; */
-    color: rgb(0, 255, 0);
+    color: rgb(255, 255, 255);
     border-radius: 100;
-    outline-color: rgb(0, 255, 0);
+    outline-color: rgb(255, 255, 255);
 }
 label
 {
-    color:rgb(0, 255, 0);
+    color:rgb(255, 255, 255);
 }
