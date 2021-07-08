@@ -18,24 +18,28 @@ bool SetSocketBlockingEnabled(int fd, bool blocking)
 void *thread_socket(void *pointer)
 {
     t_socket_list *socket = (t_socket_list *) pointer;
+    char *request;
     int poll_request;
     struct pollfd fd = {socket->fd, POLLIN, 0};
     socket->status = true;
     time(&socket->begin);
-    
-    while(1) {
-        if((poll_request = poll(&fd, 1, 10 * 1000)) < 0) {
-            close(fd.fd);
-            return NULL;
-        }   
-        else if(poll_request > 0) {
+    send(socket->fd, "Server connected", 17, 0);
 
+    while(1) {
+        if((poll_request = poll(&fd, 1, 10 * 1000)) > 0) {
+            if(!(request = read_socket(socket->fd)))
+                break;     
+            
+            process_request(request, socket->fd);
+
+            free(request);
         }
-        else {
-            disconect_socket(socket);
-            return NULL;
-        }
+        else
+            break;
     }
+
+    disconect_socket(socket);
+    return NULL;
 }
 
 void init_server(t_server *server)
