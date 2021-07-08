@@ -16,7 +16,7 @@ int server_responce(t_server_responce *response, int fd)
     status = send(fd, line, line_length, 0);
     free(line);
     
-    return status < 0 ? 1 : 0;
+    return status < 0;
 }
 
 char *read_socket(int fd)
@@ -136,15 +136,47 @@ void connection(int *sockfd)
         // reconect();
 }
 
+int read_api(char *line)
+{
+    char *str = NULL;
+    sscanf(line, "%[^;]", str);
+
+    return atoi(str);
+}
+
+int send_respond(void *respond, t_struct_type type, int fd)
+{
+    int status;
+    char *massege = NULL;
+
+    switch(type) {
+        case login_request:
+            break;
+        case signup_request:
+            break;
+        default:
+            break;
+    }
+
+    status = send(fd, massege, strlen(massege), 0);
+    return status < 0;
+}
+
 int process_request(char *request, int fd)
 {
-    printf("%s\n", request);
+    // printf("%s\n", request);
 
-    t_server_responce response;
-    response.response = REQUEST_LOGIN;
-    response.status = LOGIN_OK;
-
-    server_responce(&response, fd);
+    switch(read_api(request)) {
+        case REQUEST_LOGIN:
+        case REQUEST_SIGNUP:
+            t_server_responce response;
+            response.response = REQUEST_LOGIN;
+            response.status = LOGIN_OK;            
+            server_responce(&response, fd);            
+            break;
+        default:
+            break;
+    }
 
     return 0;
 }
