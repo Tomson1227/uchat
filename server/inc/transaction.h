@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/poll.h>
 #include <sys/socket.h> 
+#include <sys/errno.h>
 
 #ifdef __linux__
     #include <malloc.h> // For Linux
@@ -46,6 +47,9 @@ typedef struct s_server_response {
 }              t_server_responce;
 
 
+char *read_socket(int fd);
 void *read_response(char *line);
-char *server_responce(t_server_responce *response);
+int server_responce(t_server_responce *response, int fd);
 char *login_convert(t_user_request *request);
+
+int process_request(char *request, int fd);

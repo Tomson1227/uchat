@@ -1,7 +1,10 @@
 #include "transaction.h"
 
-char *server_responce(t_server_responce *response)
+#define BUFF_SIZE 1024
+
+int server_responce(t_server_responce *response, int fd)
 {
+    int status;
     char *line;
     size_t line_length = snprintf(NULL, 0, "%u;%u\n", response->response, 
                                   response->status);
@@ -9,9 +12,51 @@ char *server_responce(t_server_responce *response)
     if(!(line = (char *) calloc(line_length, sizeof(char))))
         perror("allocation fail");
 
-    sprintf(line, "%u;%u\n",response->response, response->status);
+    sprintf(line, "%u;%u\n", response->response, response->status);
+    status = send(fd, line, line_length, 0);
+    free(line);
+    
+    return status < 0;
+}
+
+char *read_socket(int fd)
+{
+    char buff[BUFF_SIZE];
+    char *line = NULL;
+    ssize_t read_length;
+    uint64_t message_length = 0;
+
+    if((read_length = recv(fd, buff, BUFF_SIZE, 0)) < 0) {
+        if(errno == ENOTCONN)
+            return NULL;
+
+        perror("recv fail");
+        return NULL;
+    }
+    else if(read_length == 0)
+        return NULL;
+
+    if(!(line = (char *) calloc(read_length + 1, sizeof(char))))
+        perror("allocation fail");
+    
+    strcpy(line, buff);
+    
+    while(read_length == BUFF_SIZE) {
+        message_length += read_length;
+        
+        if((read_length = recv(fd, buff, BUFF_SIZE, 0)) < 0) {
+            return NULL;
+        }
+
+        if(!(realloc(line, message_length + read_length + 1)))
+            perror("allocation fail");
+        
+        strcpy(&line[message_length], buff);
+    }
+
     return line;
 }
+
 
 int read_status(char *line)
 {
@@ -89,4 +134,49 @@ void connection(int *sockfd)
     if(!getpeername(*sockfd, NULL, NULL))
         ;
         // reconect();
+}
+
+int read_api(char *line)
+{
+    char *str = NULL;
+    sscanf(line, "%[^;]", str);
+
+    return atoi(str);
+}
+
+int send_respond(void *respond, t_struct_type type, int fd)
+{
+    int status;
+    char *massege = NULL;
+
+    switch(type) {
+        case login_request:
+            break;
+        case signup_request:
+            break;
+        default:
+            break;
+    }
+
+    status = send(fd, massege, strlen(massege), 0);
+    return status < 0;
+}
+
+int process_request(char *request, int fd)
+{
+    // printf("%s\n", request);
+
+    switch(read_api(request)) {
+        case REQUEST_LOGIN:
+        case REQUEST_SIGNUP:
+            t_server_responce response;
+            response.response = REQUEST_LOGIN;
+            response.status = LOGIN_OK;            
+            server_responce(&response, fd);            
+            break;
+        default:
+            break;
+    }
+
+    return 0;
 }

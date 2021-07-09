@@ -43,32 +43,28 @@ char *receive_line(int fd)
 void *thread_socket(void *pointer)
 {
     t_socket_list *socket = (t_socket_list *) pointer;
+    char *request;
     int poll_request;
     struct pollfd fd = {socket->fd, POLLIN, 0};
     socket->status = true;
     time(&socket->begin);
-    
+    send(socket->fd, "Server connected", 17, 0);
+
     while(1) {
         if((poll_request = poll(&fd, 1, 10 * 1000)) > 0) {
-            if(!(fd.revents & POLLIN))
-                return NULL;
+            if(!(request = read_socket(socket->fd)))
+                break;     
+            
+            process_request(request, socket->fd);
 
-            char buffer[1025];
-            char *responce = "Hello from server\n";
-
-            if((recv(socket->fd, buffer, sizeof(buffer), 0)) < 0) {
-                if(errno != EWOULDBLOCK) {
-                    perror("recv failed");
-                }
-            }
-
-            if(send(socket->fd, responce, strlen(responce), 0) < 0)
-                perror("send failed");
+            free(request);
         }
-
-        disconect_socket(socket);
-        return NULL;
+        else
+            break;
     }
+
+    disconect_socket(socket);
+    return NULL;
 }
 
 void init_server(t_server *server)

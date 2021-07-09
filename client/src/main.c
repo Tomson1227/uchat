@@ -34,7 +34,6 @@ int main(int argc, char *argv[]) {
     }
 
     while((n = recv(sockfd, recvBuff, sizeof(recvBuff), 0)) > 0) {
-
         if(count == 10) {
             close(sockfd);
             break;

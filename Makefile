@@ -7,11 +7,15 @@ CLIENT_NAME = uchat
 SERVER_BIN = $(join $(SERVER_DIR), $(SERVER_NAME))
 CLIENT_BIN = $(join $(CLIENT_DIR), $(CLIENT_NAME))
 
+<<<<<<< HEAD
 COMPILE	= $(CC) $(GFLAGS) $(IFLAGS) $(LIB_BIN)
+=======
+COMPILE	= $(CC) $(GFLAGS) $(IFLAGS)
+>>>>>>> 78df54f9bc81e177f4a1e863786c99e41c17ff09
 MAKE_M	= make -sf Makefile -C
 RM		= /bin/rm -rf
 
-all: $(LIB_BIN) $(SERVER_BIN) $(CLIENT_BIN) start_server
+all: $(SERVER_BIN) $(CLIENT_BIN) start_server
 	@mv -f $(CLIENT_BIN) .
 	@./$(CLIENT_NAME) 127.0.0.1
 
@@ -27,24 +31,17 @@ $(SERVER_BIN):
 $(CLIENT_BIN):
 	@$(MAKE_M) $(CLIENT_DIR)
 
-$(LIB_BIN): $(LIB_LIST)
-
-$(LIB_LIST): $(LIB_DIRS)
-	@$(MAKE_M) $(LIB_DIR)/$@
-
 clean:
-	@$(MAKE_M) $(LIB_DIR)/$(LIB_LIST) $@
 	@$(MAKE_M) $(SERVER_DIR) $@
 	@$(MAKE_M) $(CLIENT_DIR) $@
 	@$(RM) $(OBJ_DIR) $(SERVER_NAME) $(CLIENT_NAME)
 
 uninstall:
-	@$(MAKE_M) $(LIB_DIR)/$(LIB_LIST) $@
 	@$(MAKE_M) $(SERVER_DIR) $@
 	@$(MAKE_M) $(CLIENT_DIR) $@
 
 reinstall: uninstall all
 
-.PHONY: all clean uninstall reinstall $(LIB_LIST)
+.PHONY: all clean uninstall reinstall
 
 #	netstat -anp --tcp | grep ./server/uchat_server
