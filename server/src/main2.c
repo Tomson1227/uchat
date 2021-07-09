@@ -1,5 +1,7 @@
 #include "uchat_server2.h"
 
+#define BUFF_SIZE 1024
+
 bool SetSocketBlockingEnabled(int fd, bool blocking)
 {
    if (fd < 0) return false;
@@ -15,6 +17,29 @@ bool SetSocketBlockingEnabled(int fd, bool blocking)
 #endif
 }
 
+char *receive_line(int fd)
+{
+    char *line =  NULL;
+    char buff[BUFF_SIZE];
+    ssize_t size;
+
+    while(1) {
+        size = recv(fd, buff, BUFF_SIZE, 0);
+
+        if(size > 0 || size < BUFF_SIZE) {
+            return strcpy(line, buff);
+        }
+        else if(errno != EWOULDBLOCK) {
+            if(!line)
+                free(line);
+
+            return NULL;
+        }
+    }
+
+    return line;
+}
+
 void *thread_socket(void *pointer)
 {
     t_socket_list *socket = (t_socket_list *) pointer;
@@ -24,17 +49,25 @@ void *thread_socket(void *pointer)
     time(&socket->begin);
     
     while(1) {
-        if((poll_request = poll(&fd, 1, 10 * 1000)) < 0) {
-            close(fd.fd);
-            return NULL;
-        }   
-        else if(poll_request > 0) {
+        if((poll_request = poll(&fd, 1, 10 * 1000)) > 0) {
+            if(!(fd.revents & POLLIN))
+                return NULL;
 
+            char buffer[1025];
+            char *responce = "Hello from server\n";
+
+            if((recv(socket->fd, buffer, sizeof(buffer), 0)) < 0) {
+                if(errno != EWOULDBLOCK) {
+                    perror("recv failed");
+                }
+            }
+
+            if(send(socket->fd, responce, strlen(responce), 0) < 0)
+                perror("send failed");
         }
-        else {
-            disconect_socket(socket);
-            return NULL;
-        }
+
+        disconect_socket(socket);
+        return NULL;
     }
 }
 
