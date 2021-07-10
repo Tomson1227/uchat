@@ -26,10 +26,7 @@ typedef struct s_config {
 /* Functions */
 void connection_setup(t_config *config);
 t_config *address_setup(char *port, char *address);
-void client_connect(t_config *config);
 void check_args(int argc, char *argv[]);
-void launch_threads(t_config *config);
-void *conn_handler(void *ptr);
 
 
 #endif /* CONNECTION_H */

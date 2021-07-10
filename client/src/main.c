@@ -30,8 +30,7 @@ int main(int argc, char *argv[]) {
 
     //login_window(argc, argv);
     //chat_window(argc, argv);
-    pthread_join(config->send_thread, NULL);
-    pthread_join(config->recv_thread, NULL);
+    pthread_join(config->conn_thread, NULL);
 
     return 0;
 }
