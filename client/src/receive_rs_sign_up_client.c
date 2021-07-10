@@ -7,11 +7,10 @@
     "status": SINGUP_OK | SIGNUP_USER_EXIST | SINGUP_FAIL,
 }*/
 
-void receive_rs_sign_up(const char * const string)
+void receive_rs_sign_up_client(const char * const string)
 {
     //receiving signup responce from server
     // recv(sock, buffer, buffer_size, IP);
-
     cJSON *type = NULL;
     cJSON *status = NULL;
     cJSON *rs_sign_up = cJSON_Parse(string);
@@ -27,15 +26,13 @@ void receive_rs_sign_up(const char * const string)
             fprintf(stderr, "Error before: %s\n", error_ptr);
         }
         check = 0;
-        goto end;
-    }
-
-    type = cJSON_GetObjectItemCaseSensitive(rs_sign_up, "type");
-    status = cJSON_GetObjectItemCaseSensitive(rs_sign_up, "status");
-    type_parsed = cJSON_Print(type);
-    status_parsed = cJSON_Print(status);
-    printf("Received type: %s\nReceived status %s\n", type_parsed, status_parsed);
-
-    end:
         cJSON_Delete(rs_sign_up);
+    }
+    else {
+        type = cJSON_GetObjectItemCaseSensitive(rs_sign_up, "type");
+        status = cJSON_GetObjectItemCaseSensitive(rs_sign_up, "status");
+        type_parsed = cJSON_Print(type);
+        status_parsed = cJSON_Print(status);
+        printf("Received type: %s\nReceived status %s\n", type_parsed, status_parsed);
+    }
 }
