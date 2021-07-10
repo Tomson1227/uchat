@@ -10,7 +10,7 @@ TDIR = test
 
 #lib includes
 LIBDIR = ../libs/cJSON/inc ../libs/API/inc
-LIB = ../libs/cJSON.a ../libs/API.a
+LIB = ../libs/API.a ../libs/cJSON.a
 
 #compiler settings
 CC = gcc
@@ -34,16 +34,15 @@ all: $(NAME)
 
 #make objects
 $(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
-	@echo $(SRCS)
 	@mkdir -p obj
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
 	@$(CC) $(FLAGS) -c $< -o $@ $(PKGCONFIG)
 
 #make excecutable
 $(NAME): $(OBJS)
-	@$(CC) $(FLAGS) $^ -o $@ $(LIB) $(PKGCONFIG)
+	@$(CC) $(FLAGS) $^ $(LIB) -o $@ $(PKGCONFIG)
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
-	@printf "Usage: ./$@ [filename]\n"
+	@printf "Usage: ./$@ <port> <address>\n"
 
 #make test
 $(TEST): $(TEST_SRCS)

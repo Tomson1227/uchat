@@ -6,7 +6,6 @@ INC_DIR = inc
 
 #lib includes
 LIBDIR = ../cJSON/inc
-LIB = ../cJSON.a
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC_FILES:%.c=%.o)))

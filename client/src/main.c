@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     int num = 0;
     while (1) {
         char *temp = (char*)calloc(128, sizeof(char));
-        sprintf(temp, "Sending request no %d", num++);
+        temp = send_rq_log_in_client("USER", "PASSWORD");
         enQueue(config->queue_send, temp);
         printf("[SPAMMER]   Queued: %s\n", temp);
         sleep(1);

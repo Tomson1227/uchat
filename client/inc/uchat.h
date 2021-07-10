@@ -13,7 +13,7 @@
 
 #include "connection.h"
 #include "queue.h"
-
+#include "API.h"
 
 //sending requsets functions
 
