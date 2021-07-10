@@ -1,8 +1,6 @@
 #include "connection.h"
 
 void connection_setup(t_config *config) {
-    config->send_singal = 0;
-    config->recv_singal = 0;
         //create queues
     config->queue_send = createQueue();
     config->queue_recv = createQueue();
@@ -11,7 +9,7 @@ void connection_setup(t_config *config) {
 }
 
 
-t_config *setup_address(char *port, char *address) {
+t_config *address_setup(char *port, char *address) {
     t_config *config = malloc(sizeof(t_config));
     memset(&(config->servaddr), 0, sizeof(config->servaddr));
 
@@ -41,15 +39,12 @@ void client_connect(t_config *config) {
 }
 
 void launch_threads(t_config *config) {
-    if(0 != pthread_create(&(config->send_thread), NULL, send_handler, config)) {
+
+    if(0 != pthread_create(&(config->conn_thread), NULL, conn_handler, config)) {
         fprintf(stderr, "[CONNECTION ERR]    Failed to create send_thread\n");
+        exit(6);
     } else {
         printf("[CONNECTION]    Send_thread created\n");
-    }
-    if(0 != pthread_create(&(config->recv_thread), NULL, recv_handler, config)) {
-        fprintf(stderr, "[CONNECTION ERR]    Failed to create recv_thread...\n");
-    } else {
-        printf("[CONNECTION]    Recv_thread created\n");
     }
 }
 
@@ -60,12 +55,19 @@ void check_args(int argc, char *argv[]) {
     }
 }
 
-void *send_handler(void *ptr) {
+
+void *conn_handler(void *ptr) {
     t_config *config = (t_config *)ptr;
+        //socket timeout handler
+    struct pollfd poll_fd;
+    int ret;
+    poll_fd.fd = config->sockfd;
+    poll_fd.events = POLLIN;
+
     while (1) {
-        //continiously check if there is something to send
-        while (!QueueisEmpty(config->queue_send)) {
+        if (!QueueisEmpty(config->queue_send)) {
             char *dq = deQueue(config->queue_send);
+
             if( send(config->sockfd, dq, strlen(dq), 0) < 0) {
                 fprintf(stderr, "[SEND HANDLER ERR]   Failed to send data.\n");
                 exit (3);
@@ -74,21 +76,53 @@ void *send_handler(void *ptr) {
             free(dq);
                 //write receieved info to buffer
             char temp_buff[128];
-            if( recv(config->sockfd, temp_buff, 2000 , 0) < 0) {
-                fprintf(stderr, "[SEND HANDLER ERR]   Failed to receive response to request.\n");
+            //handle receive timeout
+            ret = poll(&poll_fd, 1, 3000); //timeout
+            switch (ret) {
+            case -1:    // Error
+                fprintf(stderr, "[SEND HANDLER ERR]     Poll error\n");
+                exit(4);
+                break;
+            case 0:     // Timeout
+                fprintf(stderr, "[SEND HANDLER ERR]     Poll timeout\n");
+                break;
+            default:    // get your data
+                if( recv(config->sockfd, temp_buff, 2000 , 0) < 0) {
+                    fprintf(stderr, "[SEND HANDLER ERR]   Failed to receive response to request.\n");
+                    exit (3);
+                }
+                char *enq = (char*)calloc(128, sizeof(char));
+                strcpy(enq, temp_buff);
+                memset(temp_buff, 0, 128);
+                enQueue(config->queue_recv, enq);
+                printf("[SEND HANDLER]    Receieved: %s\n", enq);
+                break;
+            }
+        } else {
+            //check for incoming message
+            char temp_buff[128];
+                        //handle receive timeout
+        ret = poll(&poll_fd, 1, 100); //timeout
+        switch (ret) {
+        case -1:    // Error
+            fprintf(stderr, "[RECV HANDLER ERR]     Poll error\n");
+            exit(4);
+            break;
+        case 0:     // Timeout
+            fprintf(stderr, "[RECV HANDLER ERR]     Poll timeout\n");
+            break;
+        default:    // get your data
+            if( recv(config->sockfd, temp_buff, 200 , 0) <= 0) {
+                fprintf(stderr, "[RECV HANDLER ERR]   Failed to receive response to request.\n");
                 exit (3);
             }
             char *enq = (char*)calloc(128, sizeof(char));
+            strcpy(enq, temp_buff);
+            memset(temp_buff, 0, 128);
             enQueue(config->queue_recv, enq);
-            printf("[SEND HANDLER]    Receieved: %s\n", enq);
+            printf("[RECV HANDLER]    Receieved: %s\n", enq);
+            break;
+            }
         }
-    }
-}
-
-void *recv_handler(void *ptr) {
-    printf ("In recv thread:\n");
-    while (1) {
-        printf("In recv thread...\n");
-        sleep(2);
     }
 }

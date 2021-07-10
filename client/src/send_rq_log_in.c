@@ -38,7 +38,6 @@ char *send_rq_log_in(char *username, char *password)
     cJSON_AddItemToObject(request_log_in, "login", login);
     cJSON_AddItemToObject(request_log_in, "pass", pass); 
     string = cJSON_Print(request_log_in);
-
     //send(socket, string , strlen(string) , IP );
 
     end: 
