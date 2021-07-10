@@ -12,14 +12,14 @@ TEST_CLIENT = test_client
 all: $(SERVER) $(CLIENT)
 
 $(SERVER):
-	make -C $(LDIR)
-	make -C $(SERVER_DIR)
-	mv $(SERVER_DIR)/$@ ./$@
+	@make -C $(LDIR)
+	@make -C $(SERVER_DIR)
+	@mv $(SERVER_DIR)/$@ ./$@
 
 $(CLIENT):
-	make -C $(LDIR)
-	make -C $(CLIENT_DIR)
-	mv $(CLIENT_DIR)/$@ ./$@
+	@make -C $(LDIR)
+	@make -C $(CLIENT_DIR)
+	@mv $(CLIENT_DIR)/$@ ./$@
 
 #TESTS
 test: $(TEST_SERVER) $(TEST_CLIENT)

@@ -14,31 +14,6 @@
 #include "connection.h"
 #include "queue.h"
 
-typedef enum s_request_type
-{
-    REQUEST_LOGIN,
-    REQUEST_SIGNUP
-} t_request_type;
-
-typedef enum s_response_type
-{
-    RESPONSE_LOGIN,
-    RESPONSE_SIGNUP
-} t_response_type;
-
-typedef enum s_request_login_type
-{
-    LOGIN_OK,
-    LOGIN_WRONG_USER,
-    LOGIN_WRONG_PASS
-}   t_request_login_type;
-
-typedef enum s_response_login_type
-{
-    SIGNUP_OK,
-    SIGNUP_USER_EXIST,
-    SINGUP_FAIL
-}   t_response_login_type;
 
 //sending requsets functions
 

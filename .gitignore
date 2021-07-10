@@ -1,4 +1,4 @@
 test_*
 uchat_*
 .vscode/
-
+obj/

@@ -1,8 +1,12 @@
-NAME = cJSON.a
+NAME = API.a
 
 SRC_DIR = src
 OBJ_DIR = obj
 INC_DIR = inc
+
+#lib includes
+LIBDIR = ../cJSON/inc
+LIB = ../cJSON.a
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC_FILES:%.c=%.o)))
@@ -10,6 +14,7 @@ INC_FILES = $(wildcard $(INC_DIR)/*.h)
 
 CC = gcc
 CFLAGS = -std=c11 -std=c11 -Wall -Wextra -Wpedantic
+FLAGS = $(CFLAGS) -I$(INC_DIR) $(addprefix -I, $(LIBDIR))
 
 AR = ar
 AFLAGS = rcs
@@ -23,7 +28,7 @@ $(NAME): $(OBJ_FILES)
 $(OBJ_FILES): | $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_FILES)
-	@$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_DIR)
+	@$(CC) $(FLAGS) -c $< -o $@
 	@printf "\r\33[2K$(NAME)\033[33;1m\t compile \033[0m$(<:$(SRC_DIR)/%.c=%)\r"
 
 $(OBJ_DIR):
@@ -35,7 +40,7 @@ clean:
 
 uninstall: clean
 	@rm -f $(NAME)
-	@@printf "$(NAME)\t \033[31;1muninstalled\033[0m\n"
+	@printf "$(NAME)\t \033[31;1muninstalled\033[0m\n"
 
 reinstall: uninstall all
 
