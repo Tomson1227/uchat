@@ -59,3 +59,27 @@ ___
     "status": SINGUP_OK | SIGNUP_USER_EXIST | SINGUP_FAIL,
 }
 ```
+### Send message
+
+**From client to server request**
+
+```json
+{
+    "type": REQUEST_SD_MSG,
+    "room_id": "room_id",
+    "message": "message",
+    "date": "date",
+    "msg_type": TEXT_MSG
+}
+```
+**From server to client response**
+```json
+{
+    "type": RQ_SD_MSG,
+    "room_id": room_id,
+    "message": "message",
+    "date": date,
+    "message_id": message_id_in_database,
+    "user_id": user_id_that_wrote_message,
+    "msg_type": TEXT_MSG 
+}
