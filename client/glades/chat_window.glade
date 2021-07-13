@@ -1401,6 +1401,7 @@
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
                 <property name="image">contacts_img</property>
+                <signal name="clicked" handler="on_chat_settings_users_btn_clicked" swapped="no"/>
                 <style>
                   <class name="chat_settings_users_btn"/>
                 </style>

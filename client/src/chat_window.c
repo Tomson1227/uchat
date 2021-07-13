@@ -1,26 +1,29 @@
 #include <gtk/gtk.h>
 
+GtkBuilder *builder;
+GtkWidget *window;
+
+struct LinkedList{
+    int id_room;
+    GtkWidget *btn;
+    GtkScrolledWindow *wndw;
+    GtkViewport *vwprt;
+    GtkListBox *lst_bx;
+    GtkWidget *r;
+    struct LinkedList *next;
+};
+
+typedef struct LinkedList *node;//pointer to a linkedlist
+
 typedef struct 
 {
     //entries
     GtkEntry *chat_message_entry; 
     GtkEntry *chat_search_entry;
-    //buttons
-    GtkButton *chat_send_btn;
-    GtkButton *chat_settings_settings_btn;
-    GtkButton *chat_settings_users_btn;
-    GtkButton *chat_settings_terminal_btn;
-    GtkButton *btn_svd_msgs;
-    GtkButton *btn_dialog1; 
-    GtkButton *btn_cancel; 
-    GtkButton *btn_edit_msg;
-    GtkButton *btn_delete_msg;
-    
     //stacks
     GtkStack *stack;
     GtkStack *stack_dialog_box;
-    GtkWidget *stack_upper_dialog_toolbar;
-    
+    GtkStack *stack_upper_dialog_toolbar;
     //scrolled windows
     GtkScrolledWindow *scrll_wndw_msgs;
     GtkScrolledWindow *scrll_wndw_msgs3;
@@ -33,60 +36,46 @@ typedef struct
     //widgets
     GtkWidget *item;
     GtkWidget *label_msg;
-    //viewports
-    GtkViewport *viewport;
-    GtkViewport *viewport1;
-    GtkViewport *viewport_dlgs;
+    GtkWidget *row;
     //labels
-    GtkWidget *chat_receiver_name;
-    //grids
-    GtkGrid *chat_topbar_wth_btns;
-    GtkGrid *chat_topbar_grid;
+    GtkLabel *chat_receiver_name;
+    //GtkListBoxRow
+    GtkListBoxRow *row_slctd;
+    node tmp;
 } s_widgets;
 
+node createNode(){
+    node temp; // declare a node
+    temp = (node)malloc(sizeof(struct LinkedList)); // allocate memory using for node
+    temp->next = NULL;// make next point to NULL
+    return temp;//return the new node
+}   
+
+gint index;
+
 void load_css_main(char *path);
-void AddListItem (s_widgets *wdgts, char *sText);
+void AddListItem(s_widgets *wdgts, char *sText);
 void *get_time(s_widgets *wdgts);
 void set_dialog_name (s_widgets *wdgts);
 
 int chat_window(int argc, char **argv)
 {
-    GtkBuilder *builder;
-    GtkWidget *window;
     s_widgets        *widgets = g_slice_new(s_widgets);
+
     gtk_init(&argc, &argv);
-
     load_css_main("client/styles/main.css");
-
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "client/glades/chat_window.glade", NULL);
-
     window = GTK_WIDGET(gtk_builder_get_object(builder, "chat_main"));
+
     //entries
     widgets->chat_search_entry = GTK_ENTRY(gtk_builder_get_object(builder, "chat_search_entry"));
     widgets->chat_message_entry = GTK_ENTRY(gtk_builder_get_object(builder, "chat_message_entry"));
 
-    //buttons
-    widgets->chat_send_btn = GTK_BUTTON(gtk_builder_get_object(builder, "chat_send_btn"));
-    widgets->chat_settings_settings_btn = GTK_BUTTON(gtk_builder_get_object(builder, "chat_settings_settings_btn"));
-    widgets->chat_settings_users_btn = GTK_BUTTON(gtk_builder_get_object(builder, "chat_settings_users_btn"));
-    widgets->chat_settings_terminal_btn = GTK_BUTTON(gtk_builder_get_object(builder, "chat_settings_terminal_btn"));
-    widgets->btn_svd_msgs =  GTK_BUTTON(gtk_builder_get_object(builder, "btn_svd_msgs"));
-    widgets->btn_dialog1 =   GTK_BUTTON(gtk_builder_get_object(builder, "btn_dialog1"));
-    widgets->btn_cancel = GTK_BUTTON(gtk_builder_get_object(builder, "btn_cancel"));
-    widgets->btn_edit_msg = GTK_BUTTON(gtk_builder_get_object(builder, "btn_edit_msg"));
-    widgets->btn_delete_msg = GTK_BUTTON(gtk_builder_get_object(builder, "btn_delete_msg"));
     //stacks
     widgets->stack = GTK_STACK(gtk_builder_get_object(builder, "stack"));
     widgets->stack_dialog_box = GTK_STACK(gtk_builder_get_object(builder, "stack_dialog_box"));
-    widgets->stack_upper_dialog_toolbar = GTK_WIDGET(gtk_builder_get_object(builder, "stack_upper_dialog_toolbar"));
-    //viewports
-    widgets->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "viewport"));
-    widgets->viewport1 = GTK_VIEWPORT(gtk_builder_get_object(builder, "viewport1"));
-    widgets->viewport_dlgs  = GTK_VIEWPORT(gtk_builder_get_object(builder, "viewport_dlgs"));
-    //widgets
-    widgets->item = GTK_WIDGET(gtk_builder_get_object(builder, "item"));
-    widgets->label_msg = GTK_WIDGET(gtk_builder_get_object(builder, "label_msg"));
+    widgets->stack_upper_dialog_toolbar = GTK_STACK(gtk_builder_get_object(builder, "stack_upper_dialog_toolbar"));
 
     //scrolled windows
     widgets->scrll_wndw_msgs = GTK_SCROLLED_WINDOW(gtk_builder_get_object(builder, "scrll_wndw_msgs"));
@@ -100,13 +89,8 @@ int chat_window(int argc, char **argv)
     widgets->listbox_dlgs  = GTK_LIST_BOX(gtk_builder_get_object(builder, "listbox_dlgs"));
 
     //labels
-    widgets->chat_receiver_name = GTK_WIDGET(gtk_builder_get_object(builder, "chat_receiver_name"));
-    //grids
-    //set_dialog_name (widgets);   
-    widgets-> chat_topbar_wth_btns = GTK_GRID(gtk_builder_get_object(builder, "chat_topbar_wth_btns"));
-    widgets-> chat_topbar_grid = GTK_GRID(gtk_builder_get_object(builder, "chat_topbar_grid"));
-
-    widgets->stack_upper_dialog_toolbar = gtk_stack_new();
+    widgets->chat_receiver_name = GTK_LABEL(gtk_builder_get_object(builder, "chat_receiver_name"));
+    widgets->tmp = createNode();
 
     gtk_builder_connect_signals(builder, widgets);
     g_object_unref(builder);
@@ -140,7 +124,7 @@ void on_chat_main_destroy() {
     gtk_main_quit();
 }
 
-void AddListItem (s_widgets *wdgts, char *sText)
+void AddListItem(s_widgets *wdgts, char *sText)
 {
     //load_css_main("client/styles/messenger_window.css");
     wdgts->item = gtk_list_box_row_new();
@@ -152,7 +136,6 @@ void AddListItem (s_widgets *wdgts, char *sText)
     gtk_list_box_row_set_selectable((GtkListBoxRow *)wdgts->item, TRUE); 
     gtk_widget_set_halign(wdgts->label_msg, GTK_ALIGN_END);
     gtk_list_box_set_activate_on_single_click(wdgts->listbox_msgs, TRUE);
-    
     gtk_widget_show (wdgts->label_msg);
 }
 
@@ -228,11 +211,7 @@ void on_btn_dialog1_clicked(GtkButton *btn_dialog1, s_widgets *wdgts) {
     g_return_if_fail(GTK_IS_STACK(wdgts->stack));
    
     gtk_stack_set_visible_child_full (wdgts->stack, "scrll_wndw_msgs3", 0);
-    set_dialog_name (wdgts);
-    wdgts->chat_receiver_name = gtk_label_new(gtk_button_get_label(btn_dialog1));
-    // gtk_label_set_text(wdgts->chat_receiver_name, "alisa");
     g_print("Switching to %s.\n", gtk_stack_get_visible_child_name (wdgts->stack));
-    gtk_widget_show(wdgts->chat_receiver_name);
 } 
 
 void *get_time(s_widgets *wdgts) {
@@ -242,25 +221,21 @@ void *get_time(s_widgets *wdgts) {
     time     = g_date_time_new_now_local();             // get the current time
     time_str = g_date_time_format(time, "%H:%M:%S");    // convert current time to string
     
-    wdgts->item = gtk_list_box_row_new();
-    gtk_list_box_row_set_selectable((GtkListBoxRow *)wdgts->item, FALSE);
+    wdgts->row = gtk_list_box_row_new();
+    gtk_list_box_row_set_selectable((GtkListBoxRow *)wdgts->row, FALSE);    
 
-    gtk_list_box_insert (wdgts->listbox_msgs, wdgts->item, -1); 
+    gtk_list_box_insert (wdgts->listbox_msgs, wdgts->row, -1); 
     
     wdgts->label_msg = gtk_label_new(time_str);
     gtk_label_set_selectable((GtkLabel *)wdgts->label_msg, FALSE);
 
-    gtk_container_add(GTK_CONTAINER(wdgts->item), wdgts->label_msg);
+    gtk_container_add(GTK_CONTAINER(wdgts->row), wdgts->label_msg);
     gtk_widget_set_halign(wdgts->label_msg, GTK_ALIGN_END);
     gtk_widget_show (wdgts->label_msg);
 
     g_free(time_str);
     g_date_time_unref(time);
-    gtk_widget_show (wdgts->item);
-}
-
-void set_dialog_name (s_widgets *wdgts) {
-    gtk_label_set_text ((GtkLabel *)wdgts->chat_receiver_name, "alisa");
+    gtk_widget_show (wdgts->row);
 }
 
 void on_chat_settings_settings_btn_clicked(GtkButton *chat_settings_settings_btn, GtkStack *stack_dialog_box) {
@@ -284,17 +259,36 @@ void on_btn_cancel_clicked(GtkButton *btn_cancel, GtkStack *stack_upper_dialog_t
 void on_listbox_msgs_row_selected(GtkListBox *box, GtkListBoxRow *row, GtkStack *stack_upper_dialog_toolbar) {
     g_return_if_fail (GTK_IS_LIST_BOX (box));
     g_return_if_fail (row == NULL || GTK_IS_LIST_BOX_ROW (row));
-
-    if (row) {
-        printf("entered the cycle\n");
-        gtk_stack_set_visible_child_name (stack_upper_dialog_toolbar, "chat_topbar_wth_btns");
-    }
-}
-
-void on_btn_edit_msg_clicked(GtkButton *btn_edit_msg) {
-
-}
-
-void on_btn_delete_msg_clicked(GtkButton *btn_delete_msg) {
     
+    // GtkListBoxRow *tmp = gtk_list_box_get_selected_row(box);
+    printf("%d\n", index);
+    index = gtk_list_box_row_get_index (row);
+
+    if (row && gtk_list_box_row_get_selectable(row) == TRUE)
+        gtk_stack_set_visible_child_name (stack_upper_dialog_toolbar, "chat_topbar_wth_btns");
+    if (row && gtk_list_box_row_get_selectable(row) == FALSE)
+        gtk_stack_set_visible_child_name(stack_upper_dialog_toolbar, "chat_topbar_grid");
+}
+
+void on_btn_edit_msg_clicked(GtkButton *btn_edit_msg, s_widgets *wdgts) {
+}
+
+void on_btn_delete_msg_clicked(GtkButton *btn_delete_msg, s_widgets *wdgts) {
+    gtk_container_remove((GtkContainer *)wdgts->listbox_msgs, (GtkWidget *)gtk_list_box_get_row_at_index (wdgts->listbox_msgs, index));
+    gtk_container_remove((GtkContainer *)wdgts->listbox_msgs, (GtkWidget *)gtk_list_box_get_row_at_index (wdgts->listbox_msgs, index));
+}
+
+void on_chat_settings_users_btn_clicked(GtkButton *btn, s_widgets *wdgts) {
+    builder = gtk_builder_new();
+
+    wdgts->tmp->r = gtk_list_box_row_new();
+    gtk_list_box_insert (wdgts->listbox_dlgs, wdgts->tmp->r, -1);
+    gtk_widget_show((GtkWidget *)wdgts->tmp->r);
+
+    wdgts->tmp->btn = gtk_button_new();
+    gtk_container_add(GTK_CONTAINER(wdgts->tmp->r), (GtkWidget *)wdgts->tmp->btn);
+    gtk_widget_show((GtkWidget *)wdgts->tmp->btn);
+
+    wdgts->tmp->next = createNode();
+    wdgts->tmp = wdgts->tmp->next;
 }
