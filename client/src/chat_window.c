@@ -6,9 +6,9 @@ GtkWidget *window;
 struct LinkedList{
     int id_room;
     GtkWidget *btn;
-    GtkScrolledWindow *wndw;
-    GtkViewport *vwprt;
-    GtkListBox *lst_bx;
+    GtkWidget *wndw;
+    GtkWidget *vwprt;
+    GtkWidget *lst_bx;
     GtkWidget *r;
     struct LinkedList *next;
 };
@@ -252,7 +252,6 @@ void on_btn_cancel_clicked(GtkButton *btn_cancel, GtkStack *stack_upper_dialog_t
     g_return_if_fail(GTK_IS_BUTTON(btn_cancel));
     g_return_if_fail(GTK_IS_STACK(stack_upper_dialog_toolbar));
 
-    // gtk_stack_set_visible_child_name (stack_upper_dialog_toolbar, "chat_topbar_grid");
     gtk_stack_set_visible_child_full (stack_upper_dialog_toolbar, "chat_topbar_grid", 0);
 }
 
@@ -260,7 +259,6 @@ void on_listbox_msgs_row_selected(GtkListBox *box, GtkListBoxRow *row, GtkStack 
     g_return_if_fail (GTK_IS_LIST_BOX (box));
     g_return_if_fail (row == NULL || GTK_IS_LIST_BOX_ROW (row));
     
-    // GtkListBoxRow *tmp = gtk_list_box_get_selected_row(box);
     printf("%d\n", index);
     index = gtk_list_box_row_get_index (row);
 
@@ -288,6 +286,20 @@ void on_chat_settings_users_btn_clicked(GtkButton *btn, s_widgets *wdgts) {
     wdgts->tmp->btn = gtk_button_new();
     gtk_container_add(GTK_CONTAINER(wdgts->tmp->r), (GtkWidget *)wdgts->tmp->btn);
     gtk_widget_show((GtkWidget *)wdgts->tmp->btn);
+
+    wdgts->tmp->wndw = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_add(GTK_CONTAINER(wdgts->stack), GTK_WIDGET(wdgts->tmp->wndw));
+    gtk_widget_show((GtkWidget *)wdgts->tmp->wndw);
+
+    wdgts->tmp->vwprt = gtk_viewport_new(NULL, NULL);
+    gtk_container_add(GTK_CONTAINER(wdgts->tmp->wndw), GTK_WIDGET(wdgts->tmp->vwprt));
+    gtk_widget_show((GtkWidget *)wdgts->tmp->vwprt);
+
+    wdgts->tmp->lst_bx = gtk_list_box_new();
+    gtk_container_add(GTK_CONTAINER(wdgts->tmp->vwprt), GTK_WIDGET(wdgts->tmp->lst_bx));
+    gtk_widget_show((GtkWidget *)wdgts->tmp->lst_bx);
+
+    gtk_stack_set_visible_child(wdgts->stack, (GtkWidget *)wdgts->tmp->lst_bx);
 
     wdgts->tmp->next = createNode();
     wdgts->tmp = wdgts->tmp->next;
