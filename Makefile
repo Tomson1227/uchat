@@ -17,8 +17,8 @@ all: $(SERVER_BIN) $(CLIENT_BIN) start_server
 
 start_server:
 	@mv -f $(SERVER_BIN) .
-	# @open -a Terminal "./$(SERVER_NAME)" #macOS
-	@gnome-terminal --command=./$(SERVER_NAME) #linux
+	@open -a Terminal "./$(SERVER_NAME)" #macOS
+	# @gnome-terminal --command=./$(SERVER_NAME) #linux
 	@sleep 1
 
 $(SERVER_BIN):
