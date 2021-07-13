@@ -1,6 +1,7 @@
 #define __STDC_WANT_LIB_EXT1__ 1
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <locale.h>
@@ -37,7 +38,7 @@ typedef enum e_status {
 
 typedef struct s_user_request {
     t_api request;
-    char *user_logit;
+    char *user_login;
     char *password;
 }              t_user_request;
 

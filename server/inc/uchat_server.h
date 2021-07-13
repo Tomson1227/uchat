@@ -16,13 +16,17 @@
 #include <sys/time.h>
 #include <sys/ioctl.h>
 #include <sys/poll.h>
+#include <pthread.h>
+#include <fcntl.h>
 
 #include "cJSON.h"
 #include "transaction.h"
 
-#define PORT 5000 
+#define PORT 5000
+#define BUFF_SIZE 1024
 
 #define STATUS_CONNECTED "\033[32;1m[CONNECTED]\033[0m"
+#define STATUS_DISCONNECTED "\033[31;1m[DISCONNECTED]\033[0m"
 
 #define ESC                 "\033"
 
@@ -83,21 +87,24 @@
 #define MAX_BUFFER  1025
 #define MAX_LISTEN_SOCKETS 50
 
-typedef struct s_sockets {
-	int fd;
-	time_t begin;
-}			   t_sockets;
+typedef struct s_socket_list {
+    int fd;
+    bool status;
+    time_t begin;
+    struct s_socket_list *next_socket;
+    struct s_socket_list *prev_socket;
+}              t_socket_list;
 
 typedef struct s_server {
-    bool run;
+    int fd;
     int option;
-    int timeout;
-    int poll_size;
-    int poll_number;
-    int master_socket;
-    struct pollfd fds[MAX_CLIENTS + 1];
-    struct sockaddr_in address; 
-	t_sockets sockets[MAX_CLIENTS + 1];
+    struct sockaddr_in address;
+    t_socket_list *socket_head;
 }              t_server;
+
+t_socket_list *new_socket(t_server *server, int fd);
+void sockets_status(t_socket_list *head);
+void disconect_socket(t_socket_list *address);
+void del_socket_list(t_socket_list **head);
 
 #endif /* UCHAT_SERVER_H */

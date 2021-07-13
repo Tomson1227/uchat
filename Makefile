@@ -7,11 +7,7 @@ CLIENT_NAME = uchat
 SERVER_BIN = $(join $(SERVER_DIR), $(SERVER_NAME))
 CLIENT_BIN = $(join $(CLIENT_DIR), $(CLIENT_NAME))
 
-<<<<<<< HEAD
-COMPILE	= $(CC) $(GFLAGS) $(IFLAGS) $(LIB_BIN)
-=======
 COMPILE	= $(CC) $(GFLAGS) $(IFLAGS)
->>>>>>> 78df54f9bc81e177f4a1e863786c99e41c17ff09
 MAKE_M	= make -sf Makefile -C
 RM		= /bin/rm -rf
 
