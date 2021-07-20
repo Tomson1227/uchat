@@ -10,6 +10,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
+#include <stdlib.h>
 
 typedef enum s_request_type
 {

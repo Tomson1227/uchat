@@ -108,6 +108,7 @@
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
                 <property name="image">terminal_img</property>
+                <signal name="clicked" handler="on_chat_settings_terminal_btn_clicked" swapped="no"/>
                 <style>
                   <class name="chat_settings_terminal_btn"/>
                 </style>
@@ -176,40 +177,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="vexpand">True</property>
-                        <child>
-                          <object class="GtkListBoxRow" id="listbox_row_dlgs0">
-                            <property name="width_request">100</property>
-                            <property name="height_request">80</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <child>
-                              <object class="GtkButton" id="btn_svd_msgs">
-                                <property name="label" translatable="yes">saved messages</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="on_btn_svd_msgs_clicked" object="stack" swapped="no"/>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="width_request">100</property>
-                            <property name="height_request">80</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <child>
-                              <object class="GtkButton" id="btn_dialog1">
-                                <property name="label" translatable="yes">alisa</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="on_btn_dialog1_clicked" swapped="no"/>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
+                        <signal name="row-selected" handler="on_listbox_dlgs_row_selected" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -256,57 +224,14 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkScrolledWindow" id="scrll_wndw_msgs">
-                <property name="can_focus">True</property>
-                <property name="vexpand">True</property>
-                <property name="window_placement">bottom-left</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkViewport" id="viewport">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkListBox" id="listbox_msgs">
-                        <property name="name">listbox_msgs</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="on_listbox_msgs_row_selected" object="stack_upper_dialog_toolbar" swapped="no"/>
-                      </object>
-                    </child>
-                  </object>
-                </child>
+              <object class="GtkLabel" id="lbl_slct_chat">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Select a chat to start messaging</property>
               </object>
               <packing>
                 <property name="name">scrll_wndw_msgs</property>
                 <property name="title" translatable="yes">scrll_wndw_msgs</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow" id="scrll_wndw_msgs3">
-                <property name="can_focus">True</property>
-                <property name="vexpand">True</property>
-                <property name="window_placement">bottom-left</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkViewport" id="viewport1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkListBox" id="listbox_msgs2">
-                        <property name="name">listbox_msgs</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="selection_mode">none</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="name">scrll_wndw_msgs3</property>
-                <property name="title" translatable="yes">scrll_wndw_msgs3</property>
-                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -459,7 +384,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="chat_send_btn2">
+              <object class="GtkButton" id="btn_send_sticker">
                 <property name="name">chat_send_btn</property>
                 <property name="width_request">20</property>
                 <property name="height_request">20</property>
@@ -476,7 +401,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="chat_send_btn">
+              <object class="GtkButton" id="btn_send_msg">
                 <property name="name">chat_send_btn</property>
                 <property name="width_request">20</property>
                 <property name="height_request">20</property>
@@ -485,7 +410,7 @@
                 <property name="receives_default">True</property>
                 <property name="valign">center</property>
                 <property name="image">send_img</property>
-                <signal name="clicked" handler="on_chat_send_btn_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_btn_send_msg_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
