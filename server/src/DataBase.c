@@ -120,27 +120,42 @@ int Init_DB(char *name, const char *structure){
 //    } else {
 //        fprintf(stdout, "Operation done successfully\n");
 //    }
-    const unsigned char *pass = (unsigned char*)malloc(40 * sizeof (unsigned char));
-    char *Upass = (char*)malloc(40 * sizeof (char));
 
-    sqlite3_prepare_v2(db, "SELECT PASS FROM USRS WHERE ID = 0", -1, &stmt, NULL);
+    sqlite3_stmt *stmt;
+
+    char login[] = "1";
+    char *testPass = "qwerty228";
+    int s = 100;
+    const unsigned char *pass = (unsigned char*)malloc(40 * sizeof (unsigned char));
+    const unsigned char *Upass = (unsigned char*)malloc(40 * sizeof (unsigned char));
+
+    char firstPart[100] = "SELECT PASS FROM USRS WHERE ID =";
+//    printf("%zu\n", sizeof (firstPart));
+//
+//
+//    printf("%s\n%s\n%s\n", login, firstPart, testPass);
+
+    strcat(firstPart, login);
+//    printf("%s\n", firstPart);
+
+    sqlite3_prepare_v2(db, firstPart, -1, &stmt, NULL);
 
     sqlite3_step(stmt);
 
     pass = sqlite3_column_text(stmt, 0);
 
-    printf("Password:");
-    scanf("%s", Upass);
+    Upass = (const unsigned char*)testPass;
 
-    //diff types ¯\_(ツ)_/¯
-    if (Upass == pass) {
+    printf("Password: %s\n", Upass);
+    printf("%s\n", pass);
+
+
+
+    if (memcmp(pass, Upass, 10) == 0) {
         printf("Login successful\n");
     } else {
         printf("Wrong pasword\n");
     }
-
-    //sqlite3_finalize(stmt);
-
 
 
 
