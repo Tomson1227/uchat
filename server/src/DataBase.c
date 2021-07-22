@@ -1,6 +1,20 @@
 #include "uchat_server.h"
 #include "sqlite3.h"
 
+char* itoa(int val, int base){
+
+    static char buf[32] = {0};
+
+    int i = 30;
+
+    for(; val && i ; --i, val /= base)
+
+        buf[i] = "0123456789abcdef"[val % base];
+
+    return &buf[i+1];
+
+}
+
 static int callback(void *data, int argc, char **argv, char **azColName) {
     int i;
     fprintf(stderr, "%s: ", (const char*)data);
@@ -42,11 +56,11 @@ int Init_DB(char *name, const char *structure){
 //
 //    return 0;
     sqlite3 *db;
-    sqlite3_stmt *stmt;
+
     char *zErrMsg = 0;
     int rc;
     char *sql;
-    //const char* data = "Callback function called";
+    const char* data = "Callback function called";
 
     rc = sqlite3_open("test.db", &db);
 
@@ -58,12 +72,12 @@ int Init_DB(char *name, const char *structure){
     }
 
     sql = "CREATE TABLE IF NOT EXISTS USRS(" \
-    "ID    INT      PRIMARY KEY ," \
-    "LOGIN CHAR(20)             ," \
-    "PASS  CHAR(40)             );";
-//
+    "ID INT PRIMARY KEY," \
+    "LOGIN TEXT," \
+    "PASS  TEXT);";
+
 //    sql = "DROP TABLE USRS;";
-//
+
     rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 
     if( rc != SQLITE_OK ){
@@ -73,19 +87,19 @@ int Init_DB(char *name, const char *structure){
         fprintf(stdout, "Table created successfully\n");
     }
 
-//    sql = "INSERT INTO USRS (ID, LOGIN, PASS)"     \
-//          "VALUES (1, 'mvrublevsk', 'qwerty228');" \
-//          "INSERT INTO USRS (ID, LOGIN, PASS)"     \
-//          "VALUES (2, 'opovshenko', 'qwerty322');";
-//
-//    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-//
-//    if( rc != SQLITE_OK ){
-//        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-//        sqlite3_free(zErrMsg);
-//    } else {
-//        fprintf(stdout, "Records created successfully\n");
-//    }
+    sql = "INSERT INTO USRS (ID, LOGIN, PASS)"     \
+          "VALUES (1, 'mvrublevsk', 'qwerty228');" \
+          "INSERT INTO USRS (ID, LOGIN, PASS)"     \
+          "VALUES (2, 'opovshenko', 'qwerty322');";
+
+    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+
+    if( rc != SQLITE_OK ){
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else {
+        fprintf(stdout, "Records created successfully\n");
+    }
 
 //    sql = "DELETE from USRS;";
 //
@@ -110,7 +124,7 @@ int Init_DB(char *name, const char *structure){
 //        fprintf(stdout, "Records created successfully\n");
 //    }
 
-//    sql = "SELECT * from USRS";
+//    sql = "SELECT PASS from USRS WHERE LOGIN='mvrublevsk'";
 //
 //    rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
 //
@@ -123,20 +137,82 @@ int Init_DB(char *name, const char *structure){
 
     sqlite3_stmt *stmt;
 
-    char login[] = "1";
+/// SIGN UP
+//    unsigned int lastID;
+//    char query[100] = "INSERT INTO USRS (ID, LOGIN, PASS) VALUES (";
+//    const unsigned char *checkLog;
+//    char *coma = ",";
+//    char *end = ");";
+//    char *log = "'mark'";
+//    char *pas = "'123qwe'";
+//    char *ID;
+//
+//    /************Example*********/
+//
+////    int length = snprintf(NULL, 0, "INSERT INTO USRS (ID, LOGIN, PASS) VALUES (%s, %s, %s);", ID, log, pass);
+////    char *new_request = (char *) calloc(length, sizeof(char));
+////    sprintf(new_request, "INSERT INTO USRS (ID, LOGIN, PASS) VALUES (%s, %s, %s);", ID, log, pass);
+////
+////    free(new_request);
+//    /************Example*********/
+//
+//    sql = "SELECT MAX(ID) FROM USRS";
+//
+//    sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+//    sqlite3_step(stmt);
+//
+//    lastID = sqlite3_column_int(stmt, 0);
+//    lastID++;
+//    ID = itoa(lastID, 10);
+//
+//    sqlite3_reset(stmt);
+//
+//    char loginCheckQuery[70] = "SELECT LOGIN FROM USRS WHERE LOGIN =";
+//    strcat(loginCheckQuery, log);
+//    printf("%s\n", loginCheckQuery);
+//
+//    sqlite3_prepare_v2(db, loginCheckQuery, -1, &stmt, NULL);
+//    sqlite3_step(stmt);
+//
+//    checkLog = sqlite3_column_text(stmt, 0);
+//    printf("%s\n", checkLog);
+//
+//    if (checkLog == (unsigned char*)log) {
+//        fprintf(stderr, "Login already exists\n");
+//        return 0;
+//    }
+//
+//
+//    strcat(query, ID);
+//    strcat(query, coma);
+//    strcat(query, log);
+//    strcat(query, coma);
+//    strcat(query, pas);
+//    strcat(query, end);
+//
+//    //printf("%s\n", query);
+////    rc = sqlite3_exec(db, query, callback, 0, &zErrMsg);
+////
+////    if( rc != SQLITE_OK ){
+////        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+////        sqlite3_free(zErrMsg);
+////    } else {
+////        fprintf(stdout, "Records created successfully\n");
+////    }
+//
+//    sqlite3_reset(stmt);
+/// END OF SIGN UP
+
+
+/// LOGIN :
+    char login[] = "'mvrublevsk'";
     char *testPass = "qwerty228";
-    int s = 100;
+
     const unsigned char *pass = (unsigned char*)malloc(40 * sizeof (unsigned char));
     const unsigned char *Upass = (unsigned char*)malloc(40 * sizeof (unsigned char));
-
-    char firstPart[100] = "SELECT PASS FROM USRS WHERE ID =";
-//    printf("%zu\n", sizeof (firstPart));
-//
-//
-//    printf("%s\n%s\n%s\n", login, firstPart, testPass);
+    char firstPart[80] = "SELECT PASS FROM USRS WHERE LOGIN =";
 
     strcat(firstPart, login);
-//    printf("%s\n", firstPart);
 
     sqlite3_prepare_v2(db, firstPart, -1, &stmt, NULL);
 
@@ -146,8 +222,8 @@ int Init_DB(char *name, const char *structure){
 
     Upass = (const unsigned char*)testPass;
 
-    printf("Password: %s\n", Upass);
-    printf("%s\n", pass);
+    printf("Your Password: %s\n", Upass);
+    printf("Password: %s\n", pass);
 
 
 
@@ -157,7 +233,9 @@ int Init_DB(char *name, const char *structure){
         printf("Wrong pasword\n");
     }
 
+    sqlite3_reset(stmt);
 
+/// END OF LOGIN
 
     sqlite3_close(db);
     return 0;
