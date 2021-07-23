@@ -106,5 +106,6 @@ t_socket_list *new_socket(t_server *server, int fd);
 void sockets_status(t_socket_list *head);
 void disconect_socket(t_socket_list *address);
 void del_socket_list(t_socket_list **head);
+int Init_DB(char *name, const char *structure);
 
 #endif /* UCHAT_SERVER_H */
