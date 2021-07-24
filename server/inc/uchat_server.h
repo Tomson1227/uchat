@@ -22,6 +22,7 @@
 #include "cJSON.h"
 #include "transaction.h"
 #include "sqlite3.h"
+#include "API.h"
 
 #define PORT 5000
 #define BUFF_SIZE 1024

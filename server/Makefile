@@ -21,14 +21,14 @@ all: $(NAME)
 
 $(NAME): $(OBJ_DIR) $(OBJ) 
 	@$(COMPILE) $(OBJ) -o $(NAME)
-	@printf "\r\33[2K$@ \033[35;1mcreated\033[0m\n"
+	@printf "\r\033[2K$@ \033[35;1mcreated\033[0m\n"
 
 $(OBJ_DIR):
 	@mkdir -p $@ $(foreach dir, $(DIRS), $@/$(dir))
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC_H)
 	@$(COMPILE) -o $@ -c $<
-	@printf "\r\33[2K$(NAME) \033[37;1mcompile \033[0m$(<:$(SRC_DIR)/%.c=%)"
+	@printf "\r\033[2K$(NAME) \033[37;1mcompile \033[0m$(<:$(SRC_DIR)/%.c=%)"
 
 clean:
 	@$(RM) $(OBJ_DIR)

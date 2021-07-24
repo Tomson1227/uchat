@@ -1,15 +1,5 @@
 #include "uchat_server.h"
 
-typedef enum s_response_status
-{
-    LOGIN_OK,
-    LOGIN_WRONG_USER,
-    LOGIN_WRONG_PASS,
-    SIGNUP_OK,
-    SIGNUP_USER_EXIST,
-    SINGUP_FAIL
-}   t_response_status;
-
 char* itoa(int val, int base){
 
     static char buf[32] = {0};
@@ -39,7 +29,7 @@ static int callback(void *data, int argc, char **argv, char **azColName)
 
 void sign_up(sqlite3 *db, char *user_login, char *user_pass) 
 {
-    t_response_status status;
+    t_response_status status = SIGNUP_OK;
     sqlite3_stmt *stmt;
     const unsigned char *checkLogin;
     char *zErrMsg = 0;
@@ -88,18 +78,16 @@ void sign_up(sqlite3 *db, char *user_login, char *user_pass)
             status = SINGUP_FAIL;
             // fprintf(stderr, "SQL error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
-        } else
-            status = SINGUP_OK;
-
+        }
         
         free(signUpQuery);
     } else if (strcmp((char *)checkLogin, user_login) == 0)
-        status = SINGUP_USER_EXIST;
+        status = SIGNUP_USER_EXIST;
 
     char *massege = send_rs_sign_up_server(status);
     //SEMD MASSEGE
     free(checkQuery);
-    free(checkLogin);
+    free((void *) checkLogin);
     free(massege);
 }
 
@@ -126,11 +114,11 @@ void login(sqlite3 *db, char *user_login, char *user_pass) {
         status = LOGIN_OK;
     } else {
         printf("Wrong pasword\n");
-        status = LOGIN_WRONG_PASSWORD;
+        status = LOGIN_WRONG_PASS;
     }
 
     free(query);
-    free(pass);
+    free((void *) pass);
 }
 
 void Init_DB(t_server * server)

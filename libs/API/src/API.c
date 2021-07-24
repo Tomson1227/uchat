@@ -4,7 +4,8 @@
 /*-------------------------------------*/
 /*--- Public functions definitions ---*/
 
-cJSON *receive_rs_log_in_server(const char * const string) {
+void receive_rs_log_in_server(const char * const string) 
+{
     cJSON *login = NULL;
     cJSON *pass = NULL;
     cJSON *rq_log_in = cJSON_Parse(string);
@@ -23,9 +24,11 @@ cJSON *receive_rs_log_in_server(const char * const string) {
         pass = cJSON_GetObjectItemCaseSensitive(rq_log_in, "pass");
         login_parsed = cJSON_Print(login);
         pass_parsed = cJSON_Print(pass);
-        printf("Received login: %s\nReceived password: %s\n", login_parsed, pass_parsed);
+
+        printf("Received login: %s\tReceived password: %s\n", login->valuestring, pass->valuestring);
     }
-    return rq_log_in;
+
+    cJSON_Delete(rq_log_in);
 }
 
 void receive_rs_sign_up_server(const char * const string) {
@@ -47,9 +50,7 @@ void receive_rs_sign_up_server(const char * const string) {
         pass = cJSON_GetObjectItemCaseSensitive(rs_sign_up, "pass");
         login_parsed = cJSON_Print(login);
         pass_parsed = cJSON_Print(pass);
-        
-        login->string;
-        login->valuestring;
+
         printf("Received login %s\nReceived pass: %s\n", login_parsed, pass_parsed);
     }
 
@@ -97,7 +98,7 @@ cJSON *receive_rs_sign_up_client(const char * const string) {
 }
 
 char *send_rq_log_in_client(char *username, char *password) {
-    char *string;
+    char *string = NULL;
     cJSON *type = NULL;
     cJSON *login = NULL;
     cJSON *pass = NULL;
@@ -120,7 +121,7 @@ char *send_rq_log_in_client(char *username, char *password) {
 }
 
 char *send_rq_sign_in_client(char *username, char *password) {
-    char *string;
+    char *string = NULL;
     cJSON *type = NULL;
     cJSON *login = NULL;
     cJSON *pass = NULL;
@@ -143,7 +144,7 @@ char *send_rq_sign_in_client(char *username, char *password) {
 }
 
 char *send_rs_log_in_server(t_response_status response) {
-    char *string;
+    char *string = NULL;
     cJSON *type = NULL;
     cJSON *status = NULL;
     cJSON *rs_log_in = cJSON_CreateObject();
@@ -165,7 +166,7 @@ char *send_rs_log_in_server(t_response_status response) {
 }
 
 char *send_rs_sign_up_server(t_response_status response) {
-    char *string;
+    char *string = NULL;
     cJSON *type = NULL;
     cJSON *status = NULL;
     cJSON *rs_sign_up = cJSON_CreateObject();
