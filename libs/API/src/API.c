@@ -138,7 +138,7 @@ char *send_rq_sign_in_client(char *username, char *password) {
     return string;
 }
 
-char *send_rs_log_in_server(char *rs_status) {
+char *send_rs_log_in_server(t_response_status response) {
     char *string;
     cJSON *type = NULL;
     cJSON *status = NULL;
@@ -149,15 +149,16 @@ char *send_rs_log_in_server(char *rs_status) {
     }
     else {
         type = cJSON_CreateString("RESPONSE_LOGIN");
-        cJSON_AddItemToObject(rs_log_in, "type", type);
-        status = cJSON_CreateString(rs_status);
+        cJSON_AddItemToObject(rs_log_in, "type", type);        
+        
+        status = cJSON_CreateNumber(response);
         cJSON_AddItemToObject(rs_log_in, "status", status);
         string = cJSON_Print(rs_log_in);
     }
     return string;
 }
 
-char *send_rs_sign_up_server(char *rs_status) {
+char *send_rs_sign_up_server(t_response_status response) {
     char *string;
     cJSON *type = NULL;
     cJSON *status = NULL;
@@ -169,7 +170,7 @@ char *send_rs_sign_up_server(char *rs_status) {
     else {
         type = cJSON_CreateString("RESPONSE_SIGNUP");
         cJSON_AddItemToObject(rs_sign_up, "type", type);
-        status = cJSON_CreateString(rs_status);
+        status = cJSON_CreateNumber(response);
         cJSON_AddItemToObject(rs_sign_up, "status", status);
         string = cJSON_Print(rs_sign_up);
     }
