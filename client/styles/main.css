@@ -1,5 +1,14 @@
 window {
 	background-color: #000000;
+	background-image: none;
+}
+
+#stack_dialog_box {
+	background-color: black;
+}
+
+#scrll_wndw_dlgs {
+	background-color: black;
 }
 
 #chat_search_entry {
@@ -45,3 +54,12 @@ window {
 	background-color: #000000;
 	color: #00FF00;
 }
+#listbox_msgs {
+	background-color: black;
+}
+/* label { */
+	/* background-color: rgb(43, 43, 43); */
+/* } */
+/* button { */
+	/* background-color: rgb(43, 43, 43); */
+/* } */

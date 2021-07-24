@@ -5,10 +5,12 @@ int chat_window(int argc, char **argv);
 
 
 int main(int argc, char *argv[]) {
+    // login_window(argc, argv);
 
     check_args(argc, argv);
     t_config *config = address_setup(argv[1], argv[2]);
     connection_setup(config);
+    chat_window(argc, argv);
 
     //SPAMMER
     int num = 0;

@@ -50,7 +50,6 @@ $(TEST): $(TEST_SRCS)
 	@$(CC) $(TEST_FLAGS) $< -o $@
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
 
-
 .PHONY: clean uninstall reinstall
 
 #delete all files

@@ -1,0 +1,19 @@
+window
+{
+    background-color:black;
+    background-image: url('../src/images/rain.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+button
+{
+    /* font: Helvetica; */
+    color: rgb(0, 255, 0);
+    border-radius: 100;
+    outline-color: rgb(0, 255, 0);
+}
+label
+{
+    color:rgb(0, 255, 0);
+}

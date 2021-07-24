@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.2 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="contacts_img">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">32</property>
+    <property name="icon_name">system-users</property>
+  </object>
+  <object class="GtkImage" id="send_img">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">32</property>
+    <property name="icon_name">mail-send</property>
+  </object>
+  <object class="GtkImage" id="settings_img">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">32</property>
+    <property name="icon_name">applications-system</property>
+  </object>
+  <object class="GtkImage" id="terminal_img">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">32</property>
+    <property name="icon_name">utilities-terminal</property>
+  </object>
+  <object class="GtkImage" id="vv">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">32</property>
+    <property name="icon_name">weather-clear</property>
+  </object>
+  <object class="GtkWindow" id="chat_main">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">MatrixChat</property>
+    <property name="resizable">False</property>
+    <property name="default_width">600</property>
+    <property name="default_height">600</property>
+    <signal name="destroy" handler="on_chat_main_destroy" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkGrid" id="chat_main_grid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <child>
+          <object class="GtkGrid" id="chat_search_grid">
+            <property name="height_request">20</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">end</property>
+            <property name="margin_top">4</property>
+            <child>
+              <object class="GtkImage" id="chat_search_icon">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="icon_name">edit-find</property>
+                <property name="icon_size">3</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="chat_search_entry">
+                <property name="name">chat_search_entry</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="max_length">50</property>
+                <property name="max_width_chars">0</property>
+                <property name="xalign">0.5</property>
+                <property name="placeholder_text" translatable="yes">Search users...</property>
+                <property name="input_purpose">name</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid" id="chat_settings_grid">
+            <property name="height_request">20</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">baseline</property>
+            <property name="valign">baseline</property>
+            <property name="hexpand">False</property>
+            <property name="vexpand">False</property>
+            <child>
+              <object class="GtkButton" id="chat_settings_terminal_btn">
+                <property name="name">chat_settings_terminal_btn</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="image">terminal_img</property>
+                <signal name="clicked" handler="on_chat_settings_terminal_btn_clicked" swapped="no"/>
+                <style>
+                  <class name="chat_settings_terminal_btn"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="chat_settings_users_btn">
+                <property name="name">chat_settings_users_btn</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="image">contacts_img</property>
+                <signal name="clicked" handler="on_chat_settings_users_btn_clicked" swapped="no"/>
+                <style>
+                  <class name="chat_settings_users_btn"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="chat_settings_settings_btn">
+                <property name="name">chat_settings_settings_btn</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="image">settings_img</property>
+                <signal name="clicked" handler="on_chat_settings_settings_btn_clicked" object="stack_dialog_box" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStack" id="stack_dialog_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrll_wndw_dlgs">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkViewport" id="viewport_dlgs">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkListBox" id="listbox_dlgs">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="vexpand">True</property>
+                        <signal name="row-selected" handler="on_listbox_dlgs_row_selected" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">scrll_wndw_dlgs</property>
+                <property name="title" translatable="yes">scrll_wndw_dlgs</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrll_wndw_dlgs1">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkViewport">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">scrll_wndw_dlgs1</property>
+                <property name="title" translatable="yes">scrll_wndw_dlgs1</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+            <property name="height">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStack" id="stack">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="lbl_slct_chat">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="name">scrll_wndw_msgs</property>
+                <property name="title" translatable="yes">scrll_wndw_msgs</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+            <property name="width">4</property>
+            <property name="height">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStack" id="stack_upper_dialog_toolbar">
+            <property name="name">stack_upper_dialog_toolbar</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkGrid" id="chat_topbar_grid">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="chat_receiver_name">
+                    <property name="width_request">600</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">djdjdjdjdj</property>
+                    <property name="justify">center</property>
+                    <property name="ellipsize">middle</property>
+                    <property name="xalign">0.5</property>
+                    <property name="yalign">0.5</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">chat_topbar_grid</property>
+                <property name="title" translatable="yes">chat_topbar_grid</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkGrid" id="chat_topbar_wth_btns">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <child>
+                  <object class="GtkButton" id="btn_edit_msg">
+                    <property name="label" translatable="yes">edit</property>
+                    <property name="width_request">20</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="on_btn_edit_msg_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="btn_delete_msg">
+                    <property name="label" translatable="yes">delete</property>
+                    <property name="width_request">20</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="image_position">top</property>
+                    <signal name="clicked" handler="on_btn_delete_msg_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="btn_cancel">
+                    <property name="label" translatable="yes">cancel</property>
+                    <property name="width_request">20</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="on_btn_cancel_clicked" object="stack_upper_dialog_toolbar" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">400</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">chat_topbar_wth_btns</property>
+                <property name="title" translatable="yes">chat_topbar_wth_btns</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+            <property name="width">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkEntry" id="chat_message_entry">
+                <property name="name">chat_message_entry</property>
+                <property name="width_request">500</property>
+                <property name="height_request">20</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">False</property>
+                <property name="max_length">1024</property>
+                <property name="max_width_chars">0</property>
+                <property name="xalign">0.5</property>
+                <property name="placeholder_text" translatable="yes">&gt; Enter your message...</property>
+                <property name="input_hints">GTK_INPUT_HINT_SPELLCHECK | GTK_INPUT_HINT_NONE</property>
+                <signal name="activate" handler="on_chat_message_entry_activate" swapped="no"/>
+                <style>
+                  <class name="chat_message_entry"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_send_sticker">
+                <property name="name">chat_send_btn</property>
+                <property name="width_request">20</property>
+                <property name="height_request">20</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="valign">center</property>
+                <property name="image">vv</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_send_msg">
+                <property name="name">chat_send_btn</property>
+                <property name="width_request">20</property>
+                <property name="height_request">20</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="valign">center</property>
+                <property name="image">send_img</property>
+                <signal name="clicked" handler="on_btn_send_msg_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">8</property>
+            <property name="width">4</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
