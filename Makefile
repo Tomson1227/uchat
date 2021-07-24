@@ -7,7 +7,6 @@ CLIENT = uchat_client
 TEST_SERVER = test_server
 TEST_CLIENT = test_client
 
-
 #TARGETS
 all: $(SERVER) $(CLIENT)
 
