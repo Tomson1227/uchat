@@ -289,7 +289,7 @@ void on_listbox_msgs_row_selected(GtkListBox *box, GtkListBoxRow *row, GtkStack 
     row = GTK_LIST_BOX_ROW(cpy->r);
 
     index1 = gtk_list_box_row_get_index(row);
-    printf("%d\n", index1);
+    printf("%d\n", ndx);
 
     if (cpy->r && gtk_list_box_row_get_selectable(GTK_LIST_BOX_ROW(cpy->r)) == TRUE)
         gtk_stack_set_visible_child_name (stack_upper_dialog_toolbar, "chat_topbar_wth_btns");
@@ -372,7 +372,6 @@ void push_node(s_widgets *wdgts) {
 
             wdgts->tmp = wdgts->tmp->next;
         }
-
         wdgts->tmp->next = createNode();
         printf("Created a node\n");
     }
@@ -385,7 +384,6 @@ void mx_print(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_to
         if (gtk_list_box_row_get_selectable(r) == FALSE)
             gtk_stack_set_visible_child_name(stack_upper_dialog_toolbar, "chat_topbar_grid");
     }
-    
 }
 
 void on_chat_settings_users_btn_clicked(GtkButton *btn, s_widgets *wdgts) {
