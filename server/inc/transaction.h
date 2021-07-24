@@ -52,5 +52,4 @@ char *read_socket(int fd);
 void *read_response(char *line);
 int server_responce(t_server_responce *response, int fd);
 char *login_convert(t_user_request *request);
-
 int process_request(char *request, int fd);

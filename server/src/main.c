@@ -7,12 +7,13 @@ int main(int argc , char *argv[])
 {
     t_server server;
     init_server(&server);
+    Init_DB(&server);
 
     int poll_request;
     struct pollfd fd = {server.fd, POLLIN, 0};
     
 	SAVE_CURSOR_POS;
-
+    
     while(true) {
         if((poll(&fd, 1, 200)) < 0)
             perror("poll error");
@@ -41,17 +42,17 @@ int main(int argc , char *argv[])
 
 static bool SetSocketBlockingEnabled(int fd, bool blocking)
 {
-   if (fd < 0) return false;
+    if(fd < 0) 
+        return false;
+    
+    int flags = fcntl(fd, F_GETFL, 0);
+    
+    if(flags == -1) 
+        return false;
 
-#ifdef _WIN32
-   unsigned long mode = blocking ? 0 : 1;
-   return (ioctlsocket(fd, FIONBIO, &mode) == 0) ? true : false;
-#else
-   int flags = fcntl(fd, F_GETFL, 0);
-   if (flags == -1) return false;
-   flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
-   return (fcntl(fd, F_SETFL, flags) == 0) ? true : false;
-#endif
+    flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
+    
+    return !fcntl(fd, F_SETFL, flags);
 }
 
 static char *receive_line(int fd)

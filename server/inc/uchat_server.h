@@ -21,6 +21,7 @@
 
 #include "cJSON.h"
 #include "transaction.h"
+#include "sqlite3.h"
 
 #define PORT 5000
 #define BUFF_SIZE 1024
@@ -98,6 +99,7 @@ typedef struct s_socket_list {
 typedef struct s_server {
     int fd;
     int option;
+    sqlite3 *db;
     struct sockaddr_in address;
     t_socket_list *socket_head;
 }              t_server;
@@ -106,6 +108,6 @@ t_socket_list *new_socket(t_server *server, int fd);
 void sockets_status(t_socket_list *head);
 void disconect_socket(t_socket_list *address);
 void del_socket_list(t_socket_list **head);
-int Init_DB(char *name, const char *structure);
+void Init_DB(t_server * server);
 
 #endif /* UCHAT_SERVER_H */

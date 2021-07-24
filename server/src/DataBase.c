@@ -1,5 +1,4 @@
 #include "uchat_server.h"
-#include "sqlite3.h"
 
 char* itoa(int val, int base){
 
@@ -108,19 +107,18 @@ int login(sqlite3 *db, char *user_login, char *user_pass) {
     }
 }
 
-int Init_DB(char *name, const char *structure){
-    sqlite3 *db;
-
+void Init_DB(t_server * server)
+{
     char *zErrMsg = 0;
     int rc;
     char *sql;
     const char* data = "Callback function called";
 
-    rc = sqlite3_open("uchat.db", &db);
+    rc = sqlite3_open("uchat.db", &server->db);
 
     if( rc ) {
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-        return(0);
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(server->db));
+        return;
     } else {
         fprintf(stderr, "Opened database successfully\n");
     }
@@ -132,7 +130,7 @@ int Init_DB(char *name, const char *structure){
 
 //    sql = "DROP TABLE USRS;";
 
-    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+    rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
     if( rc != SQLITE_OK ){
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
@@ -141,12 +139,9 @@ int Init_DB(char *name, const char *structure){
         fprintf(stdout, "Table created successfully\n");
     }
 
-    
-
-    sign_up(db, "mark", "qwerty228");
-    login(db, "mark", "qwerty228");
+    // sign_up(db, "mark", "qwerty228");
+    // login(db, "mark", "qwerty228");
 
 
-    sqlite3_close(db);
-    return 0;
+    // sqlite3_close(db);
 }
