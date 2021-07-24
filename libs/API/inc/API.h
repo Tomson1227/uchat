@@ -22,7 +22,7 @@ typedef enum s_response_status
 }   t_response_status;
 
 void define_rq_type(const char * const string);
-cJSON *receive_rq_log_in_server(const char * const string);
+cJSON *receive_rs_log_in_server(const char * const string);
 cJSON *receive_rs_sign_up_server(const char * const string);
 cJSON *receive_rs_log_in_client(const char * const string);
 cJSON *receive_rs_sign_up_client(const char * const string);

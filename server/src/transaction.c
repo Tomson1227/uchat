@@ -163,10 +163,13 @@ int read_api(char *line)
 
 int process_request(char *request, int fd)
 {
-    printf("%s\n", request);
-    t_server_responce response;
-    response.response = REQUEST_LOGIN;
-    response.status = LOGIN_OK;            
-    server_responce(&response, fd);            
+    define_rq_type(request);
+
+    free(request);
+    // printf("%s\n", request);
+    // t_server_responce response;
+    // response.response = REQUEST_LOGIN;
+    // response.status = LOGIN_OK;            
+    // server_responce(&response, fd);            
     return 0;
 }
