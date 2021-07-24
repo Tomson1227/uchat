@@ -60,7 +60,7 @@ node createNode(){
     return temp;//return the new node
 }   
 
-gint index;
+gint index1;
 int i = 0;
 
 void load_css_main(char *path);
@@ -288,8 +288,8 @@ void on_listbox_msgs_row_selected(GtkListBox *box, GtkListBoxRow *row, GtkStack 
     box = GTK_LIST_BOX(cpy->lst_bx);
     row = GTK_LIST_BOX_ROW(cpy->r);
 
-    index = gtk_list_box_row_get_index(row);
-    printf("%d\n", index);
+    index1 = gtk_list_box_row_get_index(row);
+    printf("%d\n", index1);
 
     if (cpy->r && gtk_list_box_row_get_selectable(GTK_LIST_BOX_ROW(cpy->r)) == TRUE)
         gtk_stack_set_visible_child_name (stack_upper_dialog_toolbar, "chat_topbar_wth_btns");
