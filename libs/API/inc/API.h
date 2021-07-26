@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "cJSON.h"
 #include <string.h>
-// #include "../server/inc/uchat_server.h"
+#include "sqlite3.h"
 
 typedef enum s_api
 {
