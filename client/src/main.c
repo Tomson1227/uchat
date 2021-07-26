@@ -9,9 +9,10 @@ int main(int argc, char *argv[]) {
 
     check_args(argc, argv);
     t_config *config = address_setup(argv[1], argv[2]);
-    connection_setup(config);
     chat_window(argc, argv);
-
+    connection_setup(config);
+    
+    
     //SPAMMER
     int num = 0;
     while (1) {
@@ -29,9 +30,7 @@ int main(int argc, char *argv[]) {
         //     }
         // }
     }
-
-    //login_window(argc, argv);
-    //chat_window(argc, argv);
+    
     pthread_join(config->conn_thread, NULL);
 
     return 0;
