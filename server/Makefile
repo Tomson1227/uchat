@@ -31,11 +31,17 @@ OBJS = $(subst $(SDIR),$(ODIR),$(_OBJS))
 #TARGETS
 all: $(NAME)
 
+<<<<<<< HEAD
 #make objects
 $(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
 	@mkdir -p obj
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
 	@$(CC) $(FLAGS) -c $< -o $@
+=======
+$(NAME): $(OBJ_DIR) $(OBJ) 
+	@$(COMPILE) $(OBJ) -o $(NAME)
+	@printf "\r\033[2K$@ \033[35;1mcreated\033[0m\n"
+>>>>>>> server
 
 #make excecutable
 $(NAME): $(OBJS)
@@ -44,11 +50,17 @@ $(NAME): $(OBJS)
 	@printf "Usage: ./$@ <port> <address>\n"
 # WARNING: Edit "printf" for your needs
 
+<<<<<<< HEAD
 #make test
 $(TEST): $(TEST_SRCS)
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
 	@$(CC) $(TEST_FLAGS) $< -o $@
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
+=======
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC_H)
+	@$(COMPILE) -o $@ -c $<
+	@printf "\r\033[2K$(NAME) \033[37;1mcompile \033[0m$(<:$(SRC_DIR)/%.c=%)"
+>>>>>>> server
 
 .PHONY: clean uninstall reinstall
 
