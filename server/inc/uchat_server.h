@@ -22,7 +22,23 @@
 #include "cJSON.h"
 #include "transaction.h"
 #include "sqlite3.h"
-#include "API.h"
+// #include "API.h"
+
+typedef enum s_api
+{
+    LOGIN,
+    SIGNUP
+}            t_api;
+
+typedef enum s_rs_status
+{
+    LOGIN_OK,
+    LOGIN_WRONG_USER,
+    LOGIN_WRONG_PASS,
+    SIGNUP_OK,
+    SIGNUP_USER_EXIST,
+    SINGUP_FAIL
+}            t_rs_status;
 
 #define BUFF_SIZE 1024
 
@@ -106,6 +122,16 @@ typedef struct s_server {
     t_socket_list *socket_head;
 }              t_server;
 
+// typedef enum s_rs_status
+// {
+//     LOGIN_OK,
+//     LOGIN_WRONG_USER,
+//     LOGIN_WRONG_PASS,
+//     SIGNUP_OK,
+//     SIGNUP_USER_EXIST,
+//     SINGUP_FAIL
+// }            t_rs_status;
+
 t_socket_list *new_socket(t_server *server, int fd);
 void sockets_status(t_socket_list *head);
 void disconect_socket(t_socket_list *address);
@@ -114,5 +140,8 @@ void del_socket_list(t_socket_list **head);
 void Init_DB(t_server * server);
 t_rs_status login(sqlite3 *db, char *user_login, char *user_pass);
 t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass);
+
+//Server function
+void process_rq_server(const char *const string, sqlite3 *db);
 
 #endif /* UCHAT_SERVER_H */
