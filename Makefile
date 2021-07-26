@@ -3,7 +3,7 @@ SERVER_DIR = server
 CLIENT_DIR = client
 LDIR = libs
 SERVER = uchat_server
-CLIENT = uchat_client
+CLIENT = uchat
 TEST_SERVER = test_server
 TEST_CLIENT = test_client
 
