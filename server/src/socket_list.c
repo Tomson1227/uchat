@@ -19,7 +19,7 @@ static t_socket_list *init_command(void)
 t_socket_list *new_socket(t_server *server, int fd)
 {
     t_socket_list *new_socket = init_command();
-    
+
     new_socket->fd = fd;
 
     if(!server->socket_head) {
@@ -83,5 +83,15 @@ void del_socket_list(t_socket_list **head)
         (*head)->status = false;
         free(*head);
         *head = temp;
+    }
+}
+
+void close_socket_list(t_socket_list *head)
+{
+    while(head) {
+        close(head->fd);
+        pthread_join(head->tid, NULL);
+        head->status = false;
+        head = head->prev_socket;
     }
 }

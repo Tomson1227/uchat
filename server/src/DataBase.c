@@ -27,18 +27,15 @@ static int callback(void *data, int argc, char **argv, char **azColName)
     return 0;
 }
 
-void sign_up(sqlite3 *db, char *user_login, char *user_pass) 
+t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass) 
 {
-    t_response_status status = SIGNUP_OK;
+    t_rs_status status = SIGNUP_OK;
     sqlite3_stmt *stmt;
     const unsigned char *checkLogin;
-    char *zErrMsg = 0;
-    int ID, rc;
-    int length;
-    int lengthSignUp;
+    char *checkQuery, *zErrMsg = NULL;
+    int length, lengthSignUp, ID, rc;
 
     length = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN = '%s';", user_login);
-    char *checkQuery;
 
     if(!(checkQuery = (char *)calloc(length, sizeof(char))))
         perror("allocation fail");
@@ -59,9 +56,7 @@ void sign_up(sqlite3 *db, char *user_login, char *user_pass)
         sqlite3_step(stmt);
 
         ID = sqlite3_column_int(stmt, 0) + 1;
-
-        // printf("%d\n", ID);
-
+        
         sqlite3_reset(stmt);
 
         lengthSignUp = snprintf(NULL, 0, "INSERT INTO USRS (ID, LOGIN, PASS) VALUES (%d, '%s', '%s');", ID, user_login, user_pass);
@@ -84,15 +79,13 @@ void sign_up(sqlite3 *db, char *user_login, char *user_pass)
     } else if (strcmp((char *)checkLogin, user_login) == 0)
         status = SIGNUP_USER_EXIST;
 
-    char *massege = send_rs_sign_up_server(status);
-    //SEMD MASSEGE
     free(checkQuery);
     free((void *) checkLogin);
-    free(massege);
+    return status;    
 }
 
-void login(sqlite3 *db, char *user_login, char *user_pass) {
-    t_response_status status;
+t_rs_status login(sqlite3 *db, char *user_login, char *user_pass) {
+    t_rs_status status = LOGIN_OK;
     const unsigned char *pass = (unsigned char *)calloc(20, sizeof(unsigned char));
     int lengthL = snprintf(NULL, 0, "SELECT PASS FROM USRS WHERE LOGIN  = '%s';", user_login);
     char *query;
@@ -109,16 +102,12 @@ void login(sqlite3 *db, char *user_login, char *user_pass) {
 
     pass = sqlite3_column_text(stmt, 0);
 
-    if (strcmp((const char*)pass, user_pass) == 0) {
-        printf("Login successful\n");
-        status = LOGIN_OK;
-    } else {
-        printf("Wrong pasword\n");
+    if (strcmp((const char*)pass, user_pass))
         status = LOGIN_WRONG_PASS;
-    }
 
     free(query);
-    free((void *) pass);
+   
+    return status;
 }
 
 void Init_DB(t_server * server)

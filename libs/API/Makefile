@@ -27,7 +27,7 @@ $(NAME): $(OBJ_FILES)
 $(OBJ_FILES): | $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_FILES)
-	@$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@ -I../
 	@printf "\r\33[2K$(NAME)\033[33;1m\t compile \033[0m$(<:$(SRC_DIR)/%.c=%)\r"
 
 $(OBJ_DIR):

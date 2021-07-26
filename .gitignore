@@ -57,3 +57,4 @@ uchat_server
 .DS_Store
 .vscode
 .json
+*.db

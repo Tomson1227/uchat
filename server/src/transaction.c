@@ -40,11 +40,4 @@ char *read_socket(int fd)
     return line;
 }
 
-int process_request(char *request, int fd)
-{
-    define_rq_type(request);
 
-    free(request);
-
-    return 0;
-}
