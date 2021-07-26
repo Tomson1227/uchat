@@ -1,5 +1,5 @@
 #dependencies
-NAME = uchat_client
+NAME = uchat
 TEST = test_client
 
 #directories

@@ -14,7 +14,8 @@ char* itoa(int val, int base){
 
 }
 
-static int callback(void *data, int argc, char **argv, char **azColName) {
+static int callback(void *data, int argc, char **argv, char **azColName) 
+{
     int i;
     fprintf(stderr, "%s: ", (const char*)data);
 
@@ -26,16 +27,19 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
     return 0;
 }
 
-int sign_up(sqlite3 *db, char *user_login, char *user_pass) {
+t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass) 
+{
+    t_rs_status status = SIGNUP_OK;
     sqlite3_stmt *stmt;
     const unsigned char *checkLogin;
-    char *zErrMsg = 0;
-    int ID, rc;
-    int length;
-    int lengthSignUp;
+    char *checkQuery, *zErrMsg = NULL;
+    int length, lengthSignUp, ID, rc;
 
     length = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN = '%s';", user_login);
-    char *checkQuery = (char *)calloc(length, sizeof(char));
+
+    if(!(checkQuery = (char *)calloc(length, sizeof(char))))
+        perror("allocation fail");
+
     sprintf(checkQuery, "SELECT LOGIN FROM USRS WHERE LOGIN = '%s';", user_login);
 
     sqlite3_prepare_v2(db, checkQuery, -1, &stmt, NULL);
@@ -51,43 +55,43 @@ int sign_up(sqlite3 *db, char *user_login, char *user_pass) {
         sqlite3_prepare_v2(db, idQuery, -1, &stmt, NULL);
         sqlite3_step(stmt);
 
-        ID = sqlite3_column_int(stmt, 0);
-
-        printf("%d\n", ID);
-
-        if (ID == (int)NULL)
-            ID = 1;
-        else
-            ID++;
-
+        ID = sqlite3_column_int(stmt, 0) + 1;
+        
         sqlite3_reset(stmt);
 
         lengthSignUp = snprintf(NULL, 0, "INSERT INTO USRS (ID, LOGIN, PASS) VALUES (%d, '%s', '%s');", ID, user_login, user_pass);
-        char *signUpQuery = (char *)calloc(lengthSignUp, sizeof(char));
+        char *signUpQuery;
+
+        if(!(signUpQuery = (char *)calloc(lengthSignUp, sizeof(char))))
+            perror("allocation fail");
+
         sprintf(signUpQuery, "INSERT INTO USRS (ID, LOGIN, PASS) VALUES (%d, '%s', '%s');", ID, user_login, user_pass);
 
         rc = sqlite3_exec(db, signUpQuery, callback, 0, &zErrMsg);
 
-        if( rc != SQLITE_OK ){
-            fprintf(stderr, "SQL error: %s\n", zErrMsg);
-            return 0;
+        if( rc != SQLITE_OK ) {
+            status = SINGUP_FAIL;
+            // fprintf(stderr, "SQL error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
-        } else {
-            fprintf(stdout, "Records created successfully\n");
-            return 1;
         }
-    } else if (strcmp((char *)checkLogin, user_login) == 0) {
-        fprintf(stderr, "%s\n", "User already exists");
-        return 0;
-    }
-    return 0;
+        
+        free(signUpQuery);
+    } else if (strcmp((char *)checkLogin, user_login) == 0)
+        status = SIGNUP_USER_EXIST;
+
+    free(checkQuery);
+    free((void *) checkLogin);
+    return status;    
 }
 
-int login(sqlite3 *db, char *user_login, char *user_pass) {
-
+t_rs_status login(sqlite3 *db, char *user_login, char *user_pass) {
+    t_rs_status status = LOGIN_OK;
     const unsigned char *pass = (unsigned char *)calloc(20, sizeof(unsigned char));
     int lengthL = snprintf(NULL, 0, "SELECT PASS FROM USRS WHERE LOGIN  = '%s';", user_login);
-    char *query = (char *)calloc(lengthL, sizeof(char));
+    char *query;
+    
+    if(!(query = (char *) calloc(lengthL, sizeof(char))))
+        perror("allocation fail");
 
     sqlite3_stmt *stmt;
 
@@ -98,13 +102,12 @@ int login(sqlite3 *db, char *user_login, char *user_pass) {
 
     pass = sqlite3_column_text(stmt, 0);
 
-    if (strcmp((const char*)pass, user_pass) == 0) {
-        printf("Login successful\n");
-        return 1;
-    } else {
-        printf("Wrong pasword\n");
-        return 0;
-    }
+    if (strcmp((const char*)pass, user_pass))
+        status = LOGIN_WRONG_PASS;
+
+    free(query);
+   
+    return status;
 }
 
 void Init_DB(t_server * server)
