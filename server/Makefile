@@ -1,43 +1,68 @@
-NAME		= uchat_server
+#dependencies
+NAME = uchat_server
+TEST = test_server
 
-SRC_DIR		= src/
-OBJ_DIR		= obj/
-INC_DIR		= inc/
+#directories
+IDIR = inc
+ODIR = obj
+SDIR = src
+TDIR = test
 
-SRC			= $(wildcard $(SRC_DIR)*.c)
-OBJ			= $(SRC:src/%.c=$(OBJ_DIR)%.o)
-INC_H		= $(wildcard $(INC_DIR)*.h)
+#lib includes
+LIBDIR = ../libs/cJSON/inc ../libs/API/inc ../libs/SQLite/inc
+LIB = ../libs/SQLite.a ../libs/API.a ../libs/cJSON.a -ldl -pthread
 
-CC			= clang
-GFLAGS		= -std=c11 -pipe -Wall -Wextra -Werror -Wpedantic\
-	-Wno-unused-command-line-argument -Wno-unused-variable \
-	-Wno-unused-function -Wno-unused-parameter -g -pthread
+#compiler settings
+CC = gcc
+CFLAGS = -std=c11
+CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic
+FLAGS = $(CFLAGS) -I$(IDIR) $(addprefix -I, $(LIBDIR))
+TEST_FLAGS = $(CCFLAGS)
 
-IFLAGS		= $(addprefix -I, $(INC_DIR))
-COMPILE		= $(CC) $(GFLAGS) $(IFLAGS)
-RM			= /bin/rm -rf
+#headers
+DEPS := $(wildcard $(IDIR)/*.h)
+#sources
+SRCS := $(wildcard $(SDIR)/*.c)
+TEST_SRCS := $(wildcard $(TDIR)/*.c)
+#objects
+_OBJS = $(SRCS:.c=.o)
+OBJS = $(subst $(SDIR),$(ODIR),$(_OBJS))
 
+#TARGETS
 all: $(NAME)
 
-$(NAME): $(OBJ_DIR) $(OBJ) 
-	@$(COMPILE) $(OBJ) -o $(NAME)
-	@printf "\r\033[2K$@ \033[35;1mcreated\033[0m\n"
+#make objects
+$(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
+	@mkdir -p obj
+	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
+	@$(CC) $(FLAGS) -c $< -o $@
 
-$(OBJ_DIR):
-	@mkdir -p $@ $(foreach dir, $(DIRS), $@/$(dir))
+#make excecutable
+$(NAME): $(OBJS)
+	@$(CC) $(FLAGS) $^ $(LIB) -o $@
+	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
+	@printf "Usage: ./$@ <port> <address>\n"
+# WARNING: Edit "printf" for your needs
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC_H)
-	@$(COMPILE) -o $@ -c $<
-	@printf "\r\033[2K$(NAME) \033[37;1mcompile \033[0m$(<:$(SRC_DIR)/%.c=%)"
+#make test
+$(TEST): $(TEST_SRCS)
+	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
+	@$(CC) $(TEST_FLAGS) $< -o $@
+	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
 
+.PHONY: clean uninstall reinstall
+
+#delete all files
+uninstall: clean
+	@printf "\r\33[2K\33[0;33mUninstalling $(TEST)...\33[m\n"
+	@rm -f $(TEST)
+	@printf "\r\33[2K\33[0;33mUninstalling $(NAME)...\33[m\n"
+	@rm -f $(NAME)
+
+#remove all temp files
 clean:
-	@$(RM) $(OBJ_DIR)
-	@printf "obj in $(NAME) \033[36;1mdeleted\033[0m\n"
+	@rm -rf $(ODIR)
+	@printf "\r\33[2K\33[0;33mRemoving temporary $(NAME) files...\33[m\n"
 
-uninstall:
-	@$(RM) $(OBJ_DIR) $(NAME)
-	@printf "$(NAME) \033[36;1muninstalled\033[0m\n"
-
+#rebuild project
 reinstall: uninstall all
-
-.PHONY: all clean uninstall reinstall
