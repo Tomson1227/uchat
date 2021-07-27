@@ -1,20 +1,6 @@
 #include "uchat_server.h"
 
-char* itoa(int val, int base){
-
-    static char buf[32] = {0};
-
-    int i = 30;
-
-    for(; val && i ; --i, val /= base)
-
-        buf[i] = "0123456789abcdef"[val % base];
-
-    return &buf[i+1];
-
-}
-
-static int callback(void *data, int argc, char **argv, char **azColName) 
+static int callback(void *data, int argc, char **argv, char **azColName)
 {
     int i;
     fprintf(stderr, "%s: ", (const char*)data);
@@ -27,16 +13,13 @@ static int callback(void *data, int argc, char **argv, char **azColName)
     return 0;
 }
 
-t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass) 
-{
-    t_rs_status status = SIGNUP_OK;
-    sqlite3_stmt *stmt;
+int checkLogin(sqlite3 *db, char *user_login) {
     const unsigned char *checkLogin;
-    char *checkQuery, *zErrMsg = NULL;
-    int length, lengthSignUp, ID, rc;
+    char *checkQuery;
+    int length;
+    sqlite3_stmt *stmt;
 
     length = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN = '%s';", user_login);
-
     if(!(checkQuery = (char *)calloc(length, sizeof(char))))
         perror("allocation fail");
 
@@ -46,18 +29,31 @@ t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass)
     sqlite3_step(stmt);
 
     checkLogin = sqlite3_column_text(stmt, 0);
-    printf("%s %s\n", checkLogin, user_login);
 
     if (checkLogin == NULL) {
-        sqlite3_reset(stmt);
+        free(checkQuery);
+        return 0;
+    } else {
+        free(checkQuery);
+        return 1;
+    }
+}
+
+t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass)
+{
+    t_rs_status status = SIGNUP_OK;
+    sqlite3_stmt *stmt;
+    char *zErrMsg = NULL;
+    int lengthSignUp, ID, rc;
+
+    if (checkLogin(db, user_login) == 0) {
 
         char *idQuery = "SELECT MAX(ID) FROM USRS";
         sqlite3_prepare_v2(db, idQuery, -1, &stmt, NULL);
         sqlite3_step(stmt);
 
         ID = sqlite3_column_int(stmt, 0) + 1;
-        
-        sqlite3_reset(stmt);
+
 
         lengthSignUp = snprintf(NULL, 0, "INSERT INTO USRS (ID, LOGIN, PASS) VALUES (%d, '%s', '%s');", ID, user_login, user_pass);
         char *signUpQuery;
@@ -74,26 +70,29 @@ t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass)
             // fprintf(stderr, "SQL error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
         }
-        
+
         free(signUpQuery);
-    } else if (strcmp((char *)checkLogin, user_login) == 0)
+    } else if (checkLogin(db, user_login) == 1)
         status = SIGNUP_USER_EXIST;
 
-    free(checkQuery);
-    free((void *) checkLogin);
-    return status;    
+    return status;
 }
 
 t_rs_status login(sqlite3 *db, char *user_login, char *user_pass) {
     t_rs_status status = LOGIN_OK;
-    const unsigned char *pass = (unsigned char *)calloc(20, sizeof(unsigned char));
-    int lengthL = snprintf(NULL, 0, "SELECT PASS FROM USRS WHERE LOGIN  = '%s';", user_login);
-    char *query;
-    
-    if(!(query = (char *) calloc(lengthL, sizeof(char))))
-        perror("allocation fail");
-
     sqlite3_stmt *stmt;
+    const unsigned char *pass;
+    char *query;
+
+    if (checkLogin(db, user_login) == 0) {
+        status = LOGIN_WRONG_USER;
+        return status;
+    }
+
+    int length = snprintf(NULL, 0, "SELECT PASS FROM USRS WHERE LOGIN  = '%s';", user_login);
+
+    if(!(query = (char *) calloc(length, sizeof(char))))
+        perror("allocation fail");
 
     sprintf(query, "SELECT PASS FROM USRS WHERE LOGIN  = '%s';", user_login);
 
@@ -106,7 +105,6 @@ t_rs_status login(sqlite3 *db, char *user_login, char *user_pass) {
         status = LOGIN_WRONG_PASS;
 
     free(query);
-   
     return status;
 }
 
@@ -115,7 +113,7 @@ void Init_DB(t_server * server)
     char *zErrMsg = 0;
     int rc;
     char *sql;
-    const char* data = "Callback function called";
+//    const char* data = "Callback function called";
 
     rc = sqlite3_open("uchat.db", &server->db);
 
@@ -133,6 +131,8 @@ void Init_DB(t_server * server)
 
 //    sql = "DROP TABLE USRS;";
 
+    sql = "SELECT * FROM USRS";
+
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
     if( rc != SQLITE_OK ){
@@ -142,8 +142,8 @@ void Init_DB(t_server * server)
         fprintf(stdout, "Table created successfully\n");
     }
 
-    // sign_up(db, "mark", "qwerty228");
-    // login(db, "mark", "qwerty228");
+//    sign_up(server->db, "OOLLL", "qwerty228");
+//    login(server->db, "OOLLL", "qwerty228");
 
 
     // sqlite3_close(db);
