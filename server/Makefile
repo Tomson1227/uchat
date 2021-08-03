@@ -9,8 +9,8 @@ SDIR = src
 TDIR = test
 
 #lib includes
-LIBDIR = ../libs/cJSON/inc ../libs/API/inc ../libs/SQLite/inc
-LIB = ../libs/SQLite.a ../libs/API.a ../libs/cJSON.a -ldl -pthread
+LIBDIR = ../libs/cJSON/inc ../libs/SQLite/inc
+LIB = ../libs/SQLite.a ../libs/cJSON.a -ldl -pthread
 
 #compiler settings
 CC = gcc

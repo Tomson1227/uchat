@@ -9,8 +9,8 @@ SDIR = src
 TDIR = test
 
 #lib includes
-LIBDIR = ../libs/cJSON/inc ../libs/API/inc
-LIB = ../libs/API.a ../libs/cJSON.a
+LIBDIR = ../libs/cJSON/inc
+LIB = ../libs/cJSON.a
 
 #compiler settings
 CC = gcc

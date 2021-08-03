@@ -1,17 +1,14 @@
 #include "uchat.h"
 
-int login_window(int argc, char *argv[]);
-int chat_window(int argc, char **argv);
-
-
 int main(int argc, char *argv[]) {
-    // login_window(argc, argv);
-
     check_args(argc, argv);
     t_config *config = address_setup(argv[1], argv[2]);
-    chat_window(argc, argv);
-    connection_setup(config);
     
+    connection_setup(config);
+    t_chat *chat = NULL; 
+    chat = init_chat(chat, config);
+    init_gui(chat);
+    start_gui(chat);
     
     //SPAMMER
     int num = 0;
@@ -30,8 +27,7 @@ int main(int argc, char *argv[]) {
         //     }
         // }
     }
-    
+     
     pthread_join(config->conn_thread, NULL);
-
     return 0;
 }
