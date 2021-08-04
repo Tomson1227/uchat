@@ -58,4 +58,4 @@ uchat_server
 .vscode
 .json
 *.db
-!shell.o
+*.o

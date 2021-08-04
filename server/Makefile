@@ -11,7 +11,7 @@ INC_H		= $(wildcard $(INC_DIR)*.h)
 CC			= clang
 GFLAGS		= -std=c11 -pipe -Wall -Wextra -Werror -Wpedantic\
 	-Wno-unused-command-line-argument -Wno-unused-variable \
-	-Wno-unused-function -Wno-unused-parameter -g -pthread
+	-Wno-unused-function -Wno-unused-parameter -g -pthread -rdynamic -ldl
 
 IFLAGS		= $(addprefix -I, $(INC_DIR))
 COMPILE		= $(CC) $(GFLAGS) $(IFLAGS)

@@ -159,8 +159,7 @@ static void receive_rq_log_in_server(const char *const string, sqlite3 *db)
         cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq_log_in, "pass");
 
         t_rs_status status = sign_up(db, log_in->valuestring, pass->valuestring);
-        /* SERVER PROCESS REQUEST */
-        /* SERVER SEND RESPONCE */
+        send_rs_sign_up_server(status);
 
         cJSON_Delete(rq_log_in);
     }
@@ -178,8 +177,7 @@ static void receive_rq_sign_up_server(const char *const string, sqlite3 *db)
         cJSON *pass = cJSON_GetObjectItemCaseSensitive(rs_sign_up, "pass");
 
         t_rs_status status = login(db, log_in->valuestring, pass->valuestring);
-        /* SERVER PROCESS REQUEST */
-        /* SERVER SEND RESPONCE */
+        send_rs_log_in_server(status);
 
         cJSON_Delete(rs_sign_up);
     }
