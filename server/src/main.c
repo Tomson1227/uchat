@@ -46,6 +46,12 @@ int main(int argc , char *argv[])
     close_server();
 }
 
+void send_message(char *message)
+{
+    if(send(server.fd, message, sizeof(message), 0) < 0)
+        perror("send fail");
+}
+
 static bool SetSocketBlockingEnabled(int fd, bool blocking)
 {
     if(fd < 0) 

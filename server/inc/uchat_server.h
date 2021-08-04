@@ -107,6 +107,7 @@ typedef struct s_server {
 }              t_server;
 
 t_socket_list *new_socket(t_server *server, int fd);
+void send_message(char *message);
 void sockets_status(t_socket_list *head);
 void disconect_socket(t_socket_list *address);
 void del_socket_list(t_socket_list **head);
