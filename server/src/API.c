@@ -11,8 +11,7 @@ static void receive_rs_sign_up_client(cJSON *rs);
 /*-------------------------------------*/
 /*--- Public functions definitions ---*/
 
-void process_rq_server(const char *const string, sqlite3 *db)
-{
+void process_rq_server(const char *const string, sqlite3 *db) {
     cJSON *rq = NULL;
 
     if ((rq = cJSON_Parse(string)))
@@ -41,140 +40,17 @@ void process_rq_server(const char *const string, sqlite3 *db)
         check_error();
 }
 
-void process_rs_client(const char *const string)
-{
-    cJSON *rq = NULL;
-
-    if ((rq = cJSON_Parse(string)))
-    {
-        cJSON *type = cJSON_GetObjectItemCaseSensitive(rq, "type");
-
-        switch ((int)type->valuedouble)
-        {
-        case LOGIN:
-            receive_rs_log_in_client(rq);
-            break;
-        case SIGNUP:
-            receive_rs_sign_up_client(rq);
-            break;
-        default:
-            /* UNKNOWN RESPONSE */
-            break;
-        }
-
-        cJSON_Delete(rq);
-    }
-    else
-        check_error();
-}
-
-static void receive_rs_log_in_client(cJSON *rs)
-{
-    cJSON *status = status = cJSON_GetObjectItemCaseSensitive(rs, "status");
-    printf("Received status %s\n", status->valuestring);
-
-    /* PROCESS RESPONSE */
-    switch((int) status->valuedouble) {
-        case LOGIN_OK:
-
-            break;
-        case LOGIN_WRONG_USER:
-
-            break;
-        case LOGIN_WRONG_PASS:
-
-            break;
-        default:
-            /* UNKNOWN STATUS */
-            break;
-    }
-}
-
-static void receive_rs_sign_up_client(cJSON *rs)
-{
-    cJSON *status = cJSON_GetObjectItemCaseSensitive(rs, "status");
-    // printf("Received status %s\n", status->valuestring);
-
-    /* PROCESS RESPONSE */
-    switch((int) status->valuedouble) {
-        case SIGNUP_OK:
-
-            break;
-        case SIGNUP_USER_EXIST:
-
-            break;
-        case SINGUP_FAIL:
-
-            break;
-        default:
-            /* UNKNOWN STATUS */
-            break;
-    }
-}
-
-char *send_rq_log_in_client(char *username, char *password)
-{
-    char *string = NULL;
-    cJSON *request_log_in = NULL;
-
-    if ((request_log_in = cJSON_CreateObject()))
-    {
-        cJSON *type = cJSON_CreateNumber(LOGIN);
-        cJSON *login = cJSON_CreateString(username);
-        cJSON *pass = cJSON_CreateString(password);
-
-        cJSON_AddItemToObject(request_log_in, "type", type);
-        cJSON_AddItemToObject(request_log_in, "login", login);
-        cJSON_AddItemToObject(request_log_in, "pass", pass);
-
-        string = cJSON_Print(request_log_in);
-
-        // request_log_in->string;
-        cJSON_Delete(request_log_in);
-    }
-
-    return string;
-}
-
-char *send_rq_sign_in_client(char *username, char *password)
-{
-    char *string = NULL;
-    cJSON *request_sign_up = NULL;
-
-    if ((request_sign_up = cJSON_CreateObject()))
-    {
-        cJSON *type = cJSON_CreateNumber(SIGNUP);
-        cJSON *login = cJSON_CreateString(username);
-        cJSON *pass = cJSON_CreateString(password);
-
-        cJSON_AddItemToObject(request_sign_up, "type", type);
-        cJSON_AddItemToObject(request_sign_up, "login", login);
-        cJSON_AddItemToObject(request_sign_up, "pass", pass);
-
-        string = cJSON_Print(request_sign_up);
-        cJSON_Delete(request_sign_up);
-    }
-    else
-        check_error();
-
-    return string;
-}
-
-
-
 /*-------------------------------------*/
 /*--- Static fuctions definitions ---*/
 /*-------------------------------------*/
 
-static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db)
-{
+static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db) {
     cJSON *log_in = cJSON_GetObjectItemCaseSensitive(rq, "login");
     cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
 
     // t_rs_status status = sign_up(db, log_in->valuestring, pass->valuestring);
     /* SERVER PROCESS REQUEST */
     /* SERVER SEND RESPONCE */
-
 }
 
 static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db)

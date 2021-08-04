@@ -72,21 +72,28 @@ t_chat *init_chat(t_chat *chat, t_config *config);
 void init_gui(t_chat *chat);
 gint start_gui(t_chat *chat);
 void connect_chat(t_chat *chat);
-void send_message(GtkButton *btn, t_chat *chat);
+void send_message(GtkEntry *entry, t_chat *chat);
 
-void mx_display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_toolbar); 
+void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_toolbar); 
 void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat);
 void display_error_wrong_username_login(t_chat *chat);
 void display_error_wrong_password_login(t_chat *chat);
 void display_error_user_exists(t_chat *chat);
 void delete_room(t_room *room);
 void create_room(GtkButton *btn, t_chat *chat);
-// void delete_msg(GtkButton *btn, t_chat *chat);
+void window_room_info_hide();
+void delete_msg(GtkButton *btn, t_chat *chat);
+
 //api
 char *send_rq_log_in_client(char *username, char *password);
 char *send_rq_sign_in_client(char *username, char *password);
 void process_rs_client(const char *const string, t_chat *chat);
-
+void on_btn_send_message_clicked(GtkButton *btn, t_chat *chat);
+void delete_msg(GtkButton *btn, t_chat *chat);
+void show_room_info(GtkButton *btn, t_chat *chat);
+char *send_rq_create_msg_client(gint room_id);
+char *send_rq_create_room_client(char *username, char *customer); 
+char *send_rq_send_msg_client(char *username, gint room_id, char *message, char *date);
+ 
 //additional functions
 char *my_itoa(long long number);
-

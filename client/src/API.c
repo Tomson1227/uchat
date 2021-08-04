@@ -4,6 +4,9 @@
 static void check_error(void);
 static void receive_rs_log_in_client(cJSON *rs, t_chat *chat);
 static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat);
+static void receive_rs_create_msg_client(cJSON *rs, t_chat *chat);
+static void receive_rs_create_room_client(cJSON *rs, t_chat *chat);
+
 /*-------------------------------------*/
 /*--- Public functions definitions ---*/
 
@@ -23,16 +26,18 @@ void process_rs_client(const char *const string, t_chat *chat) {
             receive_rs_sign_up_client(rq, chat);
             break;
         case CREATE_ROOM:
-            // receive_rs_create_room_client(cJSON *json, s_chat *chat);
+            receive_rs_create_room_client(rq, chat);
             break;
         case CREATE_MSG:
+            receive_rs_create_msg_client(rq, chat);
+            break;
+        case SND_MSG:
 
             break;
         default:
             /* UNKNOWN RESPONSE */
             break;
         }
-
         cJSON_Delete(rq);
     }
     else
@@ -47,7 +52,7 @@ static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
     switch((int) status->valuedouble) {
         case LOGIN_OK:
             gtk_widget_destroy(GTK_WIDGET(wnd_main));
-            // init_chat_window(NULL, NULL);
+            init_chat_window(chat);
             break;
         case LOGIN_WRONG_USER:
             display_error_wrong_username_login(chat);
@@ -94,8 +99,8 @@ char *send_rq_create_room_client(char *username, char *customer) {
         cJSON *receiver = cJSON_CreateString(customer);
 
         cJSON_AddItemToObject(request_create_room, "type", type);
-        cJSON_AddItemToObject(request_create_room, "login", sender);
-        cJSON_AddItemToObject(request_create_room, "pass", receiver);
+        cJSON_AddItemToObject(request_create_room, "sender", sender);
+        cJSON_AddItemToObject(request_create_room, "receiver", receiver);
 
         string = cJSON_Print(request_create_room);
         cJSON_Delete(request_create_room);
@@ -103,9 +108,55 @@ char *send_rq_create_room_client(char *username, char *customer) {
     return string;
 }
 
+char *send_rq_send_msg_client(char *username, gint room_id, char *message, char *date) {
+    char *string = NULL;
+    cJSON *request_send_msg = NULL;
+
+    if ((request_send_msg = cJSON_CreateObject()))
+    {
+        cJSON *type = cJSON_CreateNumber(SND_MSG);
+        cJSON *id = cJSON_CreateNumber(room_id);
+        cJSON *sender = cJSON_CreateString(username);
+        cJSON *time_send = cJSON_CreateString(date);
+        cJSON *msg = cJSON_CreateString(message);
+
+        cJSON_AddItemToObject(request_send_msg, "type", type);
+        cJSON_AddItemToObject(request_send_msg, "room_id", id);
+        cJSON_AddItemToObject(request_send_msg, "username", sender);
+        cJSON_AddItemToObject(request_send_msg, "time", time_send);
+        cJSON_AddItemToObject(request_send_msg, "message", msg);
+
+        string = cJSON_Print(request_send_msg);
+        cJSON_Delete(request_send_msg);
+    }
+    return string;
+}
+
+char *send_rq_create_msg_client(gint room_id) {
+    char *string = NULL;
+    cJSON *request_create_msg = NULL;
+
+    if ((request_create_msg = cJSON_CreateObject()))
+    {
+        cJSON *type = cJSON_CreateNumber(CREATE_MSG);
+        cJSON *msg = cJSON_CreateNumber(room_id);
+
+        cJSON_AddItemToObject(request_create_msg, "type", type);
+        cJSON_AddItemToObject(request_create_msg, "room_id", room_id);
+        string = cJSON_Print(request_create_msg);
+        cJSON_Delete(request_create_msg);
+    }
+    return string;
+}
+
 static void receive_rs_create_room_client(cJSON *json, t_chat *chat) {
-    cJSON *create_room = cJSON_GetObjectItemCaseSensitive(json, "room_id");
-    
+    cJSON *create_room = cJSON_GetObjectItemCaseSensitive(json, "room_id");  
+    //send id  
+}
+
+static void receive_rs_create_msg_client(cJSON *json, t_chat *chat) {
+    cJSON *create_msg = cJSON_GetObjectItemCaseSensitive(json, "msg_id");  
+    //send id  
 }
 
 char *send_rq_log_in_client(char *username, char *password) {
@@ -124,7 +175,7 @@ char *send_rq_log_in_client(char *username, char *password) {
 
         string = cJSON_Print(request_log_in);
         printf("created request:\n %s\n", string);
-        // request_log_in->string;
+        //request_log_in->string;
         cJSON_Delete(request_log_in);
     }
     return string;

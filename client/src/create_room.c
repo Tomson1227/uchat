@@ -8,14 +8,28 @@ static void add_dialog_row(t_room *room, t_chat *chat);
 static void add_messages_box(t_room *room, t_chat *chat);
 static void init_room(t_room *room);
 
-void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {     
+void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_toolbar) {
+    // int id = g_object_get_data(r, "msg_id");
+    // printf("selected msg with id: %d\n", id);
+
+    if (r) {
+        if (gtk_list_box_row_get_selectable(r) == TRUE)
+            gtk_stack_set_visible_child_name (stack_upper_dialog_toolbar, "chat_topbar_wth_btns");
+        if (gtk_list_box_row_get_selectable(r) == FALSE)
+            gtk_stack_set_visible_child_name(stack_upper_dialog_toolbar, "chat_topbar_grid");
+    }
+}
+
+void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
+    printf("entered the cycle\n");     
     char *tmp = g_object_get_data(row, "room");
     GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
     GObject *scroll = gtk_stack_get_child_by_name(stack, tmp);
     gtk_stack_set_visible_child_name(stack, tmp);
 
     t_room *dialog = g_object_get_data(scroll,"dialog");
-    printf("switched to room: %d\n", dialog->room_id);
+    chat->curr_chat = dialog;
+    printf("switched to room: %d\n", chat->curr_chat->room_id);
 }
 
 static void manage_room_visibility(t_chat *chat) {
@@ -29,19 +43,19 @@ static void manage_room_visibility(t_chat *chat) {
 }
 
 static void add_dialog_row(t_room *room, t_chat *chat) {
-    GtkListBox *box = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_dlgs"));
+    chat->listbox_dlgs = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_dlgs"));
     GtkWidget *row = gtk_list_box_row_new();
     // GtkWidget *label = gtk_label_new(room->chat_name);
     char *id = my_itoa(room->room_id);
     GtkWidget *lbl = gtk_label_new(id);
+    g_signal_connect(chat->listbox_dlgs, "row-selected", G_CALLBACK(select_room), chat);
 
-    gtk_container_add(GTK_CONTAINER(box), row);
-    g_signal_connect(box, "row-selected", G_CALLBACK(select_room), chat);
+    gtk_container_add(GTK_CONTAINER(chat->listbox_dlgs), row);
     gtk_widget_show(row);
     gtk_container_add(GTK_CONTAINER(row), lbl);
     gtk_widget_show(lbl);
     g_object_set_data(G_OBJECT(row), "room", id);
-    gtk_widget_show_all(GTK_WIDGET(box));    
+    gtk_widget_show_all(GTK_WIDGET(chat->listbox_dlgs));    
 }
 
 static void add_messages_box(t_room *room, t_chat *chat) {
@@ -51,33 +65,33 @@ static void add_messages_box(t_room *room, t_chat *chat) {
     GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
     GtkWidget *view = gtk_viewport_new(NULL, NULL);
     char *id = my_itoa(room->room_id);
-    GtkWidget *lbl = gtk_label_new(id);
-    GtkWidget *r = gtk_list_box_row_new();
+    // GtkWidget *lbl = gtk_label_new(id);
+    // GtkWidget *r = gtk_list_box_row_new();
     GObject *stack_upper_dialog_toolbar = gtk_builder_get_object(chat->builder, "stack_upper_dialog_toolbar");
 
     gtk_container_add(GTK_CONTAINER(scroll), view);
     gtk_container_add(GTK_CONTAINER(view), box);
     room->listbox_msgs = GTK_LIST_BOX(box);
-    g_signal_connect(box, "row-selected", G_CALLBACK(mx_display_upper_panel), stack_upper_dialog_toolbar);
+    g_signal_connect(box, "row-selected", G_CALLBACK(display_upper_panel), stack_upper_dialog_toolbar);
     gtk_list_box_set_selection_mode(room->listbox_msgs, GTK_SELECTION_MULTIPLE);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    // gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     gtk_widget_show(scroll);
     gtk_stack_add_named(GTK_STACK(stack), scroll, (const gchar *)id);
     gtk_stack_set_visible_child(GTK_STACK(stack), scroll);
     room->stack = GTK_STACK(stack);
     room->scrll_wndw_msgs = GTK_SCROLLED_WINDOW(scroll);
-    gtk_container_add(GTK_CONTAINER(box), r);
+    // gtk_container_add(GTK_CONTAINER(box), r);
     gtk_widget_show(box);
-    gtk_widget_show(r);
-    gtk_container_add(GTK_CONTAINER(r), lbl);
-    gtk_widget_set_halign(lbl, GTK_ALIGN_END);
-    gtk_widget_show(lbl);
+    // gtk_widget_show(r);
+    // gtk_container_add(GTK_CONTAINER(r), lbl);
+    // gtk_widget_set_halign(lbl, GTK_ALIGN_END);
+    // gtk_widget_show(lbl);
     gtk_widget_show_all(scroll);
     g_object_set_data(G_OBJECT(scroll), "dialog", room);
 }
 
 static t_room *fill_room(char *rs) {
-    t_room *room = malloc(sizeof(t_room));
+    t_room *room = (t_room *)malloc(sizeof(t_room));
     init_room(room);
     
     room->room_id = i;
