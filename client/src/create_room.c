@@ -22,12 +22,12 @@ void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_uppe
 
 void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
     printf("entered the cycle\n");     
-    char *tmp = g_object_get_data(row, "room");
+    char *tmp = g_object_get_data(G_OBJECT(row), "room");
     GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
-    GObject *scroll = gtk_stack_get_child_by_name(stack, tmp);
+    GtkWidget *scroll = gtk_stack_get_child_by_name(stack, tmp);
     gtk_stack_set_visible_child_name(stack, tmp);
 
-    t_room *dialog = g_object_get_data(scroll,"dialog");
+    t_room *dialog = g_object_get_data(G_OBJECT(scroll),"dialog");
     chat->curr_chat = dialog;
     printf("switched to room: %d\n", chat->curr_chat->room_id);
 }
@@ -36,10 +36,14 @@ static void manage_room_visibility(t_chat *chat) {
     GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
     GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
+    GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
+    GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
 
+    gtk_widget_show(GTK_WIDGET(room_info));
     gtk_widget_show(GTK_WIDGET(btn_send_msg));
     gtk_widget_show(GTK_WIDGET(btn_send_sticker));
     gtk_widget_show(GTK_WIDGET(chat_message_entry));
+    gtk_widget_show(GTK_WIDGET(btn_attach_file));
 }
 
 static void add_dialog_row(t_room *room, t_chat *chat) {
@@ -74,7 +78,7 @@ static void add_messages_box(t_room *room, t_chat *chat) {
     room->listbox_msgs = GTK_LIST_BOX(box);
     g_signal_connect(box, "row-selected", G_CALLBACK(display_upper_panel), stack_upper_dialog_toolbar);
     gtk_list_box_set_selection_mode(room->listbox_msgs, GTK_SELECTION_MULTIPLE);
-    // gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     gtk_widget_show(scroll);
     gtk_stack_add_named(GTK_STACK(stack), scroll, (const gchar *)id);
     gtk_stack_set_visible_child(GTK_STACK(stack), scroll);
@@ -119,6 +123,7 @@ void create_room(GtkButton *btn, t_chat *chat) {
     //char *temp = (char*)calloc(128, sizeof(char));
     //temp = send_rq_create_room_client(chat->username, char *customer);
     //char *dq = deQueue(config->queue_send);
+    //
     //process_rs_client(dq, t_chat *chat);
 
     t_room *room = fill_room(NULL);

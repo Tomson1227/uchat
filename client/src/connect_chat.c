@@ -15,19 +15,16 @@ void on_chat_settings_btn_clicked(GtkButton *chat_settings_settings_btn, GtkStac
         gtk_stack_set_visible_child_name (stack_dialog_box, "scrll_wndw_dlgs1");
 }
 
-void on_chat_settings_terminal_btn_clicked(GtkButton *chat_settings_terminal_btn, t_chat *wdgts) {
-}
-
 void connect_chat(t_chat *chat) {
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
     GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
     GtkButton *btn_create_room = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_create_room"));
     GtkButton *btn_delete_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_delete_msg"));
-    GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
-    
+    GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
+
     g_signal_connect(btn_send_msg, "clicked", G_CALLBACK(on_btn_send_message_clicked), chat);
     g_signal_connect(chat_message_entry, "activate", G_CALLBACK(send_message), chat);
     g_signal_connect(btn_create_room, "clicked", G_CALLBACK(create_room), chat);
     g_signal_connect(btn_delete_msg, "clicked", G_CALLBACK(delete_msg), chat);
-    g_signal_connect(room_info, "clicked", G_CALLBACK(show_room_info), chat);
+    g_signal_connect(btn_attach_file, "clicked", G_CALLBACK(attach_file), chat);
 }

@@ -72,6 +72,7 @@ ___
     "customer": "customer"    
 }
 ```
+
 **From server to client**
 
 ```json
@@ -110,10 +111,11 @@ ___
 {
     "type": SND_MSG,
     "username": "username",
-    "room_id": "room_id",
+    "room_id": room_id,
     "message": "message",
+    "message_id": msg_id,
     "date": "date",
-    "msg_type": TEXT_MSG
+    "msg_type": TEXT
 }
 ```
 
@@ -121,11 +123,12 @@ ___
 ```json
 {
     "type": SND_MSG,
+    "username": "username_of_sender",
     "room_id": room_id,
     "message": "message",
+    "message_id": msg_id,
     "date": "date",
-    "message_id": message_id_in_database,
-    "username": "username_of_sender",
-    "msg_type": TEXT_MSG 
+    "msg_type": TEXT
 }
+```
 ___

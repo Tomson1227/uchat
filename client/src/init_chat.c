@@ -25,7 +25,6 @@ GtkBuilder *init_window(t_chat *chat) {
 
 t_chat *init_chat(t_chat *chat, t_config *config) {
     chat = (t_chat *)malloc(sizeof(t_chat));
-
     chat->config = config;
     chat->builder = init_window(chat);
     init_fields(chat);
@@ -38,10 +37,15 @@ void init_chat_window(t_chat *chat) {
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
     GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
     GtkLabel *lbl = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_username"));
-     
+    GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
+    GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
+
+    // load_css("client/styles/login_signup.css");
     gtk_widget_show(GTK_WIDGET(chat_wndw));
     gtk_label_set_text(lbl, chat->username);
+    gtk_widget_hide(GTK_WIDGET(room_info));
     gtk_widget_hide(GTK_WIDGET(btn_send_msg));
     gtk_widget_hide(GTK_WIDGET(btn_send_sticker));
     gtk_widget_hide(GTK_WIDGET(chat_message_entry));
+    gtk_widget_hide(GTK_WIDGET(btn_attach_file));
 }

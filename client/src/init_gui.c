@@ -9,14 +9,18 @@ static void init_main_window(t_chat *chat);
 void init_gui(t_chat *chat) {
     connect_sign_in_up(chat);
     connect_chat(chat);
-    init_main_window(chat);
+    connect_room_settings(chat);
+    connect_profile_settings(chat);
+    connect_search_username_room(chat);
     
+    init_main_window(chat);
 }
 
 static void init_main_window(t_chat *chat) {
     GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
 
     gtk_widget_show(GTK_WIDGET(wnd_main));
+    load_css("client/styles/login_signup.css");
 }
 
 static void on_btn_sign_up_clicked(GtkButton *btn_sign_up, t_chat *chat) {
@@ -35,29 +39,29 @@ void on_window_main_destroy() {
 
 void on_btn_back_console_clicked(GtkButton *btn_back_console, GtkStack *stack) {
     gtk_stack_set_visible_child_full (stack, "menu", 0);
-    load_css("client/styles/main_menu.css");
+    // load_css("client/styles/main_menu.css");
 }
 
 void on_btn_gui_clicked(GtkButton *btn_gui_clicked, GtkStack *stack) {
     gtk_stack_set_visible_child_full (stack, "log_in", 0);
-    load_css("client/styles/login_signup.css");
+    // load_css("client/styles/login_signup.css");
 }
 
 void on_btn_console_clicked(GtkButton *btn_console_clicked, GtkStack *stack) {
     gtk_stack_set_visible_child_full(stack, "console", 0);
-    load_css("client/styles/console.css");
+    // load_css("client/styles/console.css");
 }
 
 void on_btn_back_log_in_clicked(GtkButton *btn_back_log_in, GtkStack *stack) {
      gtk_stack_set_visible_child_full (stack, "menu", 0);
-     load_css("client/styles/main_menu.css");
+    //  load_css("client/styles/main_menu.css");
 }
 
 void on_btn_back_clicked(GtkButton *btn_back, GtkStack *stack) {
     g_return_if_fail(GTK_IS_BUTTON(btn_back));
     g_return_if_fail(GTK_IS_STACK(stack));
     gtk_stack_set_visible_child_full (stack, "log_in", 0);
-    load_css("client/styles/login_signup.css");
+    // load_css("client/styles/login_signup.css");
 }
 
 static void req_log_in(GtkButton *btn, t_chat *chat) {
@@ -111,19 +115,19 @@ static void req_sign_up(GtkButton *btn, t_chat *chat) {
         gtk_label_set_text(GTK_LABEL(label), "");
         chat->username = malloc(sizeof(char) * strlen(buf_username));
         strcpy(chat->username, buf_username);
-        // gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(chat->builder, "window_main")));
-        // init_chat_window(chat);
+        gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(chat->builder, "window_main")));
+        init_chat_window(chat);
 
-        char *tmp = (char*)calloc(128, sizeof(char));
-        tmp = send_rq_sign_in_client(buf_username, buf_password);
+        // char *tmp = (char*)calloc(128, sizeof(char));
+        // tmp = send_rq_sign_in_client(buf_username, buf_password);
 
-        printf("entered the function\n");
-        enQueue(chat->config->queue_send, tmp);
-        while(QueueisEmpty(chat->config->queue_recv)) {
-        }
+        // printf("entered the function\n");
+        // enQueue(chat->config->queue_send, tmp);
+        // while(QueueisEmpty(chat->config->queue_recv)) {
+        // }
         // sleep(3);
-        char *dq = deQueue(chat->config->queue_recv);
-        process_rs_client(dq, chat);
+        // char *dq = deQueue(chat->config->queue_recv);
+        // process_rs_client(dq, chat);
     }
 }
 

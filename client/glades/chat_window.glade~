@@ -2,23 +2,357 @@
 <!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="attach_file">
+    <property name="width_request">20</property>
+    <property name="height_request">20</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="halign">center</property>
+    <property name="valign">center</property>
+    <property name="pixbuf">../src/resources/attach.png</property>
+    <property name="pixel_size">20</property>
+  </object>
+  <object class="GtkWindow" id="block_user">
+    <property name="can_focus">False</property>
+    <property name="default_width">400</property>
+    <property name="default_height">400</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="row_homogeneous">True</property>
+        <property name="column_homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="label" translatable="yes">are you sure you want to block this user?</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_cancel_block_user">
+            <property name="label" translatable="yes">cancel</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_confirm_block_user">
+            <property name="label" translatable="yes">block</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="clear_history">
+    <property name="can_focus">False</property>
+    <property name="default_width">400</property>
+    <property name="default_height">400</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="row_homogeneous">True</property>
+        <property name="column_homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="label" translatable="yes">are you sure you want to clear history?</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_cancel_clear_history">
+            <property name="label" translatable="yes">cancel</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_confirm_clear_history">
+            <property name="label" translatable="yes">clear</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkImage" id="contacts_img">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">32</property>
     <property name="icon_name">list-add</property>
   </object>
+  <object class="GtkWindow" id="delete_room">
+    <property name="name">deleting_room</property>
+    <property name="can_focus">False</property>
+    <property name="default_width">400</property>
+    <property name="default_height">400</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="row_homogeneous">True</property>
+        <property name="column_homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="label" translatable="yes">are you sure you want to delete a room?</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_cancel_delete_room">
+            <property name="label" translatable="yes">cancel</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_confirm_delete_room">
+            <property name="label" translatable="yes">delete</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkFileChooserDialog" id="file_chooser">
+    <property name="can_focus">False</property>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">open</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-justify-fill</property>
+    <property name="icon_size">0</property>
+  </object>
+  <object class="GtkWindow" id="log_out">
+    <property name="can_focus">False</property>
+    <property name="default_width">400</property>
+    <property name="default_height">400</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="row_homogeneous">True</property>
+        <property name="column_homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="label" translatable="yes">are you sure you want to log out?</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_cancel_log_out">
+            <property name="label" translatable="yes">cancel</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_log_out">
+            <property name="label" translatable="yes">log out</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="profile_settings">
+    <property name="can_focus">False</property>
+    <property name="default_width">400</property>
+    <property name="default_height">400</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">edit profile</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkImage" id="send_img">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">32</property>
     <property name="icon_name">mail-send</property>
-  </object>
-  <object class="GtkImage" id="settings_img">
-    <property name="can_focus">False</property>
-    <property name="margin_bottom">5</property>
-    <property name="pixel_size">32</property>
-    <property name="icon_name">applications-system</property>
   </object>
   <object class="GtkImage" id="vv">
     <property name="visible">True</property>
@@ -47,12 +381,11 @@
             <property name="height_request">20</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">end</property>
             <property name="margin_top">4</property>
+            <property name="row_homogeneous">True</property>
             <child>
               <object class="GtkEntry" id="chat_search_entry">
                 <property name="name">chat_search_entry</property>
-                <property name="height_request">20</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="max_length">50</property>
@@ -68,11 +401,10 @@
             </child>
             <child>
               <object class="GtkButton" id="chat_settings_btn">
-                <property name="height_request">20</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image">settings_img</property>
+                <property name="image">image1</property>
                 <signal name="clicked" handler="on_chat_settings_btn_clicked" object="stack_dialog_box" swapped="no"/>
               </object>
               <packing>
@@ -195,16 +527,33 @@
                           </object>
                         </child>
                         <child>
+                          <object class="GtkListBoxRow" id="row_settings">
+                            <property name="width_request">100</property>
+                            <property name="height_request">80</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <child>
+                              <object class="GtkButton" id="profile_setting">
+                                <property name="label" translatable="yes">serttings</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
                           <object class="GtkListBoxRow">
                             <property name="width_request">100</property>
                             <property name="height_request">80</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <child>
-                              <object class="GtkLabel" id="lbl_settings">
+                              <object class="GtkButton">
+                                <property name="label" translatable="yes">log out</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">settings</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
                               </object>
                             </child>
                           </object>
@@ -235,6 +584,8 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
                 <property name="label" translatable="yes">select a chat to start messaging</property>
               </object>
               <packing>
@@ -264,9 +615,8 @@
                 <property name="column_homogeneous">True</property>
                 <child>
                   <object class="GtkButton" id="room_info">
-                    <property name="label" translatable="yes">button</property>
+                    <property name="label" translatable="yes">info</property>
                     <property name="width_request">615</property>
-                    <property name="height_request">20</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -287,6 +637,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
+                <property name="row_homogeneous">True</property>
                 <child>
                   <object class="GtkButton" id="btn_edit_msg">
                     <property name="label" translatable="yes">edit</property>
@@ -295,7 +646,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="halign">end</property>
-                    <property name="valign">center</property>
                   </object>
                   <packing>
                     <property name="left_attach">2</property>
@@ -310,7 +660,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="halign">end</property>
-                    <property name="valign">center</property>
                     <property name="image_position">top</property>
                   </object>
                   <packing>
@@ -326,7 +675,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="halign">start</property>
-                    <property name="valign">center</property>
                     <signal name="clicked" handler="on_btn_cancel_clicked" object="stack_upper_dialog_toolbar" swapped="no"/>
                   </object>
                   <packing>
@@ -364,9 +712,24 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
+              <object class="GtkButton" id="btn_attach_file">
+                <property name="width_request">20</property>
+                <property name="height_request">20</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">attach_file</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkEntry" id="chat_message_entry">
                 <property name="name">chat_message_entry</property>
-                <property name="width_request">500</property>
+                <property name="width_request">400</property>
                 <property name="height_request">20</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -384,7 +747,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -956,7 +1319,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="clear_history">
+          <object class="GtkButton" id="btn_clear_history">
             <property name="label" translatable="yes">clear history</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -969,7 +1332,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="delete_room">
+          <object class="GtkButton" id="btn_delete_room">
             <property name="label" translatable="yes">delete room</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -982,7 +1345,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="block_user">
+          <object class="GtkButton" id="btn_block_user">
             <property name="label" translatable="yes">block user</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>

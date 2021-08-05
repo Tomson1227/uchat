@@ -53,8 +53,7 @@ static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db) {
     /* SERVER SEND RESPONCE */
 }
 
-static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db)
-{
+static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db) {
     cJSON *log_in = cJSON_GetObjectItemCaseSensitive(rq, "login");
     cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
 
@@ -63,8 +62,7 @@ static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db)
     /* SERVER SEND RESPONCE */
 }
 
-static char *send_rs_log_in_server(t_rs_status response)
-{
+static char *send_rs_log_in_server(t_rs_status response) {
     char *string = NULL;
     cJSON *rs_log_in = NULL;
 
@@ -85,8 +83,7 @@ static char *send_rs_log_in_server(t_rs_status response)
     return string;
 }
 
-static char *send_rs_sign_up_server(t_rs_status response)
-{
+static char *send_rs_sign_up_server(t_rs_status response) {
     char *string = NULL;
     cJSON *rs_sign_up = NULL;
 
@@ -107,8 +104,7 @@ static char *send_rs_sign_up_server(t_rs_status response)
     return string;
 }
 
-static void check_error(void)
-{
+static void check_error(void) {
     const char *error_ptr = cJSON_GetErrorPtr();
 
     if (error_ptr != NULL)

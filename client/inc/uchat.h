@@ -65,32 +65,50 @@ struct s_msg {
     gint msg_id;
 };
 
+typedef enum s_user_info_type {
+    NAME_OF_USER,
+    DESCRIPTION
+}            t_user_info_type;
+
 //gui
 void load_css(char *path);
 void init_chat_window(t_chat *chat);
 t_chat *init_chat(t_chat *chat, t_config *config);
 void init_gui(t_chat *chat);
 gint start_gui(t_chat *chat);
-void connect_chat(t_chat *chat);
 void send_message(GtkEntry *entry, t_chat *chat);
-
+void connect_chat(t_chat *chat);
+void connect_room_settings(t_chat *chat);
+void connect_profile_settings(t_chat *chat);
+;
 void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_toolbar); 
 void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat);
 void display_error_wrong_username_login(t_chat *chat);
 void display_error_wrong_password_login(t_chat *chat);
 void display_error_user_exists(t_chat *chat);
-void delete_room(t_room *room);
 void create_room(GtkButton *btn, t_chat *chat);
-void window_room_info_hide();
 void delete_msg(GtkButton *btn, t_chat *chat);
+void show_room_settings(GtkButton *button, t_chat *chat);
+void show_profile_settings(GtkButton *button, t_chat *chat);
+void on_btn_send_message_clicked(GtkButton *btn, t_chat *chat);
+void show_room_info(GtkButton *btn, t_chat *chat);
+void show_clear_history_window(GtkButton *btn, t_chat *chat);
+void show_delete_room_window(GtkButton *btn, t_chat *chat);
+void show_block_user_window(GtkButton *btn, t_chat *chat);
+void clear_history(GtkButton *btn, t_chat *chat);
+void cancel_clear_history(GtkButton *btn, t_chat *chat);
+void delete_room(GtkButton *btn, t_chat *chat);
+void cancel_delete_room(GtkButton *btn, t_chat *chat);
+void block_user(GtkButton *btn, t_chat *chat);
+void cancel_block_user(GtkButton *btn, t_chat *chat); 
+void attach_file(GtkButton *btn, t_chat *chat); 
+void log_out(GtkButton *btn, t_chat *chat);
+
 
 //api
 char *send_rq_log_in_client(char *username, char *password);
 char *send_rq_sign_in_client(char *username, char *password);
 void process_rs_client(const char *const string, t_chat *chat);
-void on_btn_send_message_clicked(GtkButton *btn, t_chat *chat);
-void delete_msg(GtkButton *btn, t_chat *chat);
-void show_room_info(GtkButton *btn, t_chat *chat);
 char *send_rq_create_msg_client(gint room_id);
 char *send_rq_create_room_client(char *username, char *customer); 
 char *send_rq_send_msg_client(char *username, gint room_id, char *message, char *date);

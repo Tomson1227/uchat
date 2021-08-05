@@ -4,13 +4,19 @@ window
     background-image: none;
 }
 
-button
+
+row {
+	background: #3A466B;
+}
+
+/* button
 {
     /* font: Helvetica; */
     color: rgb(0, 255, 0);
     /* border-radius: 20%; */
     outline-color: rgb(0, 255, 0);
-}
+} */
+
 label
 {
     color:rgb(0, 255, 0);

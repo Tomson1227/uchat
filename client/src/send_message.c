@@ -2,11 +2,11 @@
 
 int k = 0;
 static void free_msg(t_msg *msg);
-static gchar *trim_message(gchar *s);
+static gchar *trim_message(const gchar *s);
 static void init_msg(t_msg *msg);
 static t_msg *fill_msg(); 
 
-static gchar *trim_message(gchar *buffer) {
+static gchar *trim_message(const gchar *buffer) {
     int j = 0;
     int n = strlen(buffer) / 45;
     gchar *output = malloc(sizeof(gchar) * strlen(buffer) + n + 1);
@@ -83,24 +83,24 @@ static void AddListItem(t_chat *chat, const gchar *sText, t_msg *msg) {
         gtk_container_add(GTK_CONTAINER(room->listbox_msgs), row);
         gtk_container_add(GTK_CONTAINER(row), lbl);
         gtk_widget_set_halign(lbl, GTK_ALIGN_END);
-        g_object_set_data(row, "msg_id", k);
+        g_object_set_data(G_OBJECT(row), "msg_id", k);
         k++;
-        g_object_set_data(msg->row_msg, "msg", msg);
+        g_object_set_data(G_OBJECT(msg->row_msg), "msg", msg);
         gtk_widget_show(row);
         gtk_widget_show(lbl);
     }  
 }
 
 void delete_msg(GtkButton *btn, t_chat *chat) {
-    GtkListBoxRow *r = gtk_list_box_row_new();
-    r = gtk_list_box_get_selected_row(chat->curr_chat->listbox_msgs);
-    t_msg *msg = g_object_get_data(r, "msg");
+    GtkWidget *r = gtk_list_box_row_new();
+    r = GTK_WIDGET(gtk_list_box_get_selected_row(chat->curr_chat->listbox_msgs));
+    t_msg *msg = g_object_get_data(G_OBJECT(r), "msg");
 
     //send request to delete message
 
     if (msg) {
-        gtk_widget_destroy(msg->row_msg);
-        gtk_widget_destroy(msg->row_time);
+        gtk_widget_destroy(GTK_WIDGET(msg->row_msg));
+        gtk_widget_destroy(GTK_WIDGET(msg->row_time));
     }
     //free msg structure
     free_msg(msg);

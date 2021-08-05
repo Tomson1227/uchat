@@ -132,17 +132,17 @@ char *send_rq_send_msg_client(char *username, gint room_id, char *message, char 
     return string;
 }
 
-char *send_rq_create_msg_client(gint room_id) {
+char *send_rq_create_msg_client(int room_id) {
     char *string = NULL;
     cJSON *request_create_msg = NULL;
 
     if ((request_create_msg = cJSON_CreateObject()))
     {
         cJSON *type = cJSON_CreateNumber(CREATE_MSG);
-        cJSON *msg = cJSON_CreateNumber(room_id);
+        cJSON *id = cJSON_CreateNumber(room_id);
 
         cJSON_AddItemToObject(request_create_msg, "type", type);
-        cJSON_AddItemToObject(request_create_msg, "room_id", room_id);
+        cJSON_AddItemToObject(request_create_msg, "room_id", id);
         string = cJSON_Print(request_create_msg);
         cJSON_Delete(request_create_msg);
     }
