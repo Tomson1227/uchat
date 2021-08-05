@@ -10,12 +10,15 @@ TDIR = test
 
 #lib includes
 LIBDIR = ../libs/cJSON/inc ../libs/API/inc ../libs/SQLite/inc
-LIB = ../libs/SQLite.a ../libs/API.a ../libs/cJSON.a -ldl -pthread
+LIB = ../libs/API.a ../libs/cJSON.a ../libs/SQLite.a
 
-CC			= clang
-GFLAGS		= -std=c11 -pipe -Wall -Wextra -Werror -Wpedantic\
-	-Wno-unused-command-line-argument -Wno-unused-variable \
-	-Wno-unused-function -Wno-unused-parameter -g -pthread -rdynamic -ldl
+#compiler settings
+CC = gcc
+CFLAGS = -std=c11 -pthread
+CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic
+DYNAMICS = -pthread -ldl
+FLAGS = $(CFLAGS) -I $(IDIR) $(addprefix -I, $(LIBDIR))
+TEST_FLAGS = $(CCFLAGS)
 
 #headers
 DEPS := $(wildcard $(IDIR)/*.h)
@@ -29,20 +32,23 @@ OBJS = $(subst $(SDIR),$(ODIR),$(_OBJS))
 #TARGETS
 all: $(NAME)
 
-$(NAME): $(OBJ_DIR) $(OBJ) 
-	@$(COMPILE) $(OBJ) -o $(NAME)
-	@printf "\r\033[2K$@ \033[35;1mcreated\033[0m\n"
+#make objects
+$(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
+	@mkdir -p obj
+	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
+	@$(CC) $(FLAGS) -c $< -o $@ $(PKGCONFIG)
 
 #make excecutable
 $(NAME): $(OBJS)
-	@$(CC) $(FLAGS) $^ $(LIB) -o $@
+	@$(CC) $(FLAGS) $^ $(LIB) -o $@ $(DYNAMICS)
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
-	@printf "Usage: ./$@ <port> <address>\n"
-# WARNING: Edit "printf" for your needs
+	@printf "Usage: ./$@ <port>\n"
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC_H)
-	@$(COMPILE) -o $@ -c $<
-	@printf "\r\033[2K$(NAME) \033[37;1mcompile \033[0m$(<:$(SRC_DIR)/%.c=%)"
+#make test
+$(TEST): $(TEST_SRCS)
+	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
+	@$(CC) $(TEST_FLAGS) $< -o $@
+	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
 
 .PHONY: clean uninstall reinstall
 
