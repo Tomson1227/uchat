@@ -9,14 +9,15 @@ SDIR = src
 TDIR = test
 
 #lib includes
-LIBDIR = ../libs/cJSON/inc ../libs/SQLite/inc
-LIB = ../libs/SQLite.a ../libs/cJSON.a -ldl -pthread
+LIBDIR = ../libs/cJSON/inc ../libs/API/inc ../libs/SQLite/inc
+LIB = ../libs/API.a ../libs/cJSON.a ../libs/SQLite.a
 
 #compiler settings
 CC = gcc
-CFLAGS = -std=c11
+CFLAGS = -std=c11 -pthread
 CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic
-FLAGS = $(CFLAGS) -I$(IDIR) $(addprefix -I, $(LIBDIR))
+DYNAMICS = -pthread -ldl
+FLAGS = $(CFLAGS) -I $(IDIR) $(addprefix -I, $(LIBDIR))
 TEST_FLAGS = $(CCFLAGS)
 
 #headers
@@ -35,14 +36,13 @@ all: $(NAME)
 $(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
 	@mkdir -p obj
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
-	@$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@ $(PKGCONFIG)
 
 #make excecutable
 $(NAME): $(OBJS)
-	@$(CC) $(FLAGS) $^ $(LIB) -o $@
+	@$(CC) $(FLAGS) $^ $(LIB) -o $@ $(DYNAMICS)
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
-	@printf "Usage: ./$@ <port> <address>\n"
-# WARNING: Edit "printf" for your needs
+	@printf "Usage: ./$@ <port>\n"
 
 #make test
 $(TEST): $(TEST_SRCS)

@@ -2,12 +2,10 @@
 
 /*--- Static fuctions declarations ---*/
 static void check_error(void);
-static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db);
 static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db);
-static char *send_rs_sign_up_server(t_rs_status response);
-static char *send_rs_log_in_server(t_rs_status response);
-static void receive_rs_log_in_client(cJSON *rs);
-static void receive_rs_sign_up_client(cJSON *rs);
+static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db);
+static void send_rs_sign_up_server(t_rs_status response);
+static void send_rs_log_in_server(t_rs_status response);
 /*-------------------------------------*/
 /*--- Public functions definitions ---*/
 
@@ -32,9 +30,7 @@ void process_rq_server(const char *const string, sqlite3 *db) {
             /* UNKNOWN REQUEST */
             break;
         }
-        // printf("Allocation? %s\n", malloc_size(rq) ? "Yes" : "No");
         cJSON_Delete(rq);
-        // printf("Allocation? %s\n", malloc_size(rq) ? "Yes" : "No");
     }
     else
         check_error();
@@ -48,22 +44,21 @@ static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db) {
     cJSON *log_in = cJSON_GetObjectItemCaseSensitive(rq, "login");
     cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
 
-    // t_rs_status status = sign_up(db, log_in->valuestring, pass->valuestring);
-    /* SERVER PROCESS REQUEST */
-    /* SERVER SEND RESPONCE */
+    t_rs_status status = sign_up(db, log_in->valuestring, pass->valuestring);
+    send_rs_sign_up_server(status);
 }
 
 static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db) {
     cJSON *log_in = cJSON_GetObjectItemCaseSensitive(rq, "login");
     cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
 
-    // t_rs_status status = login(db, log_in->valuestring, pass->valuestring);
-    /* SERVER PROCESS REQUEST */
-    /* SERVER SEND RESPONCE */
+    t_rs_status status = login(db, log_in->valuestring, pass->valuestring);
+    send_rs_log_in_server(status);
 }
 
-static char *send_rs_log_in_server(t_rs_status response) {
-    char *string = NULL;
+static void send_rs_log_in_server(t_rs_status response)
+{
+    char *message = NULL;
     cJSON *rs_log_in = NULL;
 
     if ((rs_log_in = cJSON_CreateObject()))
@@ -74,17 +69,20 @@ static char *send_rs_log_in_server(t_rs_status response) {
         cJSON_AddItemToObject(rs_log_in, "type", type);
         cJSON_AddItemToObject(rs_log_in, "status", status);
 
-        string = cJSON_Print(rs_log_in);
+        message = cJSON_Print(rs_log_in);
+
+        send_message(message);
+
+        free(message);
         cJSON_Delete(rs_log_in);
     }
     else
         check_error();
-
-    return string;
 }
 
-static char *send_rs_sign_up_server(t_rs_status response) {
-    char *string = NULL;
+static void send_rs_sign_up_server(t_rs_status response)
+{
+    char *message = NULL;
     cJSON *rs_sign_up = NULL;
 
     if ((rs_sign_up = cJSON_CreateObject()))
@@ -94,14 +92,15 @@ static char *send_rs_sign_up_server(t_rs_status response) {
 
         cJSON_AddItemToObject(rs_sign_up, "type", type);
         cJSON_AddItemToObject(rs_sign_up, "status", status);
+        message = cJSON_Print(rs_sign_up);
+        
+        send_message(message);
 
-        string = cJSON_Print(rs_sign_up);
+        free(message);
         cJSON_Delete(rs_sign_up);
     }
     else
         check_error();
-
-    return string;
 }
 
 static void check_error(void) {
