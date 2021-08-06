@@ -39,5 +39,3 @@ char *read_socket(int fd)
 
     return line;
 }
-
-

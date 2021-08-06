@@ -5,7 +5,7 @@ OBJ_DIR = obj
 INC_DIR = inc
 
 #lib includes
-LIBDIR = ../cJSON/inc
+LIBDIR = ../cJSON/inc ../SQLite/inc
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC_FILES:%.c=%.o)))

@@ -58,5 +58,4 @@ uchat_server
 .vscode
 .json
 *.db
-!shell.o
-!sqlite3.o
+*.o

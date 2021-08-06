@@ -3,16 +3,16 @@
 
 #include <time.h>
 #include <poll.h>
-#include <stdio.h> 
-#include <string.h> 
+#include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
-#include <stdlib.h> 
-#include <errno.h> 
+#include <stdlib.h>
+#include <errno.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <sys/types.h> 
-#include <sys/socket.h> 
-#include <netinet/in.h> 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <sys/time.h>
 #include <sys/ioctl.h>
 #include <sys/poll.h>
@@ -133,6 +133,7 @@ typedef struct s_server {
 // }            t_rs_status;
 
 t_socket_list *new_socket(t_server *server, int fd);
+void send_message(char *message);
 void sockets_status(t_socket_list *head);
 void disconect_socket(t_socket_list *address);
 void del_socket_list(t_socket_list **head);

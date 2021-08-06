@@ -16,10 +16,10 @@ static int callback(void *data, int argc, char **argv, char **azColName)
 int checkLogin(sqlite3 *db, char *user_login) {
     const unsigned char *checkLogin;
     char *checkQuery;
-    int length;
     sqlite3_stmt *stmt;
 
-    length = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN = '%s';", user_login);
+    int length = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN = '%s';", user_login);
+
     if(!(checkQuery = (char *)calloc(length, sizeof(char))))
         perror("allocation fail");
 
@@ -67,7 +67,6 @@ t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass)
 
         if( rc != SQLITE_OK ) {
             status = SINGUP_FAIL;
-            // fprintf(stderr, "SQL error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
         }
 
@@ -108,14 +107,11 @@ t_rs_status login(sqlite3 *db, char *user_login, char *user_pass) {
     return status;
 }
 
-void Init_DB(t_server * server)
+void Init_DB(t_server *server)
 {
     char *zErrMsg = 0;
-    int rc;
     char *sql;
-//    const char* data = "Callback function called";
-
-    rc = sqlite3_open("uchat.db", &server->db);
+    int rc = sqlite3_open("uchat.db", &server->db);
 
     if( rc ) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(server->db));
@@ -129,7 +125,7 @@ void Init_DB(t_server * server)
     "LOGIN TEXT," \
     "PASS  TEXT);";
 
-//    sql = "DROP TABLE USRS;";
+    sql = "SELECT * FROM USRS";
 
     sql = "SELECT * FROM USRS";
 
@@ -141,10 +137,4 @@ void Init_DB(t_server * server)
     } else {
         fprintf(stdout, "Table created successfully\n");
     }
-
-//    sign_up(server->db, "OOLLL", "qwerty228");
-//    login(server->db, "OOLLL", "qwerty228");
-
-
-    // sqlite3_close(db);
 }
