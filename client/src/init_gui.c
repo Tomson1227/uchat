@@ -83,11 +83,13 @@ static void req_log_in(GtkButton *btn, t_chat *chat) {
         chat->username = malloc(sizeof(char) * strlen(buf_username));
         strcpy(chat->username, buf_username);
         printf("%s\n", chat->username);
-        char *temp = (char*)calloc(128, sizeof(char));
-        temp = send_rq_log_in_client(buf_username, buf_password);
-        enQueue(chat->config->queue_send, temp);
-        char *dq = deQueue(chat->config->queue_send);
-        process_rs_client(dq, chat);
+        gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(chat->builder, "window_main")));
+        init_chat_window(chat);
+        // char *temp = (char*)calloc(128, sizeof(char));
+        // temp = send_rq_log_in_client(buf_username, buf_password);
+        // enQueue(chat->config->queue_send, temp);
+        // char *dq = deQueue(chat->config->queue_send);
+        // process_rs_client(dq, chat);
     }
 }
 
