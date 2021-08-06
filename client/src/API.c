@@ -74,7 +74,7 @@ static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
     switch((int) status->valuedouble) {
         case SIGNUP_OK:
             gtk_widget_destroy(GTK_WIDGET(wnd_main));
-            //init_chat_window(NULL, NULL);
+            init_chat_window(chat);
             break;
         case SIGNUP_USER_EXIST:
             display_error_user_exists(chat);

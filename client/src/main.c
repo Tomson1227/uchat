@@ -3,12 +3,12 @@
 int main(int argc, char *argv[]) {
     check_args(argc, argv);
     t_config *config = address_setup(argv[1], argv[2]);
-    t_chat *chat = NULL; 
+    
+    connection_setup(config);
+t_chat *chat = NULL; 
     chat = init_chat(chat, config);
     init_gui(chat);
     start_gui(chat);
-    connection_setup(config);
-
     
 
     //SPAMMER
