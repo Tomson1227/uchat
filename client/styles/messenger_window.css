@@ -5,5 +5,5 @@ window {
 
 label {
 	color: red;	
-	/* background-image: url('../client/src/images/tape.png'); */
+	background-image: url('../client/src/images/tape.png'); 
 }

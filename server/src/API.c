@@ -2,30 +2,31 @@
 
 /*--- Static fuctions declarations ---*/
 static void check_error(void);
-static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db);
-static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db);
-static void send_rs_sign_up_server(t_rs_status response);
-static void send_rs_log_in_server(t_rs_status response);
+static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db, int fd);
+static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db, int fd);
+static void send_rs_sign_up_server(t_rs_status response, int fd);
+static void send_rs_log_in_server(t_rs_status response, int fd);
 /*-------------------------------------*/
 /*--- Public functions definitions ---*/
 
-void process_rq_server(const char *const string, sqlite3 *db)
-{
+void process_rq_server(const char *const string, sqlite3 *db, int fd) {
+    printf("API: %s\n", string);
     cJSON *rq = NULL;
 
     if ((rq = cJSON_Parse(string)))
     {
         cJSON *type = cJSON_GetObjectItemCaseSensitive(rq, "type");
-
-        printf("API: %s\n", type->valuestring);
+        // char *tmp = cJSON_Print(type);
+        
+        printf("%d\n", (int)type->valuedouble);
 
         switch ((int)type->valuedouble)
         {
         case LOGIN:
-            receive_rq_log_in_server(rq, db);
+            receive_rq_log_in_server(rq, db, fd);
             break;
         case SIGNUP:
-            receive_rq_sign_up_server(rq, db);
+            receive_rq_sign_up_server(rq, db, fd);
             break;
         case CREATE_ROOM:
             break;
@@ -47,25 +48,26 @@ void process_rq_server(const char *const string, sqlite3 *db)
 /*--- Static fuctions definitions ---*/
 /*-------------------------------------*/
 
-static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db)
-{
-    cJSON *log_in = cJSON_GetObjectItemCaseSensitive(rq, "login");
-    cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
-
-    t_rs_status status = sign_up(db, log_in->valuestring, pass->valuestring);
-    send_rs_sign_up_server(status);
-}
-
-static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db)
-{
+static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db, int fd) {
     cJSON *log_in = cJSON_GetObjectItemCaseSensitive(rq, "login");
     cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
 
     t_rs_status status = login(db, log_in->valuestring, pass->valuestring);
-    send_rs_log_in_server(status);
+    send_rs_log_in_server(status, fd);
 }
 
-static void send_rs_log_in_server(t_rs_status response)
+static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db, int fd) {
+    cJSON *log_in = cJSON_GetObjectItemCaseSensitive(rq, "login");
+    cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
+
+    t_rs_status status = sign_up(db, log_in->valuestring, pass->valuestring);
+    // printf("log_in: %s\npass: %s\n", log_in->valuestring, pass->valuestring);
+    // printf("%d\n", status);
+    send_rs_sign_up_server(status, fd);
+    // printf("success\n");
+}
+
+static void send_rs_log_in_server(t_rs_status response, int fd)
 {
     char *message = NULL;
     cJSON *rs_log_in = NULL;
@@ -79,9 +81,12 @@ static void send_rs_log_in_server(t_rs_status response)
         cJSON_AddItemToObject(rs_log_in, "status", status);
 
         message = cJSON_Print(rs_log_in);
+        // printf("%s\n", message);
+         
+        if(send(fd, message, strlen(message), 0) < 0)
+            perror("send fail");
 
-        send_message(message);
-
+        // printf("message sent\n");
         free(message);
         cJSON_Delete(rs_log_in);
     }
@@ -89,7 +94,7 @@ static void send_rs_log_in_server(t_rs_status response)
         check_error();
 }
 
-static void send_rs_sign_up_server(t_rs_status response)
+static void send_rs_sign_up_server(t_rs_status response, int fd)
 {
     char *message = NULL;
     cJSON *rs_sign_up = NULL;
@@ -102,8 +107,9 @@ static void send_rs_sign_up_server(t_rs_status response)
         cJSON_AddItemToObject(rs_sign_up, "type", type);
         cJSON_AddItemToObject(rs_sign_up, "status", status);
         message = cJSON_Print(rs_sign_up);
-        
-        send_message(message);
+        printf("%s\n", message);
+        if(send(fd, message, strlen(message), 0) < 0)
+            perror("send fail");
 
         free(message);
         cJSON_Delete(rs_sign_up);
@@ -112,8 +118,7 @@ static void send_rs_sign_up_server(t_rs_status response)
         check_error();
 }
 
-static void check_error(void)
-{
+static void check_error(void) {
     const char *error_ptr = cJSON_GetErrorPtr();
 
     if (error_ptr != NULL)

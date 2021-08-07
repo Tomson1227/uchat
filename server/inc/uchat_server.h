@@ -145,6 +145,6 @@ t_rs_status login(sqlite3 *db, char *user_login, char *user_pass);
 t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass);
 
 //Server function
-void process_rq_server(const char *const string, sqlite3 *db);
+void process_rq_server(const char *const string, sqlite3 *db, int fd);
 
 #endif /* UCHAT_SERVER_H */

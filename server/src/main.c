@@ -75,9 +75,10 @@ static char *receive_line(int fd)
 
     while(1) {
         size = recv(fd, buff, BUFF_SIZE, 0);
+        // printf("buff: %s\n", buff);
 
         if(size > 0 || size < BUFF_SIZE) {
-            return strcpy(line, buff);
+            strcpy(line, buff);
         }
         else if(errno != EWOULDBLOCK) {
             if(!line)
@@ -85,8 +86,8 @@ static char *receive_line(int fd)
 
             return NULL;
         }
+        break;
     }
-
     return line;
 }
 
@@ -103,8 +104,9 @@ static void *thread_socket(void *pointer)
         if((poll_request = poll(&fd, 1, 10 * 1000)) > 0) {
             if(!(request = read_socket(socket->fd)))
                 break;     
+            // printf("buff: %s\n", request);
             
-            process_rq_server(request, server.db);    
+            process_rq_server(request, server.db, socket->fd);   
             free(request);
         }
         else

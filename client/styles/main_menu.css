@@ -11,7 +11,7 @@ button
 {
     /* font: Helvetica; */
     color: rgb(255, 255, 255);
-    border-radius: 100;
+    /* border-radius: 20%; */
     outline-color: rgb(255, 255, 255);
 }
 label
