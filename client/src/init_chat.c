@@ -11,6 +11,8 @@ static void init_fields(t_chat *chat) {
     chat->listbox_dlgs = NULL;
     chat->curr_chat = NULL;
     chat->username = NULL;
+    chat->username_id = -1;
+    chat->description = NULL;
 }
 
 GtkBuilder *init_window(t_chat *chat) {

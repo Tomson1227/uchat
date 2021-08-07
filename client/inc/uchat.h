@@ -32,7 +32,9 @@ struct s_chat{
     GtkScrolledWindow *scrll_wndw_dlgs;
     GtkWidget *label_msg;
     GtkWidget *row;
-    gchar *username;
+    char *username;
+    gint username_id;
+    gchar *description;
     GtkLabel *lbl_slct_chat;
     GtkListBoxRow *row_slctd;
     GtkListBox *listbox_dlgs;
@@ -55,12 +57,14 @@ struct s_room {
 };
 
 struct s_msg {
+    // GtkLabel *msg_date;
+    // GtkListBoxRow *row_time;
     GtkListBoxRow *row_msg;
-    GtkListBoxRow *row_time;
     GtkLabel *msg_text;
-    GtkLabel *msg_date;
+    char *sender;
+    char *time;
+    char *msg;
     gint msg_type;
-    gchar *login;
     gint room_id;
     gint msg_id;
 };
@@ -80,7 +84,6 @@ void send_message(GtkEntry *entry, t_chat *chat);
 void connect_chat(t_chat *chat);
 void connect_room_settings(t_chat *chat);
 void connect_profile_settings(t_chat *chat);
-;
 void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_toolbar); 
 void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat);
 void display_error_wrong_username_login(t_chat *chat);
@@ -103,7 +106,15 @@ void block_user(GtkButton *btn, t_chat *chat);
 void cancel_block_user(GtkButton *btn, t_chat *chat); 
 void attach_file(GtkButton *btn, t_chat *chat); 
 void log_out(GtkButton *btn, t_chat *chat);
-
+char *form_msg(char *sender, char *time, char *text);
+gchar *trim_message(const gchar *buffer);
+void init_msg(t_msg *msg);
+t_msg *fill_msg();
+void free_msg(t_msg *msg);
+void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat);
+void recv_message(int room_id, int msg_id, const gchar *date, const gchar *sText, 
+                                                     t_chat *chat, gchar *sender);
+void AddListItem(t_chat *chat, const gchar *sText, t_msg *msg, t_room *room);                                                     
 
 //api
 char *send_rq_log_in_client(char *username, char *password);

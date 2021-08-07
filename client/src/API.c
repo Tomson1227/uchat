@@ -49,9 +49,9 @@ static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
     GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
 
     /* PROCESS RESPONSE */
-    switch((int) status->valuedouble) {
+    switch((int)status->valuedouble) {
         case LOGIN_OK:
-            gtk_widget_destroy(GTK_WIDGET(wnd_main));
+            gtk_widget_hide(GTK_WIDGET(wnd_main));
             init_chat_window(chat);
             break;
         case LOGIN_WRONG_USER:
@@ -73,7 +73,7 @@ static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
     /* PROCESS RESPONSE */
     switch((int) status->valuedouble) {
         case SIGNUP_OK:
-            gtk_widget_destroy(GTK_WIDGET(wnd_main));
+            gtk_widget_hide(GTK_WIDGET(wnd_main));
             init_chat_window(chat);
             break;
         case SIGNUP_USER_EXIST:

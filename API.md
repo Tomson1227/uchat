@@ -128,7 +128,7 @@ ___
     "message": "message",
     "message_id": msg_id,
     "date": "date",
-    "msg_type": TEXT
+    "msg_type": TEXT/FILE/IMAGE
 }
 ```
 ___
