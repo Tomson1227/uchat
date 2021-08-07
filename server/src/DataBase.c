@@ -39,6 +39,43 @@ int checkLogin(sqlite3 *db, char *user_login) {
     }
 }
 
+char **userSearch(sqlite3 *db, char *searchText) {
+    int lengthSearch, i = 0, size = 1;
+    char *searchQuery;
+    const unsigned char *result;
+    char **resultArr = (char **)malloc(size * sizeof(char *));
+
+    sqlite3_stmt *stmt;
+
+    lengthSearch = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN LIKE '%c%s%c';", '%', searchText, '%');
+
+    if (!(searchQuery = (char *)calloc(lengthSearch, sizeof(char))))
+        perror("Allocation failed!");
+
+    sprintf(searchQuery, "SELECT LOGIN FROM USRS WHERE LOGIN LIKE '%c%s%c';", '%', searchText, '%');
+
+
+    sqlite3_prepare_v2(db, searchQuery, -1, &stmt, NULL);
+
+    while (1) {
+        sqlite3_step(stmt);
+        result = sqlite3_column_text(stmt, 0);
+
+        if (result != NULL) {
+            resultArr[i] = (char *)result;
+            resultArr = realloc(resultArr, ++size * sizeof(char *));
+        } else
+            break;
+
+        ++i;
+    }
+    resultArr[i] = NULL;
+
+    free(searchQuery);
+
+    return resultArr;
+}
+
 t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass)
 {
     t_rs_status status = SIGNUP_OK;
@@ -67,6 +104,7 @@ t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass)
 
         if( rc != SQLITE_OK ) {
             status = SINGUP_FAIL;
+            fprintf(stderr, "SQL error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
         }
 
@@ -111,6 +149,7 @@ void Init_DB(t_server *server)
 {
     char *zErrMsg = 0;
     char *sql;
+
     int rc = sqlite3_open("uchat.db", &server->db);
 
     if( rc ) {
@@ -127,7 +166,7 @@ void Init_DB(t_server *server)
 
     sql = "SELECT * FROM USRS";
 
-    sql = "SELECT * FROM USRS";
+//    sql = "SELECT * FROM USRS";
 
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
@@ -137,4 +176,29 @@ void Init_DB(t_server *server)
     } else {
         fprintf(stdout, "Table created successfully\n");
     }
+
+    userSearch(server->db, "mark");
+
+//    sign_up(server->db, "mark", "123123");
+//    sign_up(server->db, "markosdd", "123123");
+//    sign_up(server->db, "asggmark", "123123");
+//    sign_up(server->db, "aamasrkASf", "123123");
+//    sign_up(server->db, "FFmarksff", "123123");
+//    sign_up(server->db, "kek", "123123");
+//    sign_up(server->db, "lol", "123123");
+//    sign_up(server->db, "mark4tff", "123123");
+
+//    sql = "CREATE TABLE IF NOT EXISTS ROOMS(" \
+//    "ID INT PRIMARY KEY," \
+//    "NAME TEXT," \
+//    "USER1 TEXT," \
+//    "USER2 TEXT);";
+//
+//    sql = "CREATE TABLE IF NOT EXISTS MSSGS(" \
+//    "ID INT PRIMARY KEY," \
+//    "USER_ID TEXT," \
+//    "ROOM_ID TEXT," \
+//    "DATE INT," \
+//    "MESSAGE TEXT);";
+
 }
