@@ -132,3 +132,25 @@ ___
 }
 ```
 ___
+
+### Search user
+
+**From client to server request**
+
+```json
+{
+    "type": SEARCH_USER,
+    "user": "username"
+}
+```
+
+**From server to client response**
+
+```json
+{
+    "type": SEARCH_USER,
+    "user": ["username1", "username2", "username3"]
+}
+```
+___
+
