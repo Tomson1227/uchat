@@ -104,7 +104,6 @@ void cancel_block_user(GtkButton *btn, t_chat *chat);
 void attach_file(GtkButton *btn, t_chat *chat); 
 void log_out(GtkButton *btn, t_chat *chat);
 
-
 //api
 char *send_rq_log_in_client(char *username, char *password);
 char *send_rq_sign_in_client(char *username, char *password);
@@ -112,6 +111,8 @@ void process_rs_client(const char *const string, t_chat *chat);
 char *send_rq_create_msg_client(gint room_id);
 char *send_rq_create_room_client(char *username, char *customer); 
 char *send_rq_send_msg_client(char *username, gint room_id, char *message, char *date);
- 
+char *send_rq_search_username(char *start_of_username);
+
+
 //additional functions
 char *my_itoa(long long number);

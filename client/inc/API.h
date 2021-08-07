@@ -11,7 +11,10 @@ typedef enum s_api {
     SIGNUP,
     CREATE_ROOM,
     CREATE_MSG,
-    SND_MSG
+    SND_MSG,
+    SEARCH_USER,
+    DELETE_ROOM,
+    DELETE_MSG
 }            t_api;
 
 typedef enum s_rs_status {
@@ -23,6 +26,5 @@ typedef enum s_rs_status {
     SINGUP_FAIL,
     TEXT
 }            t_rs_status;
-
 
 #endif /* API_H */

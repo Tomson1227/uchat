@@ -93,7 +93,7 @@ static void req_log_in(GtkButton *btn, t_chat *chat) {
         char *dq = deQueue(chat->config->queue_recv);
         printf("%s\n", dq);
         process_rs_client(dq, chat);
-        free(temp);
+        // free(temp);
     }
 }
 
@@ -126,17 +126,12 @@ static void req_sign_up(GtkButton *btn, t_chat *chat) {
 
         // char *tmp = (char*)calloc(128, sizeof(char));
         char *tmp = send_rq_sign_in_client(buf_username, buf_password);
-
-        printf("entered the function\n");
         enQueue(chat->config->queue_send, tmp);
         while(QueueisEmpty(chat->config->queue_recv)) {
         }
         // sleep(3);
-        
         char *dq = deQueue(chat->config->queue_recv);
-        printf("%s\n", dq);
         process_rs_client(dq, chat);
-        free(tmp);
     }
 }
 

@@ -46,12 +46,11 @@ void process_rs_client(const char *const string, t_chat *chat) {
 
 static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
     cJSON *status = status = cJSON_GetObjectItemCaseSensitive(rs, "status");
-    GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
 
     /* PROCESS RESPONSE */
     switch((int) status->valuedouble) {
         case LOGIN_OK:
-            gtk_widget_destroy(GTK_WIDGET(wnd_main));
+            printf("login ok\n");
             init_chat_window(chat);
             break;
         case LOGIN_WRONG_USER:
@@ -68,19 +67,16 @@ static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
 
 static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
     cJSON *status = cJSON_GetObjectItemCaseSensitive(rs, "status");
-    GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
     
     /* PROCESS RESPONSE */
     switch((int) status->valuedouble) {
         case SIGNUP_OK:
-            gtk_widget_destroy(GTK_WIDGET(wnd_main));
             init_chat_window(chat);
             break;
         case SIGNUP_USER_EXIST:
             display_error_user_exists(chat);
             break;
         case SINGUP_FAIL:
-
             break;
         default:
             /*UNKNOWN STATUS*/
@@ -185,8 +181,7 @@ char *send_rq_sign_in_client(char *username, char *password) {
     char *string = NULL;
     cJSON *request_sign_up = NULL;
 
-    if ((request_sign_up = cJSON_CreateObject()))
-    {
+    if ((request_sign_up = cJSON_CreateObject())) {
         cJSON *type = cJSON_CreateNumber(SIGNUP);
         cJSON *login = cJSON_CreateString(username);
         cJSON *pass = cJSON_CreateString(password);
@@ -201,42 +196,24 @@ char *send_rq_sign_in_client(char *username, char *password) {
     return string;
 }
 
+char *send_rq_search_username(char *start_of_username) {
+    char *string = NULL;
+    cJSON *req_search_username = NULL;
+    if ((req_search_username = cJSON_CreateObject())) {
+        cJSON *type = cJSON_CreateNumber(SEARCH_USER);
+        cJSON *user = cJSON_CreateString(start_of_username);
+        cJSON_AddItemToObject(req_search_username, "type", type);
+        cJSON_AddItemToObject(req_search_username, "user", user);
+        string = cJSON_Print(req_search_username);
+        cJSON_Delete(req_search_username);
+    }
+    else 
+        check_error();
+    return string;
+}
 
 static void check_error(void) {
     const char *error_ptr = cJSON_GetErrorPtr();
     if (error_ptr != NULL)
         fprintf(stderr, "Error before: %s\n", error_ptr);
 }
-
-/*-------------------------------------*/
-/*--- Static fuctions definitions ---*/
-/*-------------------------------------*/
-
-// static void receive_rq_log_in_server(cJSON *rq, sqlite3 *db) {
-//     cJSON *log_in = cJSON_GetObjectItemCaseSensitive(rq, "login");
-//     cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
-
-//     // t_rs_status status = sign_up(db, log_in->valuestring, pass->valuestring);
-//     /* SERVER PROCESS REQUEST */
-//     /* SERVER SEND RESPONCE */
-// }
-
-// static char *send_rs_log_in_server(t_rs_status response) {
-//     char *string = NULL;
-//     cJSON *rs_log_in = NULL;
-
-//     if ((rs_log_in = cJSON_CreateObject()))
-//     {
-//         cJSON *type = cJSON_CreateNumber(LOGIN);
-//         cJSON *status = cJSON_CreateNumber(response);
-
-//         cJSON_AddItemToObject(rs_log_in, "type", type);
-//         cJSON_AddItemToObject(rs_log_in, "status", status);
-
-//         string = cJSON_Print(rs_log_in);
-//         cJSON_Delete(rs_log_in);
-//     }
-//     else
-//         check_error();
-//     return string;
-// }
