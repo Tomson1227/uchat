@@ -24,20 +24,22 @@
 #include "sqlite3.h"
 // #include "API.h"
 
-typedef enum s_api
-{
+typedef enum s_api {
     LOGIN,
-    SIGNUP
+    SIGNUP,
+    CREATE_ROOM,
+    CREATE_MSG,
+    SND_MSG
 }            t_api;
 
-typedef enum s_rs_status
-{
+typedef enum s_rs_status {
     LOGIN_OK,
     LOGIN_WRONG_USER,
     LOGIN_WRONG_PASS,
     SIGNUP_OK,
     SIGNUP_USER_EXIST,
-    SINGUP_FAIL
+    SINGUP_FAIL,
+    TEXT
 }            t_rs_status;
 
 #define BUFF_SIZE 1024

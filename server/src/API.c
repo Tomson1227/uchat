@@ -27,6 +27,12 @@ void process_rq_server(const char *const string, sqlite3 *db)
         case SIGNUP:
             receive_rq_sign_up_server(rq, db);
             break;
+        case CREATE_ROOM:
+            break;
+        case CREATE_MSG:
+            break;
+        case SND_MSG:
+            break;
         default:
             /* UNKNOWN REQUEST */
             break;
