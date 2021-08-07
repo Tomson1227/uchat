@@ -34,6 +34,10 @@ void process_rs_client(const char *const string, t_chat *chat) {
         case SND_MSG:
 
             break;
+        case DELETE_ROOM:
+
+        case DELETE_MSG:
+        
         default:
             /* UNKNOWN RESPONSE */
             break;
@@ -107,8 +111,7 @@ char *send_rq_send_msg_client(char *username, gint room_id, char *message, char 
     char *string = NULL;
     cJSON *request_send_msg = NULL;
 
-    if ((request_send_msg = cJSON_CreateObject()))
-    {
+    if ((request_send_msg = cJSON_CreateObject())) {
         cJSON *type = cJSON_CreateNumber(SND_MSG);
         cJSON *id = cJSON_CreateNumber(room_id);
         cJSON *sender = cJSON_CreateString(username);
@@ -169,8 +172,6 @@ char *send_rq_log_in_client(char *username, char *password) {
         cJSON_AddItemToObject(request_log_in, "pass", pass);
 
         string = cJSON_Print(request_log_in);
-        printf("created request:\n %s\n", string);
-        //request_log_in->string;
         cJSON_Delete(request_log_in);
     }
     return string;
@@ -207,6 +208,37 @@ char *send_rq_search_username(char *start_of_username) {
         cJSON_Delete(req_search_username);
     }
     else 
+        check_error();
+    return string;
+}
+
+char *send_rq_delete_room(int room_id) {
+    char *string = NULL;
+    cJSON *rq_delete_room = NULL;
+    if ((rq_delete_room == cJSON_CreateObject())) {
+        cJSON *type = cJSON_CreateNumber(DELETE_ROOM);
+        cJSON *id = cJSON_CreateNumber(room_id);
+        cJSON_AddItemToObject(rq_delete_room, "type", type);
+        cJSON_AddItemToObject(rq_delete_room, "id", id);
+        string = cJSON_Print(rq_delete_room);
+        cJSON_Delete(rq_delete_room);
+    } else
+        check_error();
+    return string; 
+}
+
+char *send_rq_delete_msg(int msg_id) {
+    char *string = NULL;
+    cJSON *rq_delete_msg = NULL;
+
+    if ((rq_delete_msg == cJSON_CreateObject())) {
+        cJSON *type = cJSON_CreateNumber(DELETE_MSG);
+        cJSON *id = cJSON_CreateNumber(msg_id);
+        cJSON_AddItemToObject(rq_delete_msg, "type", type);
+        cJSON_AddItemToObject(rq_delete_msg, "id", id);
+        string = cJSON_Print(rq_delete_msg);
+        cJSON_Delete(rq_delete_msg);
+    } else 
         check_error();
     return string;
 }

@@ -35,6 +35,7 @@ t_chat *init_chat(t_chat *chat, t_config *config) {
 
 void init_chat_window(t_chat *chat) {
     GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
+    gtk_widget_hide(GTK_WIDGET(wnd_main));
     GObject *chat_wndw = gtk_builder_get_object(chat->builder, "chat_main");
     GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
@@ -44,7 +45,6 @@ void init_chat_window(t_chat *chat) {
     GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
 
     // load_css("client/styles/login_signup.css");
-    gtk_widget_hide(GTK_WIDGET(wnd_main));
     gtk_widget_show(GTK_WIDGET(chat_wndw));
     gtk_label_set_text(lbl, chat->username);
     gtk_widget_hide(GTK_WIDGET(room_info));

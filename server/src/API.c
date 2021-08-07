@@ -88,8 +88,7 @@ static void send_rs_log_in_server(t_rs_status response, int fd)
         check_error();
 }
 
-static void send_rs_sign_up_server(t_rs_status response, int fd)
-{
+static void send_rs_sign_up_server(t_rs_status response, int fd) {
     char *message = NULL;
     cJSON *rs_sign_up = NULL;
 

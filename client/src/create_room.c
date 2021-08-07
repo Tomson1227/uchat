@@ -19,6 +19,7 @@ void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_uppe
 }
 
 void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
+    manage_room_visibility(chat);
     char *tmp = g_object_get_data(G_OBJECT(row), "room");
     GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
     GtkWidget *scroll = gtk_stack_get_child_by_name(stack, tmp);
@@ -35,7 +36,7 @@ static void manage_room_visibility(t_chat *chat) {
     GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
     GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
     GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
-
+    
     gtk_widget_show(GTK_WIDGET(room_info));
     gtk_widget_show(GTK_WIDGET(btn_send_msg));
     gtk_widget_show(GTK_WIDGET(btn_send_sticker));
@@ -50,9 +51,10 @@ static void add_dialog_row(t_room *room, t_chat *chat) {
     char *id = my_itoa(room->room_id);
     GtkWidget *lbl = gtk_label_new(id);
     g_signal_connect(chat->listbox_dlgs, "row-selected", G_CALLBACK(select_room), chat);
-
+     
     gtk_container_add(GTK_CONTAINER(chat->listbox_dlgs), row);
     gtk_widget_show(row);
+    room->row_chat = row;
     gtk_container_add(GTK_CONTAINER(row), lbl);
     gtk_widget_show(lbl);
     g_object_set_data(G_OBJECT(row), "room", id);

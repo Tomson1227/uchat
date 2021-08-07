@@ -48,7 +48,6 @@ struct s_room {
     GtkViewport *vwprt;
     GtkListBox *listbox_msgs;
     GtkListBoxRow *row_chat;
-    GtkListBoxRow *row_msg;
     gint row_index;
     GtkLabel *lbl;
     GtkLabel *chat_name;
@@ -105,7 +104,7 @@ void cancel_delete_room(GtkButton *btn, t_chat *chat);
 void block_user(GtkButton *btn, t_chat *chat);
 void cancel_block_user(GtkButton *btn, t_chat *chat); 
 void attach_file(GtkButton *btn, t_chat *chat); 
-void log_out(GtkButton *btn, t_chat *chat);
+void show_log_out_window(GtkButton *btn, t_chat *chat);
 char *form_msg(char *sender, char *time, char *text);
 gchar *trim_message(const gchar *buffer);
 void init_msg(t_msg *msg);
@@ -115,6 +114,11 @@ void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat);
 void recv_message(int room_id, int msg_id, const gchar *date, const gchar *sText, 
                                                      t_chat *chat, gchar *sender);
 void AddListItem(t_chat *chat, const gchar *sText, t_msg *msg, t_room *room);                                                     
+void close_info(GtkButton *btn, t_chat *chat);
+void log_out(GtkButton *btn, t_chat *chat);
+void cancel_log_out(GtkButton *btn, GObject *log_out);
+char *send_rq_delete_room(int room_id); 
+char *send_rq_delete_msg(int msg_id);
 
 //api
 char *send_rq_log_in_client(char *username, char *password);

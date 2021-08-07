@@ -154,3 +154,42 @@ ___
 ```
 ___
 
+
+### Delete room
+
+**From client to server request**
+
+```json
+{
+    "type": DELETE_ROOM,
+    "id": id
+}
+```
+
+**From server to client response to each room member**
+```json
+{
+    "type": DELETE_ROOM,
+    "id": id
+}
+```
+___
+
+### Delete message
+
+**From client to server request**
+```json
+{
+    "type": DELETE_MSG,
+    "id": msg_id
+}
+```
+
+**From server to client response**
+```json
+{
+    "type": DELETE_MSG,
+    "id": msg_id
+}
+```
+___
