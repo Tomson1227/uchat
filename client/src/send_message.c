@@ -45,7 +45,7 @@ void free_msg(t_msg *msg) {
 }
 
 char *form_msg(char *sender, char *time, char *text) {
-    char *output = malloc(sizeof(char) * (strlen(sender) + strlen(text) + strlen(time) + 3));
+    char *output = malloc(sizeof(char) * (strlen(sender) + strlen(text) + strlen(time) + 3));//strnew
 
     strcpy(output, sender);
     strcat(output, " ");
@@ -89,9 +89,12 @@ void AddListItem(t_chat *chat, const gchar *sText, t_msg *msg, t_room *room) {
     char *message = form_msg(msg->sender, msg->time, sText);
     if (room)
         add_row_msg(room, msg, message, chat);
+    msg->msg = malloc(sizeof(char *) * strlen(sText) + 1);
+    strcpy(msg->msg, sText);
 }
 
 void delete_msg(GtkButton *btn, t_chat *chat) {
+    //send request
     GtkWidget *r = gtk_list_box_row_new();
     r = GTK_WIDGET(gtk_list_box_get_selected_row(chat->curr_chat->listbox_msgs));
     t_msg *msg = g_object_get_data(G_OBJECT(r), "msg");

@@ -5,11 +5,9 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include <string.h>
 #include <sys/types.h>
 #include <time.h>
 #include <stdlib.h>
@@ -19,7 +17,6 @@
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <gtk/gtk.h>
-#include "connection.h"
 
 typedef struct s_msg t_msg;
 typedef struct s_room t_room;
@@ -56,8 +53,6 @@ struct s_room {
 };
 
 struct s_msg {
-    // GtkLabel *msg_date;
-    // GtkListBoxRow *row_time;
     GtkListBoxRow *row_msg;
     GtkLabel *msg_text;
     char *sender;
@@ -68,10 +63,10 @@ struct s_msg {
     gint msg_id;
 };
 
-typedef enum s_user_info_type {
-    NAME_OF_USER,
-    DESCRIPTION
-}            t_user_info_type;
+// typedef enum s_user_info_type {
+//     NAME_OF_USER,
+//     DESCRIPTION
+// }            t_user_info_type;
 
 //gui
 void load_css(char *path);
@@ -83,6 +78,7 @@ void send_message(GtkEntry *entry, t_chat *chat);
 void connect_chat(t_chat *chat);
 void connect_room_settings(t_chat *chat);
 void connect_profile_settings(t_chat *chat);
+void connect_search_username_room(t_chat *chat); 
 void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_toolbar); 
 void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat);
 void display_error_wrong_username_login(t_chat *chat);
@@ -114,11 +110,18 @@ void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat);
 void recv_message(int room_id, int msg_id, const gchar *date, const gchar *sText, 
                                                      t_chat *chat, gchar *sender);
 void AddListItem(t_chat *chat, const gchar *sText, t_msg *msg, t_room *room);                                                     
-void close_info(GtkButton *btn, t_chat *chat);
 void log_out(GtkButton *btn, t_chat *chat);
-void cancel_log_out(GtkButton *btn, GObject *log_out);
 char *send_rq_delete_room(int room_id); 
 char *send_rq_delete_msg(int msg_id);
+void close_info(GtkButton *btn, t_chat *chat); 
+void req_search_user(GtkEntry *entry, t_chat *chat);
+void change_password_visibility(GtkEntry *entry);
+void filter_search(char **users, int n, t_chat *chat);
+void filter_row(GtkWidget *wdg, char *user);
+void edit_message(GtkButton *button, t_chat *chat);
+void send_edited_message(GtkEntry *entry, t_chat *chat);
+void show_create_room_window(GtkButton *btn, t_chat *chat);
+void cancel_create_room(GtkButton *btn, t_chat *chat);
 
 //api
 char *send_rq_log_in_client(char *username, char *password);
@@ -127,8 +130,6 @@ void process_rs_client(const char *const string, t_chat *chat);
 char *send_rq_create_msg_client(gint room_id);
 char *send_rq_create_room_client(char *username, char *customer); 
 char *send_rq_send_msg_client(char *username, gint room_id, char *message, char *date);
-char *send_rq_search_username(char *start_of_username);
-
 
 //additional functions
 char *my_itoa(long long number);

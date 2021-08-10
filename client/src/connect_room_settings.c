@@ -63,9 +63,9 @@ void cancel_clear_history(GtkButton *btn, t_chat *chat) {
 }
 
 void cancel_delete_room(GtkButton *btn, t_chat *chat) {
-    GObject *delete_room = gtk_builder_get_object(chat->builder, "delete_room");
+    GObject *delete_room_wnd = gtk_builder_get_object(chat->builder, "delete_room");
 
-    gtk_widget_hide(GTK_WIDGET(delete_room));
+    gtk_widget_hide(GTK_WIDGET(delete_room_wnd));
 }
 
 void block_user(GtkButton *btn, t_chat *chat) {
@@ -81,6 +81,21 @@ void cancel_block_user(GtkButton *btn, t_chat *chat) {
 void close_info(GtkButton *btn, t_chat *chat) {
     GObject *wndw_room_info = gtk_builder_get_object(chat->builder, "wndw_room_info");
 
-    gtk_widget_hide(wndw_room_info);
+    gtk_widget_hide(GTK_WIDGET(wndw_room_info));
 }
 
+ void on_close_edit_profile_clicked(GtkButton *btn, GObject *wnd) {
+     gtk_widget_hide(GTK_WIDGET(wnd));
+ }
+
+void on_cancel_attach_file_clicked(GtkButton *btn, GObject *wnd) {
+    gtk_widget_hide(GTK_WIDGET(wnd));
+}
+
+void on_btn_close_menu_clicked(GtkButton *btn, GObject *wnd) {
+    gtk_widget_hide(GTK_WIDGET(wnd));
+}
+
+void on_close_chat_clicked(GtkButton *btn, GObject *wnd) {
+    gtk_widget_hide(GTK_WIDGET(wnd));
+}

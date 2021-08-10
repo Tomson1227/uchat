@@ -3,6 +3,7 @@
 /*--- Static fuctions declarations ---*/
 static void check_error(void);
 static void receive_rs_log_in_client(cJSON *rs, t_chat *chat);
+static void receive_rs_search_username(cJSON *rq, t_chat *chat);  
 static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat);
 static void receive_rs_create_msg_client(cJSON *rs, t_chat *chat);
 static void receive_rs_create_room_client(cJSON *rs, t_chat *chat);
@@ -35,9 +36,12 @@ void process_rs_client(const char *const string, t_chat *chat) {
 
             break;
         case DELETE_ROOM:
-
+            break;
         case DELETE_MSG:
-        
+            break;
+        case SEARCH_USER:
+            receive_rs_search_username(rq, chat);  
+            break;
         default:
             /* UNKNOWN RESPONSE */
             break;
@@ -85,6 +89,28 @@ static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
             /*UNKNOWN STATUS*/
             break;
     }
+}
+
+static void receive_rs_search_username(cJSON *json, t_chat *chat) {
+    const cJSON *names_json = cJSON_Parse(json);//change on string
+    const cJSON *array = NULL;
+    const cJSON *name = NULL;
+    array = cJSON_GetObjectItemCaseSensitive(names_json, "user");
+    int n = cJSON_GetArraySize(array);
+    printf("%d\n", n);
+    char **output = NULL;
+    output = malloc(sizeof(char *) * n);
+
+    for (int i = 0; i < n; i++) {
+        name = cJSON_GetArrayItem(array, i);
+        output[i] = g_strdup(name->valuestring);
+        printf("%s\n", output[i]);
+    }
+    filter_search(output, n, chat);
+    // for (int i = 0; i < n; i++) {
+    //     free(output[i]);
+    // }
+    // free(output);
 }
 
 char *send_rq_create_room_client(char *username, char *customer) {

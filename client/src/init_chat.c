@@ -37,7 +37,9 @@ void init_chat_window(t_chat *chat) {
     GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
     gtk_widget_hide(GTK_WIDGET(wnd_main));
     GObject *chat_wndw = gtk_builder_get_object(chat->builder, "chat_main");
-    GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
+    // GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
+    GtkStack *stack_entry = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_entry"));
+
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
     GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
     GtkLabel *lbl = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_username"));
@@ -50,6 +52,8 @@ void init_chat_window(t_chat *chat) {
     gtk_widget_hide(GTK_WIDGET(room_info));
     gtk_widget_hide(GTK_WIDGET(btn_send_msg));
     gtk_widget_hide(GTK_WIDGET(btn_send_sticker));
-    gtk_widget_hide(GTK_WIDGET(chat_message_entry));
+    gtk_widget_hide(GTK_WIDGET(stack_entry));
+    // gtk_widget_hide(GTK_WIDGET(chat_message_entry));
+
     gtk_widget_hide(GTK_WIDGET(btn_attach_file));
 }

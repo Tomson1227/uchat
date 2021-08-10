@@ -11,7 +11,6 @@ static void init_room(t_room *room, t_chat *chat);
 void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_toolbar) {
     // int id = g_object_get_data(r, "msg_id");
     // printf("selected msg with id: %d\n", id);
-
     if (r) {
         if (gtk_list_box_row_get_selectable(r) == TRUE)
             gtk_stack_set_visible_child_name (stack_upper_dialog_toolbar, "chat_topbar_wth_btns");
@@ -21,6 +20,7 @@ void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_uppe
 void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
     manage_room_visibility(chat);
     char *tmp = g_object_get_data(G_OBJECT(row), "room");
+    printf("got data: %s\n", tmp);
     GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
     GtkWidget *scroll = gtk_stack_get_child_by_name(stack, tmp);
     gtk_stack_set_visible_child_name(stack, tmp);
@@ -31,16 +31,22 @@ void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
 }
 
 static void manage_room_visibility(t_chat *chat) {
-    GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
+    
+    GtkStack *stack_entry = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_entry"));
+    // GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
     GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
     GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
     GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
-    
+    GObject *create_group = gtk_builder_get_object(chat->builder, "create_group");
+
+    gtk_widget_hide(GTK_WIDGET(create_group));
     gtk_widget_show(GTK_WIDGET(room_info));
+    gtk_widget_show(GTK_WIDGET(stack_entry));
+    gtk_stack_set_visible_child_name(stack_entry, "chat_message_entry");
     gtk_widget_show(GTK_WIDGET(btn_send_msg));
     gtk_widget_show(GTK_WIDGET(btn_send_sticker));
-    gtk_widget_show(GTK_WIDGET(chat_message_entry));
+    // gtk_widget_show(GTK_WIDGET(chat_message_entry));
     gtk_widget_show(GTK_WIDGET(btn_attach_file));
 }
 

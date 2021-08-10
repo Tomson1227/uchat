@@ -55,10 +55,7 @@ static void receive_rq_sign_up_server(cJSON *rq, sqlite3 *db, int fd) {
     cJSON *pass = cJSON_GetObjectItemCaseSensitive(rq, "pass");
 
     t_rs_status status = sign_up(db, log_in->valuestring, pass->valuestring);
-    // printf("log_in: %s\npass: %s\n", log_in->valuestring, pass->valuestring);
-    // printf("%d\n", status);
     send_rs_sign_up_server(status, fd);
-    // printf("success\n");
 }
 
 static void send_rs_log_in_server(t_rs_status response, int fd)

@@ -4,7 +4,6 @@
 #include "sqlite3.h"
 #include <stdio.h>
 #include "cJSON.h"
-#include <string.h>
 
 typedef enum s_api {
     LOGIN,
@@ -14,7 +13,8 @@ typedef enum s_api {
     SND_MSG,
     SEARCH_USER,
     DELETE_ROOM,
-    DELETE_MSG
+    DELETE_MSG,
+    EDIT_MSG
 }            t_api;
 
 typedef enum s_rs_status {

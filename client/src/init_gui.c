@@ -82,9 +82,6 @@ static void req_log_in(GtkButton *btn, t_chat *chat) {
         gtk_label_set_text(GTK_LABEL(label), "");
         chat->username = malloc(sizeof(char) * strlen(buf_username));
         strcpy(chat->username, buf_username);
-        printf("%s\n", chat->username);
-        // gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(chat->builder, "window_main")));
-        // init_chat_window(chat);
         char *temp = (char*)calloc(128, sizeof(char));
         temp = send_rq_log_in_client(buf_username, buf_password);
         enQueue(chat->config->queue_send, temp);
@@ -93,7 +90,6 @@ static void req_log_in(GtkButton *btn, t_chat *chat) {
         char *dq = deQueue(chat->config->queue_recv);
         printf("%s\n", dq);
         process_rs_client(dq, chat);
-        // free(temp);
     }
 }
 
@@ -121,25 +117,29 @@ static void req_sign_up(GtkButton *btn, t_chat *chat) {
         gtk_label_set_text(GTK_LABEL(label), "");
         chat->username = malloc(sizeof(char) * strlen(buf_username));
         strcpy(chat->username, buf_username);
-        // gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(chat->builder, "window_main")));
-        // init_chat_window(chat);
-
-        // char *tmp = (char*)calloc(128, sizeof(char));
         char *tmp = send_rq_sign_in_client(buf_username, buf_password);
         enQueue(chat->config->queue_send, tmp);
         while(QueueisEmpty(chat->config->queue_recv)) {
         }
-        // sleep(3);
         char *dq = deQueue(chat->config->queue_recv);
         process_rs_client(dq, chat);
     }
 }
 
+void change_password_visibility(GtkEntry *entry) {
+    if (gtk_entry_get_visibility(entry) == TRUE)
+        gtk_entry_set_visibility(entry, FALSE);
+    else 
+        gtk_entry_set_visibility(entry, TRUE);
+}
+
 static void connect_sign_in_up(t_chat *chat) {
     GtkButton *btn_log_in = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_log_in"));
     GtkButton *btn_sign_up = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_sign_up_sign_up"));
-    GtkButton *btn_sign = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_sign_up")); 
-        
+    GtkButton *btn_sign = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_sign_up"));
+    GtkEntry *password = GTK_ENTRY(gtk_builder_get_object(chat->builder, "password"));
+
+    g_signal_connect(password, "icon-press", G_CALLBACK(change_password_visibility), NULL);    
     g_signal_connect(btn_log_in, "clicked", G_CALLBACK(req_log_in), chat);
     g_signal_connect(btn_sign_up, "clicked", G_CALLBACK(req_sign_up), chat);
     g_signal_connect(btn_sign, "clicked", G_CALLBACK(on_btn_sign_up_clicked), chat);

@@ -193,3 +193,21 @@ ___
 }
 ```
 ___
+
+### Edit message
+
+**From client to server request**
+```json
+{
+    "type": EDIT_MSG,
+    "id": id_of_msg,
+    "new_msg": "new_msg"
+}
+```
+**From server to client request**
+```json 
+{
+    "type": EDIT_MSG,
+    "id": id_of_msg,
+    "new_msg": "new_msg"
+}
