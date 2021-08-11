@@ -13,6 +13,70 @@ static int callback(void *data, int argc, char **argv, char **azColName)
     return 0;
 }
 
+int getUserID(sqlite3 *db, char *username) {
+    int length, id;
+    char *idQuery;
+    sqlite3_stmt *stmt;
+
+    length = snprintf(NULL, 0, "SELECT ID FROM USRS WHERE LOGIN = '%s'", username);
+
+    if (!(idQuery = (char *)calloc(length + 1, sizeof(char))))
+        perror("Allocation error!\n");
+
+    sprintf(idQuery, "SELECT ID FROM USRS WHERE LOGIN = '%s'", username);
+
+
+    sqlite3_prepare_v2(db, idQuery, -1, &stmt, NULL);
+    sqlite3_step(stmt);
+
+    id = sqlite3_column_int(stmt, 0);
+
+    sqlite3_finalize(stmt);
+
+    free(idQuery);
+
+    return id;
+}
+
+int createRoom(sqlite3 *db, char *user, char *customer) {
+    int length, userID, customerID, rc, ID;
+    char *roomQuery;
+    char *roomIDQuery = "SELECT MAX(ID) FROM ROOMS";
+    char *errMsg = 0;
+    sqlite3_stmt *stmt;
+
+    userID = getUserID(db, user);
+
+    customerID = getUserID(db, customer);
+
+
+    length = snprintf(NULL, 0, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID) VALUES (%d, %d)", userID, customerID);
+    if (!(roomQuery = (char *)calloc(length, sizeof(char))))
+        perror("Allocation fail!");
+
+    sprintf(roomQuery, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID) VALUES (%d, %d)", userID, customerID);
+
+    rc = sqlite3_exec(db, roomQuery, 0, 0, &errMsg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL error: %s\n", errMsg);
+
+        sqlite3_free(errMsg);
+        free(roomQuery);
+
+        return 0;
+    } else {
+        sqlite3_prepare_v2(db, roomIDQuery, -1, &stmt, NULL);
+        sqlite3_step(stmt);
+
+        ID = sqlite3_column_int(stmt, 0);
+
+        free(roomQuery);
+
+        return ID;
+    }
+}
+
 int checkLogin(sqlite3 *db, char *user_login) {
     const unsigned char *checkLogin;
     char *checkQuery;
@@ -175,31 +239,47 @@ void Init_DB(t_server * server)
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     } else {
-        fprintf(stdout, "Table created successfully\n");
+        fprintf(stdout, "Users table created successfully\n");
     }
 
-    userSearch(server->db, "mark");
 
-//    sign_up(server->db, "mark", "123123");
-//    sign_up(server->db, "markosdd", "123123");
-//    sign_up(server->db, "asggmark", "123123");
-//    sign_up(server->db, "aamasrkASf", "123123");
-//    sign_up(server->db, "FFmarksff", "123123");
-//    sign_up(server->db, "kek", "123123");
-//    sign_up(server->db, "lol", "123123");
-//    sign_up(server->db, "mark4tff", "123123");
 
-//    sql = "CREATE TABLE IF NOT EXISTS ROOMS(" \
-//    "ID INT PRIMARY KEY," \
-//    "NAME TEXT," \
-//    "USER1 TEXT," \
-//    "USER2 TEXT);";
-//
-//    sql = "CREATE TABLE IF NOT EXISTS MSSGS(" \
-//    "ID INT PRIMARY KEY," \
-//    "USER_ID TEXT," \
-//    "ROOM_ID TEXT," \
-//    "DATE INT," \
-//    "MESSAGE TEXT);";
+
+
+    sql = "CREATE TABLE IF NOT EXISTS ROOMS(ID INTEGER PRIMARY KEY NOT NULL, NAME TEXT, USER_ID INT, CUSTOMER_ID INT);";
+
+//    sql = "DROP TABLE ROOMS";
+
+//    sql = "SELECT * FROM ROOMS";
+
+    rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
+
+    if( rc != SQLITE_OK ){
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else {
+        fprintf(stdout, "Rooms table created successfully\n");
+    }
+
+
+
+
+
+    sql = "CREATE TABLE IF NOT EXISTS MSSGS(" \
+    "ID INTEGER PRIMARY KEY NOT NULL," \
+    "USER_ID TEXT," \
+    "ROOM_ID TEXT," \
+    "DATE INT," \
+    "MESSAGE TEXT);";
+
+    rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
+
+    if( rc != SQLITE_OK ){
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else {
+        fprintf(stdout, "Messages table created successfully\n");
+    }
 
 }
+
