@@ -13,6 +13,9 @@ static int callback(void *data, int argc, char **argv, char **azColName)
     return 0;
 }
 
+
+
+
 int getUserID(sqlite3 *db, char *username) {
     int length, id;
     char *idQuery;
@@ -37,6 +40,41 @@ int getUserID(sqlite3 *db, char *username) {
 
     return id;
 }
+
+int createMessage(sqlite3 *db, int roomID) {
+    int length, rc, ID;
+    char *createMessageQuery, *errMsg;
+    char *selectID = "SELECT MAX(ID) FROM MSSGS";
+    sqlite3_stmt *stmt;
+
+    length = snprintf(NULL, 0, "INSERT INTO MSSGS (ROOM_ID) VALUES (%d)", roomID);
+    if (!(createMessageQuery = (char *)calloc(length, sizeof(char))))
+        perror("Allocation fail!\n");
+
+    sprintf(createMessageQuery, "INSERT INTO MSSGS (ROOM_ID) VALUES (%d)", roomID);
+
+    rc = sqlite3_exec(db, createMessageQuery, 0, 0, &errMsg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL error: %s\n", errMsg);
+
+        sqlite3_free(errMsg);
+        free(createMessageQuery);
+
+        return 0;
+    } else {
+        sqlite3_prepare_v2(db, selectID, -1, &stmt, NULL);
+        sqlite3_step(stmt);
+
+        ID = sqlite3_column_int(stmt, 0);
+
+        free(createMessageQuery);
+
+        return ID;
+    }
+
+}
+
 
 int createRoom(sqlite3 *db, char *user, char *customer) {
     int length, userID, customerID, rc, ID;
@@ -77,6 +115,9 @@ int createRoom(sqlite3 *db, char *user, char *customer) {
     }
 }
 
+
+
+
 int checkLogin(sqlite3 *db, char *user_login) {
     const unsigned char *checkLogin;
     char *checkQuery;
@@ -102,6 +143,9 @@ int checkLogin(sqlite3 *db, char *user_login) {
         return 1;
     }
 }
+
+
+
 
 char **userSearch(sqlite3 *db, char *searchText) {
     int lengthSearch, i = 0, size = 1;
@@ -224,6 +268,8 @@ void Init_DB(t_server * server)
         fprintf(stderr, "Opened database successfully\n");
     }
 
+
+
     sql = "CREATE TABLE IF NOT EXISTS USRS(" \
     "ID INT PRIMARY KEY," \
     "LOGIN TEXT," \
@@ -264,13 +310,14 @@ void Init_DB(t_server * server)
 
 
 
-
     sql = "CREATE TABLE IF NOT EXISTS MSSGS(" \
     "ID INTEGER PRIMARY KEY NOT NULL," \
-    "USER_ID TEXT," \
-    "ROOM_ID TEXT," \
+    "USER_ID INT," \
+    "ROOM_ID INT," \
     "DATE INT," \
     "MESSAGE TEXT);";
+
+//    sql = "SELECT * FROM MSSGS";
 
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
