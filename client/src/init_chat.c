@@ -33,27 +33,25 @@ t_chat *init_chat(t_chat *chat, t_config *config) {
     return chat;
 }
 
-void init_chat_window(t_chat *chat) {
+void init_chat_window(t_chat *chat, int type) {
     GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
-    gtk_widget_hide(GTK_WIDGET(wnd_main));
     GObject *chat_wndw = gtk_builder_get_object(chat->builder, "chat_main");
-    // GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
     GtkStack *stack_entry = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_entry"));
-
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
     GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
     GtkLabel *lbl = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_username"));
     GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
     GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
 
-    // load_css("client/styles/login_signup.css");
+    gtk_widget_hide(GTK_WIDGET(wnd_main));
     gtk_widget_show(GTK_WIDGET(chat_wndw));
     gtk_label_set_text(lbl, chat->username);
     gtk_widget_hide(GTK_WIDGET(room_info));
     gtk_widget_hide(GTK_WIDGET(btn_send_msg));
     gtk_widget_hide(GTK_WIDGET(btn_send_sticker));
     gtk_widget_hide(GTK_WIDGET(stack_entry));
-    // gtk_widget_hide(GTK_WIDGET(chat_message_entry));
-
     gtk_widget_hide(GTK_WIDGET(btn_attach_file));
+    if (type == 0) {
+        //send request to upload old dialogs
+    }
 }

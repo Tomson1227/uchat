@@ -46,9 +46,9 @@ struct s_room {
     GtkListBox *listbox_msgs;
     GtkListBoxRow *row_chat;
     gint row_index;
-    GtkLabel *lbl;
-    GtkLabel *chat_name;
+    const gchar *chat_name;
     gint room_id;
+    bool is_updated;
     GHashTable *members;
 };
 
@@ -70,7 +70,7 @@ struct s_msg {
 
 //gui
 void load_css(char *path);
-void init_chat_window(t_chat *chat);
+void init_chat_window(t_chat *chat, int type);
 t_chat *init_chat(t_chat *chat, t_config *config);
 void init_gui(t_chat *chat);
 gint start_gui(t_chat *chat);
@@ -101,7 +101,7 @@ void block_user(GtkButton *btn, t_chat *chat);
 void cancel_block_user(GtkButton *btn, t_chat *chat); 
 void attach_file(GtkButton *btn, t_chat *chat); 
 void show_log_out_window(GtkButton *btn, t_chat *chat);
-char *form_msg(char *sender, char *time, char *text);
+char *form_msg(char *sender, char *time, const gchar *text);
 gchar *trim_message(const gchar *buffer);
 void init_msg(t_msg *msg);
 t_msg *fill_msg();
@@ -117,11 +117,13 @@ void close_info(GtkButton *btn, t_chat *chat);
 void req_search_user(GtkEntry *entry, t_chat *chat);
 void change_password_visibility(GtkEntry *entry);
 void filter_search(char **users, int n, t_chat *chat);
-void filter_row(GtkWidget *wdg, char *user);
+void filter_row(GtkWidget *wdg, char **users);
 void edit_message(GtkButton *button, t_chat *chat);
 void send_edited_message(GtkEntry *entry, t_chat *chat);
 void show_create_room_window(GtkButton *btn, t_chat *chat);
 void cancel_create_room(GtkButton *btn, t_chat *chat);
+void restore_listbox(GtkEntry *entry, GtkListBox *box);
+void create_dialog(GtkListBoxRow *row, t_chat *chat);
 
 //api
 char *send_rq_log_in_client(char *username, char *password);

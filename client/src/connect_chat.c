@@ -15,15 +15,19 @@ void on_btn_cancel_clicked(GtkButton *btn_cancel, GtkStack *stack_upper_dialog_t
 }
 
 void on_chat_settings_btn_clicked(GtkButton *chat_settings_settings_btn, GtkStack *stack_dialog_box) {
-    if (strcmp(gtk_stack_get_visible_child_name(stack_dialog_box), "scrll_wndw_dlgs1") == 0) 
+    if (strcmp(gtk_stack_get_visible_child_name(stack_dialog_box), "scrll_wndw_dlgs1") == 0) {
         gtk_stack_set_visible_child_name (stack_dialog_box, "scrll_wndw_dlgs");    
-    else if (strcmp(gtk_stack_get_visible_child_name(stack_dialog_box), "scrll_wndw_dlgs") == 0)  
+        gtk_stack_set_transition_type(stack_dialog_box, GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT);
+    } 
+    else if (strcmp(gtk_stack_get_visible_child_name(stack_dialog_box), "scrll_wndw_dlgs") == 0) {
         gtk_stack_set_visible_child_name (stack_dialog_box, "scrll_wndw_dlgs1");
+        gtk_stack_set_transition_type(stack_dialog_box, GTK_STACK_TRANSITION_TYPE_SLIDE_RIGHT);
+    }
 }
 
 void show_create_room_window(GtkButton *btn, t_chat *chat) {
     GObject *create_group = gtk_builder_get_object(chat->builder, "create_group");
-
+    
     gtk_widget_show(GTK_WIDGET(create_group));
 }
 
@@ -38,7 +42,6 @@ void connect_chat(t_chat *chat) {
     GtkButton *cancel_create_group = GTK_BUTTON(gtk_builder_get_object(chat->builder, "cancel_create_group"));
     GtkEntry *chat_edit_message = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_edit_message"));
     
-
     g_signal_connect(cancel_create_group, "clicked", G_CALLBACK(cancel_create_room), chat);
     g_signal_connect(confirm_create_group, "clicked", G_CALLBACK(create_room), chat);
     g_signal_connect(btn_send_msg, "clicked", G_CALLBACK(on_btn_send_message_clicked), chat);

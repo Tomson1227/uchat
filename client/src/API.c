@@ -58,7 +58,7 @@ static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
     /* PROCESS RESPONSE */
     switch((int)status->valuedouble) {
         case LOGIN_OK:
-            init_chat_window(chat);
+            init_chat_window(chat, 0);
             break;
         case LOGIN_WRONG_USER:
             display_error_wrong_username_login(chat);
@@ -78,7 +78,7 @@ static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
     /* PROCESS RESPONSE */
     switch((int) status->valuedouble) {
         case SIGNUP_OK:
-            init_chat_window(chat);
+            init_chat_window(chat, 1);
             break;
         case SIGNUP_USER_EXIST:
             display_error_user_exists(chat);
@@ -92,7 +92,7 @@ static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
 }
 
 static void receive_rs_search_username(cJSON *json, t_chat *chat) {
-    const cJSON *names_json = cJSON_Parse(json);//change on string
+    const cJSON *names_json = cJSON_Parse(json->valuestring);//change on string
     const cJSON *array = NULL;
     const cJSON *name = NULL;
     array = cJSON_GetObjectItemCaseSensitive(names_json, "user");

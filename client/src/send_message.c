@@ -44,7 +44,7 @@ void free_msg(t_msg *msg) {
     free(msg);
 }
 
-char *form_msg(char *sender, char *time, char *text) {
+char *form_msg(char *sender, char *time, const gchar *text) {
     char *output = malloc(sizeof(char) * (strlen(sender) + strlen(text) + strlen(time) + 3));//strnew
 
     strcpy(output, sender);

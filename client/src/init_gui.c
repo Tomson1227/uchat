@@ -115,7 +115,7 @@ static void req_sign_up(GtkButton *btn, t_chat *chat) {
     else 
     {
         gtk_label_set_text(GTK_LABEL(label), "");
-        chat->username = malloc(sizeof(char) * strlen(buf_username));
+        chat->username = malloc(sizeof(char) * strlen(buf_username));//move to process_rs_client function
         strcpy(chat->username, buf_username);
         char *tmp = send_rq_sign_in_client(buf_username, buf_password);
         enQueue(chat->config->queue_send, tmp);
@@ -139,7 +139,7 @@ static void connect_sign_in_up(t_chat *chat) {
     GtkButton *btn_sign = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_sign_up"));
     GtkEntry *password = GTK_ENTRY(gtk_builder_get_object(chat->builder, "password"));
 
-    g_signal_connect(password, "icon-press", G_CALLBACK(change_password_visibility), NULL);    
+    g_signal_connect(password, "icon-press", G_CALLBACK(change_password_visibility), NULL);     
     g_signal_connect(btn_log_in, "clicked", G_CALLBACK(req_log_in), chat);
     g_signal_connect(btn_sign_up, "clicked", G_CALLBACK(req_sign_up), chat);
     g_signal_connect(btn_sign, "clicked", G_CALLBACK(on_btn_sign_up_clicked), chat);
@@ -148,4 +148,15 @@ static void connect_sign_in_up(t_chat *chat) {
 gint start_gui(t_chat *chat) {
     gtk_main();
     return 0;
+}
+
+void on_password_sign_up_icon_press(GtkEntry *entry, GtkEntryIconPosition GTK_ENTRY_ICON_SECONDARY, GdkEvent *event, GtkEntry *repeat_password) {
+    if (gtk_entry_get_visibility(entry) == TRUE) {
+        gtk_entry_set_visibility(entry, FALSE);
+        gtk_entry_set_visibility(repeat_password, FALSE);
+    }
+    else {
+        gtk_entry_set_visibility(entry, TRUE);
+        gtk_entry_set_visibility(repeat_password, TRUE);
+    } 
 }

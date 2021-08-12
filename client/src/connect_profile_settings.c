@@ -4,7 +4,6 @@ void connect_profile_settings(t_chat *chat) {
     GtkButton *profile_setting = GTK_BUTTON(gtk_builder_get_object(chat->builder, "profile_setting"));
     GtkButton *btn_log_out = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_log_out")); 
     GtkButton *btn_confirm_log_out = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_confirm_log_out"));
-    
 
     g_signal_connect(btn_confirm_log_out, "clicked", G_CALLBACK(log_out), chat);
     g_signal_connect(profile_setting, "clicked", G_CALLBACK(show_profile_settings), chat);
