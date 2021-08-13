@@ -215,7 +215,7 @@ ___
 ```
 ___
 
-### Create room 
+### Create group 
 
 **From client to server request**
 
@@ -275,7 +275,8 @@ ___
     "type": OLD_MSG,
     "messages": ["msg1", "msg2", "msg3"],
     "senders": ["sender1", "sender2", "sender3"],
-    "dates": ["time1", "time2", "time3"]
+    "dates": ["time1", "time2", "time3"],
+    ""
 }
 ```
 ___
