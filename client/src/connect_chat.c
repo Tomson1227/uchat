@@ -27,7 +27,7 @@ void on_chat_settings_btn_clicked(GtkButton *chat_settings_settings_btn, GtkStac
 
 void show_create_room_window(GtkButton *btn, t_chat *chat) {
     GObject *create_group = gtk_builder_get_object(chat->builder, "create_group");
-    
+
     gtk_widget_show(GTK_WIDGET(create_group));
 }
 
@@ -41,6 +41,7 @@ void connect_chat(t_chat *chat) {
     GtkButton *confirm_create_group = GTK_BUTTON(gtk_builder_get_object(chat->builder, "confirm_create_group"));
     GtkButton *cancel_create_group = GTK_BUTTON(gtk_builder_get_object(chat->builder, "cancel_create_group"));
     GtkEntry *chat_edit_message = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_edit_message"));
+    GtkListBox *listbox_found_dlgs = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_found_dlgs"));
     
     g_signal_connect(cancel_create_group, "clicked", G_CALLBACK(cancel_create_room), chat);
     g_signal_connect(confirm_create_group, "clicked", G_CALLBACK(create_room), chat);
@@ -51,4 +52,5 @@ void connect_chat(t_chat *chat) {
     g_signal_connect(btn_attach_file, "clicked", G_CALLBACK(attach_file), chat);
     g_signal_connect(chat_edit_message, "activate", G_CALLBACK(send_edited_message), chat);
     g_signal_connect(btn_edit_msg, "clicked", G_CALLBACK(edit_message), chat);
+    g_signal_connect(listbox_found_dlgs, "row_selected", G_CALLBACK(req_create_dialog), chat);
 }

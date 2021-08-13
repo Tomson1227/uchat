@@ -78,7 +78,8 @@ ___
 ```json
 {
     "type": CREATE_ROOM,
-    "id": id
+    "id": id,
+    "customer": "customer"
 }
 ```
 ___
@@ -98,7 +99,8 @@ ___
 ```json
 {
     "type": CREATE_MSG,
-    "msg_id": id
+    "msg_id": msg_id,
+    "room_id": id
 }
 ```
 ___

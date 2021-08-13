@@ -42,6 +42,10 @@ void init_chat_window(t_chat *chat, int type) {
     GtkLabel *lbl = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_username"));
     GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
     GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
+    GtkLabel *lbl_local_search = GTK_LABEL(gtk_builder_get_object(chat->builder,"lbl_local_search"));
+    GtkLabel *lbl_local_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_local_search_nothing_found"));
+    GtkLabel *lbl_global_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search"));
+    GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
 
     gtk_widget_hide(GTK_WIDGET(wnd_main));
     gtk_widget_show(GTK_WIDGET(chat_wndw));
@@ -51,6 +55,10 @@ void init_chat_window(t_chat *chat, int type) {
     gtk_widget_hide(GTK_WIDGET(btn_send_sticker));
     gtk_widget_hide(GTK_WIDGET(stack_entry));
     gtk_widget_hide(GTK_WIDGET(btn_attach_file));
+    gtk_widget_hide(GTK_WIDGET(lbl_local_search));
+    gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));
+    gtk_widget_hide(GTK_WIDGET(lbl_global_search_nothing_found));
+    gtk_widget_hide(GTK_WIDGET(lbl_global_search));
     if (type == 0) {
         //send request to upload old dialogs
     }

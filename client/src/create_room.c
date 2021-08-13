@@ -22,20 +22,16 @@ void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
         GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
         GtkWidget *scroll = gtk_stack_get_child_by_name(stack, tmp);
         gtk_stack_set_visible_child_name(stack, tmp);
-
-        t_room *room = g_object_get_data(G_OBJECT(scroll),"dialog");
+        t_room *room = g_object_get_data(G_OBJECT(scroll), "dialog");
         chat->curr_chat = room;
         if (!room->is_updated) {
             //send request to upload old messages
         }
     }
-    else 
-        create_dialog(row, chat);
 }
 
 static void manage_room_visibility(t_chat *chat) {
     GtkStack *stack_entry = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_entry"));
-    // GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
     GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
     GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
@@ -48,7 +44,6 @@ static void manage_room_visibility(t_chat *chat) {
     gtk_stack_set_visible_child_name(stack_entry, "chat_message_entry");
     gtk_widget_show(GTK_WIDGET(btn_send_msg));
     gtk_widget_show(GTK_WIDGET(btn_send_sticker));
-    // gtk_widget_show(GTK_WIDGET(chat_message_entry));
     gtk_widget_show_all(chat->listbox_dlgs);
     gtk_widget_show(GTK_WIDGET(btn_attach_file));
 }
@@ -56,7 +51,6 @@ static void manage_room_visibility(t_chat *chat) {
 static void add_dialog_row(t_room *room, t_chat *chat, const gchar *group_name) {
     chat->listbox_dlgs = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_dlgs"));
     GtkWidget *row = gtk_list_box_row_new();
-    // GtkWidget *label = gtk_label_new(room->chat_name);
     char *id = my_itoa(room->room_id);
     GtkWidget *lbl = gtk_label_new(group_name);
     g_signal_connect(chat->listbox_dlgs, "row-selected", G_CALLBACK(select_room), chat);
@@ -127,29 +121,46 @@ static void init_room(t_room *room, t_chat *chat) {
     room->members = NULL;
 }
 
-void create_room(GtkButton *btn, t_chat *chat) {
+void create_room(GtkButton *btn, t_chat *chat) {  
+    GtkEntry *entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "group_name"));
+    const gchar *name = gtk_entry_get_text(entry);
+    
     //char *temp = (char*)calloc(128, sizeof(char));
     //temp = send_rq_create_room_client(chat->username, char *customer);
     //char *dq = deQueue(config->queue_send);
     //
     //process_rs_client(dq, t_chat *chat);
-    GtkEntry *entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "group_name"));
-    const gchar *name = gtk_entry_get_text(entry);
     t_room *room = fill_room(NULL, chat);
-
     room->chat_name = malloc(sizeof(const gchar) * strlen(name) + 1);
     strcpy(room->chat_name, name);
-    // printf("i: %d\nroom_id: %d\n", i, room->room_id);
     add_messages_box(room, chat, name);
     add_dialog_row(room, chat, name);
     chat->curr_chat = room;
 }
 
-void create_dialog(GtkListBoxRow *row, t_chat *chat) {
-    //char *temp = (char*)calloc(128, sizeof(char));
-    //temp = send_rq_create_room_client(chat->username, char *customer);
-    //char *dq = deQueue(config->queue_send);
-    //
-    //process_rs_client(dq, t_chat *chat);
+void req_create_dialog(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
+    GtkListBoxRow *r = gtk_list_box_get_selected_row();
+    const gchar *customer = gtk_widget_get_name(GTK_WIDGET(row));
+    t_room *room = NULL;
+    g_object_set_data(customer, "name", room);
     
+    //char *temp = (char*)calloc(128, sizeof(char));
+    //temp = send_rq_create_room_client(chat->username, const gchar *customer);
+    printf("%s\n", customer);
+    manage_visibility(box, chat);
+}
+
+void manage_visibility(GtkListBox *box, t_chat *chat) {
+    GtkEntry *chat_search_user = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_search_user"));
+    GtkLabel *lbl_local_search = GTK_LABEL(gtk_builder_get_object(chat->builder,"lbl_local_search"));
+    GtkLabel *lbl_local_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_local_search_nothing_found"));
+    GtkLabel *lbl_global_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search"));
+    GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
+
+    gtk_container_for_each(GTK_CONTAINER(box), G_CALLBACK(destroy), NULL);
+    gtk_widget_hide(GTK_WIDGET(lbl_local_search));
+    gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));
+    gtk_widget_hide(GTK_WIDGET(lbl_global_search_nothing_found));
+    gtk_widget_hide(GTK_WIDGET(lbl_global_search));
+    gtk_entry_set_text(chat_search_user, ""); 
 }

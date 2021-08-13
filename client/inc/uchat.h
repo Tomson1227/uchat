@@ -123,7 +123,8 @@ void send_edited_message(GtkEntry *entry, t_chat *chat);
 void show_create_room_window(GtkButton *btn, t_chat *chat);
 void cancel_create_room(GtkButton *btn, t_chat *chat);
 void restore_listbox(GtkEntry *entry, GtkListBox *box);
-void create_dialog(GtkListBoxRow *row, t_chat *chat);
+void req_create_dialog(GtkListBox *box, GtkListBoxRow *row, t_chat *chat);
+void manage_visibility(GtkListBox *box, t_chat *chat);
 
 //api
 char *send_rq_log_in_client(char *username, char *password);
