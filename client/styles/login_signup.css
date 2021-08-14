@@ -1,23 +1,53 @@
-window
-{
+/* * {
+    font-family: "Helvetica";
+} */
+
+headerbar {
+    /* background-image: none; */
+    /* background-color: #00ff00; */
+    background-image: linear-gradient(to bottom, shade(#002500,1.2), shade(rgb(0, 0, 0), 0.8));
+    border-width: 0;
+    color: #00ff00;
+}
+
+headerbar:backdrop {
+    /* background-image: none; */
+    /* background-color: #000000; */
+    background-image: linear-gradient(to bottom, shade(#000c00,1.2), shade(rgb(0, 0, 0), 0.8));
+    border-width: 0;
+    color: #000000;
+}
+
+window {
     background-color:black;
     background-image: none;
 }
-
 
 row {
 	background: #3A466B;
 }
 
-/* button
-{
-    /* font: Helvetica; */
+button {
     color: rgb(0, 255, 0);
-    /* border-radius: 20%; */
     outline-color: rgb(0, 255, 0);
-} */
+    background: #101010;
+} 
 
-label
-{
+button:hover {
+    background: #202020;
+    border-color: #0f0;
+}
+
+label {
     color:rgb(0, 255, 0);
+}
+
+entry {
+    background: #202020;
+    border-color: #001000;
+    color: #00ff00;
+}
+
+entry:focus {
+    border-color: #00ff00;
 }
