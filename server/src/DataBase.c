@@ -10,7 +10,7 @@ static int getUserID(char *username);
 void CreateMessage(t_message *message, int roomID) 
 {
     message->API = SND_MSG;
-    message->status = SND_MSG_OK;
+    message->status = SUCCESS;
     message->Data.create_msg.room_id = roomID;
     // message->Data.create_msg.date = ; //need to be added
     
@@ -118,7 +118,7 @@ void UserSearch(t_message *message, char *searchText)
 void SignUp(t_message *message, char *user_login, char *user_pass)
 {
     message->API = SIGNUP;
-    message->status = SIGNUP_OK;
+    message->status = SUCCESS;
     sqlite3_stmt *stmt;
     char *zErrMsg = NULL;
     int lengthSignUp, ID, rc;
@@ -143,7 +143,7 @@ void SignUp(t_message *message, char *user_login, char *user_pass)
         rc = sqlite3_exec(db, signUpQuery, callback, 0, &zErrMsg);
 
         if( rc != SQLITE_OK ) {
-            message->status = SINGUP_FAIL;
+            message->status = ERROR;
             fprintf(stderr, "SQL error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
         }
@@ -156,7 +156,7 @@ void SignUp(t_message *message, char *user_login, char *user_pass)
 void LogIn(t_message *message, char *user_login, char *user_pass)
 {
     message->API = LOGIN;
-    message->status = LOGIN_OK;
+    message->status = SUCCESS;
     sqlite3_stmt *stmt;
     const unsigned char *pass;
     char *query;
