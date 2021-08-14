@@ -65,7 +65,8 @@ void init_chat_window(t_chat *chat, int type) {
     int msg_ids[2] = {-1, -1};
     
     if (type == 0) {
-        //send_req_old_dialogs(chat->username);
+        //char *temp = send_req_old_dialogs(chat->username);
+        //enQueue(chat->config->queue_send, temp);
         upload_old_dialogs(dialogs, ids, msg_ids, 2, chat);
     }
 }
