@@ -24,21 +24,96 @@
 #include "sqlite3.h"
 // #include "API.h"
 
-typedef enum s_api
-{
+typedef enum s_api {
     LOGIN,
-    SIGNUP
+    SIGNUP,
+    CREATE_ROOM,
+    SND_MSG,
+    READ_MSG,
+    SEARCH_USER,
+    DELETE_ROOM,
+    DELETE_MSG,
+    EDIT_MSG,
+    OLD_DIALOGS
 }            t_api;
 
-typedef enum s_rs_status
-{
+typedef enum s_rs_status {
+    SUCCESS,
+    ERROR,
     LOGIN_OK,
     LOGIN_WRONG_USER,
     LOGIN_WRONG_PASS,
     SIGNUP_OK,
     SIGNUP_USER_EXIST,
-    SINGUP_FAIL
+    SINGUP_FAIL,
+    TEXT,
+    SND_MSG_OK,
+    READ_MSG_OK,
+    READ_ALL,
+    READ_RECENT
 }            t_rs_status;
+
+typedef struct s_create_room {
+    int id;
+    char *customer;
+}              t_create_room;
+
+typedef struct s_send_message {
+    int room_id;
+    int message_id;
+    char *date;
+}              t_send_message;
+
+typedef struct s_read_message {
+    int room_id;
+    int message_id;
+    int msg_type;
+    char *message;
+    char *date;
+}              t_read_message;
+
+typedef struct s_search_user {
+    char **user;
+    unsigned int count;
+}              t_search_user;
+
+typedef struct s_delete_message {
+    int id;
+}              t_delete_message;
+
+typedef struct s_edit_message {
+    int id;
+    char *new_message;
+}              t_edit_message;
+
+typedef struct s_upload_old_dialogs {
+    int *id;
+    int *first_message_id;
+    char **dialogs;
+}              t_upload_old_dialogs;
+
+typedef struct s_create_msg {
+    int room_id;
+    int msg_id;
+    char *date;
+}              t_create_msg;
+
+typedef union u_union_api {
+    t_create_msg create_msg;
+    t_create_room create_room;
+    t_send_message send_message;
+    t_read_message read_message;
+    t_search_user search_user;
+    t_delete_message delete_message;
+    t_edit_message edit_message;
+    t_upload_old_dialogs upload_old_dialogs;
+}             t_union_api;
+
+typedef struct s_message {
+    t_api API;
+    int status;
+    t_union_api Data;
+}              t_message;
 
 #define BUFF_SIZE 1024
 
@@ -122,16 +197,6 @@ typedef struct s_server {
     t_socket_list *socket_head;
 }              t_server;
 
-// typedef enum s_rs_status
-// {
-//     LOGIN_OK,
-//     LOGIN_WRONG_USER,
-//     LOGIN_WRONG_PASS,
-//     SIGNUP_OK,
-//     SIGNUP_USER_EXIST,
-//     SINGUP_FAIL
-// }            t_rs_status;
-
 t_socket_list *new_socket(t_server *server, int fd);
 void send_message(char *message);
 void sockets_status(t_socket_list *head);
@@ -139,8 +204,12 @@ void disconect_socket(t_socket_list *address);
 void del_socket_list(t_socket_list **head);
 
 void Init_DB(t_server * server);
-t_rs_status login(sqlite3 *db, char *user_login, char *user_pass);
-t_rs_status sign_up(sqlite3 *db, char *user_login, char *user_pass);
+
+void SignUp(t_message *message, char *user_login, char *user_pass);
+void LogIn(t_message *message, char *user_login, char *user_pass);
+void CreateRoom(t_message *message, char *user, char *customer);
+void UserSearch(t_message *message, char *searchText);
+void CreateMessage(t_message *message, int roomID);
 
 //Server function
 void process_rq_server(const char *const string, sqlite3 *db, int fd);
