@@ -236,7 +236,7 @@ ___
     "type": OLD_DIALOGS,
     "dialogs": ["dialog1", "dialog2", "dialog3", "dialog4"],
     "id": [id1, id2, id3, id4],
-    "first_massage_id": [massage_id1, massage_id2 ... massage_idn]
+    "first_message_id": [message_id1, message_id2 ... message_idn]
 }
 ```
 ___
