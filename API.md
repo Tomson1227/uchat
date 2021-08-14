@@ -84,27 +84,6 @@ ___
 ```
 ___
 
-### Create message
-
-**From client to server request**
-
-```json
-{
-    "type": CREATE_MSG,
-    "room_id": id
-}
-```
-**From server to client response**
-
-```json
-{
-    "type": CREATE_MSG,
-    "msg_id": msg_id,
-    "room_id": id
-}
-```
-___
-
 ### Send message
 
 **From client to server request**
@@ -115,22 +94,47 @@ ___
     "username": "username",
     "room_id": room_id,
     "message": "message",
-    "message_id": msg_id,
-    "date": "date",
-    "msg_type": TEXT
+    "msg_type": TEXT/FILE/IMAGE
 }
 ```
 
 **From server to client response**
+
 ```json
 {
     "type": SND_MSG,
-    "username": "username_of_sender",
+    "status": STATUS,
     "room_id": room_id,
-    "message": "message",
     "message_id": msg_id,
+    "date": "date"
+}
+```
+___
+
+### Read message
+
+**From client to server request**
+
+```json
+{
+    "type": READ_MSG,
+    "read": ALL/RESENT,
+    "room_id": room_id
+}
+```
+
+**From server to client response**
+    
+```json
+{
+    "type": READ_MSG,
+    "status": STATUS,
+    "room_id": room_id,
+    "message_id": msg_id,
+    "msg_type": TEXT/FILE/IMAGE,
+    "message": "message",
     "date": "date",
-    "msg_type": TEXT/FILE/IMAGE
+    "sender": "username"
 }
 ```
 ___
@@ -215,28 +219,6 @@ ___
 ```
 ___
 
-### Create room 
-
-**From client to server request**
-
-```json
-{
-    "type": CREATE_GROUP,
-    "group_name": "group_name",
-    "members": ["member1", "member2", "member3"]
-}
-```
-**From server to client request**
-
-```json
-{
-    "type": CREATE_GROUP,
-    "group_name": "group_name",
-    "members": ["member1", "member2", "member3"]
-}
-```
-___
-
 ### Upload old dialogs
 
 **From client to server request**
@@ -253,29 +235,9 @@ ___
 {
     "type": OLD_DIALOGS,
     "dialogs": ["dialog1", "dialog2", "dialog3", "dialog4"],
-    "id": [id1, id2, id3, id4]
+    "id": [id1, id2, id3, id4],
+    "first_message_id": [message_id1, message_id2 ... message_idn]
 }
 ```
 ___
 
-### Upload old messages
-
-**From client to server request**
-
-```json
-{
-    "type": OLD_MSG,
-    "id": room_id,
-}
-```
-
-**From server to client response**
-```json
-{
-    "type": OLD_MSG,
-    "messages": ["msg1", "msg2", "msg3"],
-    "senders": ["sender1", "sender2", "sender3"],
-    "dates": ["time1", "time2", "time3"]
-}
-```
-___
