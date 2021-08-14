@@ -21,7 +21,7 @@ void send_edited_message(GtkEntry *entry, t_chat *chat) {
 
     free(msg->msg);
     msg->msg = NULL;
-    msg->msg = malloc(sizeof(char) * gtk_entry_get_text_length(chat_edit_message));
+    msg->msg = malloc(sizeof(char) * gtk_entry_get_text_length(chat_edit_message) + 1);
     const gchar *text = gtk_entry_get_text(entry);
     strcpy(msg->msg, text);
     char *new_msg = form_msg(msg->sender, msg->time, msg->msg);

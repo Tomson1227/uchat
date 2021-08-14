@@ -4,7 +4,6 @@ int N = 0;
 
 static bool row_is_already_in_list(char *user, GtkListBox *box) {
     bool result = false;
-    printf("%s\n", user);
     GList *rows = NULL;
     GList *listrunner;
 
@@ -63,6 +62,7 @@ void filter_search(char **users, int n, t_chat *chat) {
                 gtk_container_add(GTK_CONTAINER(listbox_found_dlgs), r);
                 gtk_container_add(GTK_CONTAINER(r), lbl);
                 gtk_widget_set_name(r, users[i]);
+                printf("widget name: %s\n", gtk_widget_get_name(r));
                 gtk_widget_show_all(r);
                 tmp++;
             }

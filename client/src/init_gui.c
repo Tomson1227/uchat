@@ -12,7 +12,6 @@ void init_gui(t_chat *chat) {
     connect_room_settings(chat);
     connect_profile_settings(chat);
     connect_search_username_room(chat);
-    
     init_main_window(chat);
 }
 
@@ -82,8 +81,7 @@ static void req_log_in(GtkButton *btn, t_chat *chat) {
         gtk_label_set_text(GTK_LABEL(label), "");
         chat->username = malloc(sizeof(char) * strlen(buf_username));
         strcpy(chat->username, buf_username);
-        char *temp = (char*)calloc(128, sizeof(char));
-        temp = send_rq_log_in_client(buf_username, buf_password);
+        char *temp = send_rq_log_in_client(buf_username, buf_password);
         enQueue(chat->config->queue_send, temp);
         while(QueueisEmpty(chat->config->queue_recv)) {
         }

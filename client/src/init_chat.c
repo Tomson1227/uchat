@@ -47,6 +47,7 @@ void init_chat_window(t_chat *chat, int type) {
     GtkLabel *lbl_global_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search"));
     GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
 
+    
     gtk_widget_hide(GTK_WIDGET(wnd_main));
     gtk_widget_show(GTK_WIDGET(chat_wndw));
     gtk_label_set_text(lbl, chat->username);
@@ -59,7 +60,12 @@ void init_chat_window(t_chat *chat, int type) {
     gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));
     gtk_widget_hide(GTK_WIDGET(lbl_global_search_nothing_found));
     gtk_widget_hide(GTK_WIDGET(lbl_global_search));
+    char *dialogs[2] = {"1", "2"};
+    int ids[2] = {1, 2};
+    int msg_ids[2] = {-1, -1};
+    
     if (type == 0) {
-        //send request to upload old dialogs
+        //send_req_old_dialogs(chat->username);
+        upload_old_dialogs(dialogs, ids, msg_ids, 2, chat);
     }
 }
