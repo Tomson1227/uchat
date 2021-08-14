@@ -134,6 +134,7 @@ ___
     "msg_type": TEXT/FILE/IMAGE
     "message": "message"
     "date": "date",
+    "sender": "username"
 }
 ```
 ___
