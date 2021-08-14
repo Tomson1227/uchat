@@ -22,7 +22,6 @@
 #include "cJSON.h"
 #include "transaction.h"
 #include "sqlite3.h"
-// #include "API.h"
 
 typedef enum s_api {
     LOGIN,
@@ -38,20 +37,24 @@ typedef enum s_api {
 }            t_api;
 
 typedef enum s_rs_status {
-    SUCCESS,
+    SUCCESS = 0,
     ERROR,
-    LOGIN_OK,
     LOGIN_WRONG_USER,
     LOGIN_WRONG_PASS,
-    SIGNUP_OK,
     SIGNUP_USER_EXIST,
-    SINGUP_FAIL,
-    TEXT,
-    SND_MSG_OK,
-    READ_MSG_OK,
-    READ_ALL,
-    READ_RECENT
+    ROOM_DOES_NOT_EXIST
 }            t_rs_status;
+
+typedef enum s_update {
+    TRUE = 0,
+    FALSE
+}            t_update;
+
+typedef enum s_msg_type {
+    M_MESSAGE,
+    M_FILE,
+    M_IMAGE
+}            t_msg_type;
 
 typedef struct s_create_room {
     int id;
@@ -70,6 +73,7 @@ typedef struct s_read_message {
     int msg_type;
     char *message;
     char *date;
+    char *sender;
 }              t_read_message;
 
 typedef struct s_search_user {
@@ -209,9 +213,9 @@ void SignUp(t_message *message, char *user_login, char *user_pass);
 void LogIn(t_message *message, char *user_login, char *user_pass);
 void CreateRoom(t_message *message, char *user, char *customer);
 void UserSearch(t_message *message, char *searchText);
-void CreateMessage(t_message *message, int roomID);
+void SendMessage(t_message *message, int roomID);
 
 //Server function
-void process_rq_server(const char *const string, sqlite3 *db, int fd);
+void process_rq_server(const char *const string, int fd);
 
 #endif /* UCHAT_SERVER_H */

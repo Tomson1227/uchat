@@ -5,14 +5,15 @@ static cJSON *create_response(t_message *message);
 static void send_response(char* message, int fd);
 // static char *server_user_search(cJSON *rq);
 static char *server_create_room(cJSON *rq); 
-static char *server_create_msg(cJSON *rq);
+static char *server_send_msg(cJSON *rq);
 static char *server_sign_up(cJSON *rq); 
 static char *server_log_in(cJSON *rq); 
 static void check_error(void);
 /*-------------------------------------*/
 /*--- Public functions definitions ---*/
 
-void process_rq_server(const char *const string, sqlite3 *db, int fd) {
+void process_rq_server(const char *const string, int fd)
+{
     cJSON *rq = NULL;
     char *response = NULL;
 
@@ -30,7 +31,7 @@ void process_rq_server(const char *const string, sqlite3 *db, int fd) {
                 response = server_create_room(rq);
                 break;
             case SND_MSG:
-                response = server_create_msg(rq);
+                response = server_send_msg(rq);
                 break;
             case READ_MSG:
                 break;
@@ -104,14 +105,14 @@ static void send_response(char* message, int fd)
 //     return line;
 // }
 
-static char *server_create_msg(cJSON *rq) 
+static char *server_send_msg(cJSON *rq) 
 {
     t_message message;
     char *line = NULL;
     cJSON *response = NULL;
     cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "username");
 
-    CreateMessage(&message, roomID->valuedouble);
+    SendMessage(&message, roomID->valuedouble);
 
     if((response = create_response(&message))) {
         cJSON *roomID = cJSON_CreateNumber(message.Data.create_msg.room_id);

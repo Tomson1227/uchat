@@ -7,14 +7,14 @@ static int callback(void *data, int argc, char **argv, char **azColName);
 static int checkLogin(char *user_login); 
 static int getUserID(char *username);
 
-void CreateMessage(t_message *message, int roomID) 
+void SendMessage(t_message *message, int roomID) 
 {
     message->API = SND_MSG;
-    message->status = SND_MSG_OK;
+    message->status = SUCCESS;
     message->Data.create_msg.room_id = roomID;
     // message->Data.create_msg.date = ; //need to be added
     
-    int length, rc, ID;
+    int length, rc;
     char *createmessageQuery, *errMsg;
     char *selectID = "SELECT MAX(ID) FROM MSSGS";
     sqlite3_stmt *stmt;
@@ -57,8 +57,12 @@ void CreateRoom(t_message *message, char *user, char *customer)
     customerID = getUserID(customer);
 
     length = snprintf(NULL, 0, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID) VALUES (%d, %d)", userID, customerID);
-    if (!(roomQuery = (char *)calloc(length, sizeof(char))))
+
+    if (!(roomQuery = (char *)calloc(length, sizeof(char)))) {
         perror("Allocation fail!");
+        message->status = ERROR;
+        return;
+    }
 
     sprintf(roomQuery, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID) VALUES (%d, %d)", userID, customerID);
 
@@ -66,8 +70,8 @@ void CreateRoom(t_message *message, char *user, char *customer)
 
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", errMsg);
-
         sqlite3_free(errMsg);
+        message->status = ERROR;
     } else {
         sqlite3_prepare_v2(db, roomIDQuery, -1, &stmt, NULL);
         sqlite3_step(stmt);
@@ -118,7 +122,7 @@ void UserSearch(t_message *message, char *searchText)
 void SignUp(t_message *message, char *user_login, char *user_pass)
 {
     message->API = SIGNUP;
-    message->status = SIGNUP_OK;
+    message->status = SUCCESS;
     sqlite3_stmt *stmt;
     char *zErrMsg = NULL;
     int lengthSignUp, ID, rc;
@@ -143,7 +147,7 @@ void SignUp(t_message *message, char *user_login, char *user_pass)
         rc = sqlite3_exec(db, signUpQuery, callback, 0, &zErrMsg);
 
         if( rc != SQLITE_OK ) {
-            message->status = SINGUP_FAIL;
+            message->status = ERROR;
             fprintf(stderr, "SQL error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
         }
@@ -156,7 +160,7 @@ void SignUp(t_message *message, char *user_login, char *user_pass)
 void LogIn(t_message *message, char *user_login, char *user_pass)
 {
     message->API = LOGIN;
-    message->status = LOGIN_OK;
+    message->status = SUCCESS;
     sqlite3_stmt *stmt;
     const unsigned char *pass;
     char *query;

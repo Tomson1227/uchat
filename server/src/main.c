@@ -106,7 +106,7 @@ static void *thread_socket(void *pointer)
                 break;     
             // printf("buff: %s\n", request);
             
-            process_rq_server(request, server.db, socket->fd);   
+            process_rq_server(request, socket->fd);   
             free(request);
         }
         else
