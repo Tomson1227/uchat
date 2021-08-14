@@ -93,7 +93,7 @@ ___
     "type": SND_MSG,
     "username": "username",
     "room_id": room_id,
-    "message": "message"
+    "message": "message",
     "msg_type": TEXT/FILE/IMAGE
 }
 ```
@@ -106,7 +106,7 @@ ___
     "status": STATUS,
     "room_id": room_id,
     "message_id": msg_id,
-    "date": "date",
+    "date": "date"
 }
 ```
 ___
@@ -118,7 +118,7 @@ ___
 ```json
 {
     "type": READ_MSG,
-    "read": ALL/RESENT
+    "read": ALL/RESENT,
     "room_id": room_id
 }
 ```
@@ -132,7 +132,7 @@ ___
     "room_id": room_id,
     "message_id": msg_id,
     "msg_type": TEXT/FILE/IMAGE,
-    "message": "message"
+    "message": "message",
     "date": "date",
     "sender": "username"
 }
