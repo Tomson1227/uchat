@@ -131,7 +131,7 @@ ___
     "status": STATUS,
     "room_id": room_id,
     "message_id": msg_id,
-    "msg_type": TEXT/FILE/IMAGE
+    "msg_type": TEXT/FILE/IMAGE,
     "message": "message"
     "date": "date",
     "sender": "username"
