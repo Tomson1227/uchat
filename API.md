@@ -36,7 +36,7 @@ ___
 ```json
 {
     "type": RESPONSE_LOGIN,
-    "status": LOGIN_OK | LOGIN_WRONG_USER | LOGIN_WRONG_PASS,
+    "status": SUCCESS | LOGIN_WRONG_USER | LOGIN_WRONG_PASS,
 }
 ```
 ___
@@ -56,7 +56,7 @@ ___
 ```json
 {
     "type": RESPONSE_SIGNUP,
-    "status": SINGUP_OK | SIGNUP_USER_EXIST | SINGUP_FAIL,
+    "status": SUCCESS | SIGNUP_USER_EXIST | ERROR,
 }
 ```
 ___
@@ -80,6 +80,7 @@ ___
     "type": CREATE_ROOM,
     "id": id,
     "customer": "customer"
+    "status": SUCCESS | ERROR
 }
 ```
 ___
@@ -103,7 +104,7 @@ ___
 ```json
 {
     "type": SND_MSG,
-    "status": STATUS,
+    "status": SUCCESS | ERROR,
     "room_id": room_id,
     "message_id": msg_id,
     "date": "date"
@@ -118,7 +119,6 @@ ___
 ```json
 {
     "type": READ_MSG,
-    "read": ALL/RESENT,
     "room_id": room_id
 }
 ```
@@ -128,7 +128,8 @@ ___
 ```json
 {
     "type": READ_MSG,
-    "status": STATUS,
+    "status": SUCCESS | ERROR | ROOM_DOES_NOT_EXIST,
+    "update": TRUE | FALSE
     "room_id": room_id,
     "message_id": msg_id,
     "msg_type": TEXT/FILE/IMAGE,
@@ -155,7 +156,8 @@ ___
 ```json
 {
     "type": SEARCH_USER,
-    "user": ["username1", "username2", "username3"]
+    "user": ["username1", "username2", "username3"],
+    "status": SUCCESS | ERROR
 }
 ```
 ___
@@ -175,6 +177,7 @@ ___
 ```json
 {
     "type": DELETE_ROOM,
+    "status": SUCCESS | ERROR,
     "id": id
 }
 ```
@@ -194,6 +197,7 @@ ___
 ```json
 {
     "type": DELETE_MSG,
+    "status": SUCCESS | ERROR,
     "id": msg_id
 }
 ```
@@ -213,8 +217,7 @@ ___
 ```json 
 {
     "type": EDIT_MSG,
-    "id": id_of_msg,
-    "new_msg": "new_msg"
+    "status": SUCCESS | ERROR
 }
 ```
 ___
@@ -234,9 +237,9 @@ ___
 ```json 
 {
     "type": OLD_DIALOGS,
+    "status": SUCCESS | ERROR,
     "dialogs": ["dialog1", "dialog2", "dialog3", "dialog4"],
-    "id": [id1, id2, id3, id4],
-    "first_message_id": [message_id1, message_id2 ... message_idn]
+    "id": [id1, id2, id3, id4]
 }
 ```
 ___
