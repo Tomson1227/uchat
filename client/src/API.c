@@ -60,7 +60,7 @@ static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
 
     /* PROCESS RESPONSE */
     switch((int)status->valuedouble) {
-        case LOGIN_OK:
+        case SUCCESS:
             init_chat_window(chat, 0);
             break;
         case LOGIN_WRONG_USER:
@@ -80,13 +80,13 @@ static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
     
     /* PROCESS RESPONSE */
     switch((int) status->valuedouble) {
-        case SIGNUP_OK:
+        case SUCCESS:
             init_chat_window(chat, 1);
             break;
         case SIGNUP_USER_EXIST:
             display_error_user_exists(chat);
             break;
-        case SINGUP_FAIL:
+        case ERROR:
             break;
         default:
             /*UNKNOWN STATUS*/
@@ -157,7 +157,7 @@ static void receive_rs_old_dialogs(cJSON *rs, t_chat *chat) {
 static void receive_old_msgs(cJSON *json, t_chat *chat) {
     cJSON *status = cJSON_GetObjectItemCaseSensitive(json, "status");
 
-    if (status->valuedouble == READ_MSG_OK) {
+    if (status->valuedouble == SUCCESS) {
         cJSON *room_id = cJSON_GetObjectItemCaseSensitive(json, "room_id");
         cJSON *message_id = cJSON_GetObjectItemCaseSensitive(json, "message_id");
         cJSON *msg_type = cJSON_GetObjectItemCaseSensitive(json, "msg_type");
@@ -177,7 +177,7 @@ static void receive_old_msgs(cJSON *json, t_chat *chat) {
 static void receive_rs_send_msg_client(cJSON *json, t_chat *chat) {
     cJSON *status = cJSON_GetObjectItemCaseSensitive(json, "status");
 
-    if (status->valuedouble == SND_MSG_OK) {
+    if (status->valuedouble == SUCCESS) {
         cJSON *room_id = cJSON_GetObjectItemCaseSensitive(json, "room_id");
         cJSON *message_id = cJSON_GetObjectItemCaseSensitive(json, "message_id");
         cJSON *date = cJSON_GetObjectItemCaseSensitive(json, "date");
@@ -273,7 +273,7 @@ char *send_rq_send_msg_client(char *username, gint room_id, char *message) {
         cJSON *sender = cJSON_CreateString(username);
         cJSON *id = cJSON_CreateNumber(room_id);
         cJSON *msg = cJSON_CreateString(message);
-        cJSON *msg_type = cJSON_CreateNumber(TEXT);
+        cJSON *msg_type = cJSON_CreateNumber(MESSAGE);
 
         cJSON_AddItemToObject(request_send_msg, "type", type);
         cJSON_AddItemToObject(request_send_msg, "username", sender);

@@ -14,13 +14,15 @@ void recv_message(int room_id, int msg_id, char *date, char *sText,
     // }
 
     t_room *room = chat->curr_chat; 
-    t_msg *msg = fill_msg(room_id, msg_id, date, sender, sText);
+    if (NULL == g_object_get_data(my_itoa(msg_id)), "msg_id")) {
+        t_msg *msg = fill_msg(room_id, msg_id, date, sender, sText);
 
-    if (strlen(sText) > 45) {
-        gchar *new_buffer = trim_message(sText);
-        AddListItem(chat, new_buffer, msg, room);
-        free(new_buffer);
-    }
-    else 
-        AddListItem(chat, sText, msg, room);
+       if (strlen(sText) > 45) {
+           gchar *new_buffer = trim_message(sText);
+           AddListItem(chat, new_buffer, msg, room);
+           free(new_buffer);
+       }
+       else 
+           AddListItem(chat, sText, msg, room);
+    }   
 }

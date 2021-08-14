@@ -85,7 +85,7 @@ void add_message(int id_of_room, int id_of_msg, char *time, t_chat *chat) {
     char *buffer = gtk_entry_get_text(entry);
     t_msg *msg = fill_msg(chat->curr_chat->room_id, k, time, chat->username, buffer);
     //t_msg *msg = fill_msg(chat->curr_chat->room_id, id_of_msg, time, chat->username, buffer);
-    // g_object_set_data(G_OBJECT(my_itoa(id_of_msg)), "msg_id", msg);
+    g_object_set_data(G_OBJECT(my_itoa(id_of_msg)), "msg_id", msg);
     t_room *room = chat->curr_chat;
 
     if (strlen(buffer) > 0) {
