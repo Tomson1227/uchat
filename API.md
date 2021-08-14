@@ -133,8 +133,7 @@ ___
     "message_id": msg_id,
     "msg_type": TEXT/FILE/IMAGE,
     "message": "message",
-    "date": "date",
-    "sender": "username"
+    "date": "date"
 }
 ```
 ___
