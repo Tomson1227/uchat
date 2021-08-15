@@ -60,13 +60,13 @@ void init_chat_window(t_chat *chat, int type) {
     gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));
     gtk_widget_hide(GTK_WIDGET(lbl_global_search_nothing_found));
     gtk_widget_hide(GTK_WIDGET(lbl_global_search));
-    char *dialogs[2] = {"1", "2"};
-    int ids[2] = {1, 2};
-    int msg_ids[2] = {-1, -1};
+    // char *dialogs[2] = {"1", "2"};
+    // int ids[2] = {1, 2};
+    // int msg_ids[2] = {-1, -1};
     
     if (type == 0) {
         //char *temp = send_req_old_dialogs(chat->username);
         //enQueue(chat->config->queue_send, temp);
-        upload_old_dialogs(dialogs, ids, msg_ids, 2, chat);
+        // upload_old_dialogs(dialogs, ids, msg_ids, 2, chat);
     }
 }

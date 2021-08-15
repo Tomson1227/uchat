@@ -14,7 +14,7 @@ void recv_message(int room_id, int msg_id, char *date, char *sText,
     // }
 
     t_room *room = chat->curr_chat; 
-    if (NULL == g_object_get_data(my_itoa(msg_id), "msg_id")) {
+    // if (NULL == g_object_get_data(my_itoa(msg_id), "msg_id")) {
         t_msg *msg = fill_msg(room_id, msg_id, date, sender, sText);
 
        if (strlen(sText) > 45) {
@@ -24,5 +24,5 @@ void recv_message(int room_id, int msg_id, char *date, char *sText,
        }
        else 
            AddListItem(chat, sText, msg, room);
-    }   
+    // }   
 }

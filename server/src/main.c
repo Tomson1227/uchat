@@ -6,7 +6,8 @@ static inline void close_server(void);
 static void *thread_socket(void *pointer);
 static inline void init_server(char *port);
 
-int main(int argc , char *argv[]) {
+int main(int argc , char *argv[])
+{
     if(argc != 2) {
         printf("Usage: ./uchat_server [port]\n");
         exit(1);
@@ -45,12 +46,14 @@ int main(int argc , char *argv[]) {
     close_server();
 }
 
-void send_message(char *message) {
+void send_message(char *message)
+{
     if(send(server.fd, message, sizeof(message), 0) < 0)
         perror("send fail");
 }
 
-static bool SetSocketBlockingEnabled(int fd, bool blocking) {
+static bool SetSocketBlockingEnabled(int fd, bool blocking)
+{
     if(fd < 0) 
         return false;
     
@@ -64,7 +67,8 @@ static bool SetSocketBlockingEnabled(int fd, bool blocking) {
     return !fcntl(fd, F_SETFL, flags);
 }
 
-static char *receive_line(int fd) {
+static char *receive_line(int fd)
+{
     char *line =  NULL;
     char buff[BUFF_SIZE];
     ssize_t size;
@@ -87,7 +91,8 @@ static char *receive_line(int fd) {
     return line;
 }
 
-static void *thread_socket(void *pointer) {
+static void *thread_socket(void *pointer)
+{
     t_socket_list *socket = (t_socket_list *) pointer;
     char *request;
     int poll_request;
@@ -112,7 +117,8 @@ static void *thread_socket(void *pointer) {
     return NULL;
 }
 
-static void init_server(char *port) {
+static void init_server(char *port)
+{
     server.socket_head = NULL;
     server.port = atoi(port);
 
@@ -155,7 +161,8 @@ static void init_server(char *port) {
     Init_DB(&server);
 }
 
-static inline void close_server(void) {
+static inline void close_server(void)
+{
     t_socket_list *head = server.socket_head;
 
     while(head) {

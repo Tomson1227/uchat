@@ -28,10 +28,10 @@ void log_out(GtkButton *btn, t_chat *chat) {
     GObject *window_main = gtk_builder_get_object(chat->builder, "window_main");
     
     gtk_widget_hide(GTK_WIDGET(log_out));
-    gtk_widget_hide(chat_main);
-    gtk_widget_show(window_main);
+    gtk_widget_hide(GTK_WIDGET(chat_main));
+    gtk_widget_show(GTK_WIDGET(window_main));
 }
 
 void on_btn_cancel_log_out_clicked(GtkButton *btn, GObject *log_out) {
-    gtk_widget_hide(log_out);
+    gtk_widget_hide(GTK_WIDGET(log_out));
 }

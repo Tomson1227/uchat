@@ -2,7 +2,7 @@
 
 int k = 0;
 
-gchar *trim_message(const gchar *buffer) {
+char *trim_message(char *buffer) {
     int j = 0;
     int n = strlen(buffer) / 45;
     gchar *output = malloc(sizeof(gchar) * strlen(buffer) + n + 1);
@@ -44,7 +44,7 @@ void free_msg(t_msg *msg) {
     free(msg);
 }
 
-char *form_msg(char *sender, char *time, const gchar *text) {
+char *form_msg(char *sender, char *time, char *text) {
     char *output = malloc(sizeof(char) * (strlen(sender) + strlen(text) + strlen(time) + 3));//strnew
 
     strcpy(output, sender);
@@ -74,7 +74,7 @@ void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat) {
     free(message);
 }
 
-void AddListItem(t_chat *chat, gchar *sText, t_msg *msg, t_room *room) {
+void AddListItem(t_chat *chat, char *sText, t_msg *msg, t_room *room) {
     char *message = form_msg(msg->sender, msg->time, sText);
     if (room)
         add_row_msg(room, msg, message, chat);
@@ -82,24 +82,27 @@ void AddListItem(t_chat *chat, gchar *sText, t_msg *msg, t_room *room) {
 
 void add_message(int id_of_room, int id_of_msg, char *time, t_chat *chat) {
     GtkEntry *entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
-    char *buffer = gtk_entry_get_text(entry);
+    char *buffer = NULL;
+    buffer = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);
+    sprintf(buffer, "%s", gtk_entry_get_text(entry));
     t_msg *msg = fill_msg(chat->curr_chat->room_id, k, time, chat->username, buffer);
     //t_msg *msg = fill_msg(chat->curr_chat->room_id, id_of_msg, time, chat->username, buffer);
-    g_object_set_data(G_OBJECT(my_itoa(id_of_msg)), "msg_id", msg);
+
+    GtkWidget *r = gtk_list_box_row_new();
+    r = GTK_WIDGET(msg->row_msg);
+    g_object_set_data(G_OBJECT(r), "msg_id", my_itoa(id_of_msg));
     t_room *room = chat->curr_chat;
 
     if (strlen(buffer) > 0) {
         if (strlen(buffer) > 45) {
             gchar *new_buffer = trim_message(buffer);
             AddListItem(chat, new_buffer, msg, room);
-            //free(new_buffer);
         }
         else 
             AddListItem(chat, buffer, msg, room);
         gtk_entry_set_text(entry,""); 
     }
-    // free(buffer);
-    recv_message(-1, -1, "21.40.41", "Hello", chat, "sender");
+    // recv_message(-1, -1, "21.40.41", "Hello", chat, "sender");
 }
 
 void req_send_message(GtkEntry *entry, t_chat *chat) {
@@ -112,7 +115,9 @@ void req_send_message(GtkEntry *entry, t_chat *chat) {
 
 void on_btn_send_message_clicked(GtkButton *btn, t_chat *chat) {
     GtkEntry *entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
-    const gchar *buffer = gtk_entry_get_text(entry);
+    char *buffer = NULL;
+    buffer = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);
+    sprintf(buffer, "%s", gtk_entry_get_text(entry));
     char *tmp = send_rq_send_msg_client(chat->username, chat->curr_chat->room_id, buffer);
     enQueue(chat->config->queue_send, tmp);
 }

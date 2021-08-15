@@ -44,16 +44,16 @@ void req_search_user(GtkEntry *entry, t_chat *chat) {
 
 void filter_search(char **users, int n, t_chat *chat) {
     GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
-    GObject *listbox_found_dlgs = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_found_dlgs"));
+    GtkListBox *listbox_found_dlgs = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_found_dlgs"));
     GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
     GtkLabel *lbl_global_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search"));
     GtkLabel *lbl_local_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_local_search"));
     GtkLabel *lbl_local_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_local_search_nothing_found"));
-    gtk_widget_show(lbl_local_search);
-    gtk_widget_show(lbl_global_search);
+    gtk_widget_show(GTK_WIDGET(lbl_local_search));
+    gtk_widget_show(GTK_WIDGET(lbl_global_search));
     int tmp = 0;
     
-    gtk_container_foreach(GTK_CONTAINER(chat->listbox_dlgs), G_CALLBACK(filter_row), (const gchar **)users);
+    gtk_container_foreach((GtkContainer *)chat->listbox_dlgs, (GtkCallback)filter_row, (const gchar **)users);
     for (int i = 0; i < n; i++) {
         if (gtk_stack_get_child_by_name(stack, users[i]) == NULL) { 
             if (!row_is_already_in_list(users[i], listbox_found_dlgs)) {

@@ -51,7 +51,7 @@ static void manage_room_visibility(t_chat *chat) {
     gtk_stack_set_visible_child_name(stack_entry, "chat_message_entry");
     gtk_widget_show(GTK_WIDGET(btn_send_msg));
     gtk_widget_show(GTK_WIDGET(btn_send_sticker));
-    gtk_widget_show_all(chat->listbox_dlgs);
+    gtk_widget_show_all(GTK_WIDGET(chat->listbox_dlgs));
     gtk_widget_show(GTK_WIDGET(btn_attach_file));
 }
 
@@ -64,7 +64,7 @@ static void add_dialog_row(t_room *room, t_chat *chat, const gchar *group_name) 
      
     gtk_container_add(GTK_CONTAINER(chat->listbox_dlgs), row);
     gtk_widget_show(row);
-    room->row_chat = row;
+    room->row_chat = GTK_LIST_BOX_ROW(row);
     gtk_container_add(GTK_CONTAINER(row), lbl);
     gtk_widget_show(lbl);
     g_object_set_data(G_OBJECT(row), "room", id);
@@ -117,7 +117,9 @@ static void init_room(t_room *room, t_chat *chat) {
 
 void create_room(GtkButton *btn, t_chat *chat) {  
     GtkEntry *entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "group_name"));
-    const gchar *name = gtk_entry_get_text(entry);
+    char *name = NULL;
+    name = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);
+    sprintf(name, "%s", gtk_entry_get_text(entry));
     
     //char *temp = send_rq_create_room_client(name, char **members);
     //enQueue(chat->config->queue_send, temp);
@@ -128,7 +130,9 @@ void create_room(GtkButton *btn, t_chat *chat) {
 }
 
 void req_create_dialog(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
-    const gchar *customer = gtk_widget_get_name(GTK_WIDGET(row));
+    char *customer = NULL;
+    customer  = malloc(sizeof(char) * strlen(gtk_widget_get_name(GTK_WIDGET(row))) + 1);
+    sprintf(customer, "%s", gtk_widget_get_name(GTK_WIDGET(row)));
     
     //char *temp = send_rq_create_room_client(chat->username, const gchar *customer);
     //enQueue(chat->config->queue_send, temp);
@@ -153,7 +157,7 @@ static void clear_listbox_with_found_messages(GtkListBox *box) {
         rows = gtk_container_get_children(GTK_CONTAINER(box));
         listrunner = g_list_first(rows);    
         while (listrunner) {
-            gtk_container_remove(box, listrunner->data);
+            gtk_container_remove(GTK_CONTAINER(box), listrunner->data);
             listrunner = g_list_next(listrunner);
         }
     }

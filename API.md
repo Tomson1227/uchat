@@ -36,7 +36,7 @@ ___
 ```json
 {
     "type": RESPONSE_LOGIN,
-    "status": SUCCESS | LOGIN_WRONG_USER | LOGIN_WRONG_PASS,
+    "status": LOGIN_OK | LOGIN_WRONG_USER | LOGIN_WRONG_PASS,
 }
 ```
 ___
@@ -56,7 +56,7 @@ ___
 ```json
 {
     "type": RESPONSE_SIGNUP,
-    "status": SIGNUP_SUCCESS | SIGNUP_USER_EXIST | SIGNUP_ERROR,
+    "status": SINGUP_OK | SIGNUP_USER_EXIST | SINGUP_FAIL,
 }
 ```
 ___
@@ -78,9 +78,27 @@ ___
 ```json
 {
     "type": CREATE_ROOM,
-    "id": id,
-    "customer": "customer"
-    "status": SUCCESS | ERROR
+    "id": id
+}
+```
+___
+
+### Create message
+
+**From client to server request**
+
+```json
+{
+    "type": CREATE_MSG,
+    "room_id": id
+}
+```
+**From server to client response**
+
+```json
+{
+    "type": CREATE_MSG,
+    "msg_id": id
 }
 ```
 ___
@@ -95,47 +113,22 @@ ___
     "username": "username",
     "room_id": room_id,
     "message": "message",
-    "msg_type": TEXT/FILE/IMAGE
+    "message_id": msg_id,
+    "date": "date",
+    "msg_type": TEXT
 }
 ```
 
 **From server to client response**
-
 ```json
 {
     "type": SND_MSG,
-    "status": SUCCESS | ERROR,
+    "username": "username_of_sender",
     "room_id": room_id,
-    "message_id": msg_id,
-    "date": "date"
-}
-```
-___
-
-### Read message
-
-**From client to server request**
-
-```json
-{
-    "type": READ_MSG,
-    "room_id": room_id
-}
-```
-
-**From server to client response**
-    
-```json
-{
-    "type": READ_MSG,
-    "status": SUCCESS | ERROR | ROOM_DOES_NOT_EXIST,
-    "update": TRUE | FALSE
-    "room_id": room_id,
-    "message_id": msg_id,
-    "msg_type": TEXT/FILE/IMAGE,
     "message": "message",
+    "message_id": msg_id,
     "date": "date",
-    "sender": "username"
+    "msg_type": TEXT
 }
 ```
 ___
@@ -156,90 +149,7 @@ ___
 ```json
 {
     "type": SEARCH_USER,
-    "user": ["username1", "username2", "username3"],
-    "status": SUCCESS | ERROR
-}
-```
-___
-
-### Delete room
-
-**From client to server request**
-
-```json
-{
-    "type": DELETE_ROOM,
-    "id": id
-}
-```
-
-**From server to client response to each room member**
-```json
-{
-    "type": DELETE_ROOM,
-    "status": SUCCESS | ERROR,
-    "id": id
-}
-```
-___
-
-### Delete message
-
-**From client to server request**
-```json
-{
-    "type": DELETE_MSG,
-    "id": msg_id
-}
-```
-
-**From server to client response**
-```json
-{
-    "type": DELETE_MSG,
-    "status": SUCCESS | ERROR,
-    "id": msg_id
-}
-```
-___
-
-### Edit message
-
-**From client to server request**
-```json
-{
-    "type": EDIT_MSG,
-    "id": id_of_msg,
-    "new_msg": "new_msg"
-}
-```
-**From server to client request**
-```json 
-{
-    "type": EDIT_MSG,
-    "status": SUCCESS | ERROR
-}
-```
-___
-
-### Upload old dialogs
-
-**From client to server request**
-
-```json
-{
-    "type": OLD_DIALOGS,
-    "username": "username"
-}
-```
-
-**From server to client response**
-```json 
-{
-    "type": OLD_DIALOGS,
-    "status": SUCCESS | ERROR,
-    "dialogs": ["dialog1", "dialog2", "dialog3", "dialog4"],
-    "id": [id1, id2, id3, id4]
+    "user": ["username1", "username2", "username3"]
 }
 ```
 ___
