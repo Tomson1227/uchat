@@ -72,13 +72,19 @@ static void req_log_in(GtkButton *btn, t_chat *chat) {
 
     sprintf(buf_username, "%s", gtk_entry_get_text(username));
     sprintf(buf_password, "%s", gtk_entry_get_text(password)); 
-    if (strlen(buf_password) == 0 || strlen(buf_username) == 0 || (strlen(buf_password) == 0 && strlen(buf_username) == 0))
+    if (strlen(buf_username) == 0 && strlen(buf_password) == 0)
         gtk_label_set_text(GTK_LABEL(label), "please enter your credentials");
+    else if (strlen(buf_username) == 0)
+        gtk_label_set_text(GTK_LABEL(label), "please enter your username");
+    else if (strlen(buf_password) == 0)
+        gtk_label_set_text(GTK_LABEL(label), "please enter your password");
     else if (strlen(buf_username) < 6 || strlen(buf_password) < 6) {
         gtk_label_set_text(GTK_LABEL(label), "credentials should inlcude\n   more than 6 symbols");
     }
     else {
-        gtk_label_set_text(GTK_LABEL(label), "");
+        // this text is not going to be displayed if user is authed successfully.
+        // I'm setting this only in case the user is not redirected to main window.
+        gtk_label_set_text(GTK_LABEL(label), "User not found or password is incorrect");
         chat->username = malloc(sizeof(char) * strlen(buf_username));
         strcpy(chat->username, buf_username);
         char *temp = send_rq_log_in_client(buf_username, buf_password);
@@ -104,8 +110,14 @@ static void req_sign_up(GtkButton *btn, t_chat *chat) {
     sprintf(buf_username, "%s", gtk_entry_get_text(username));
     sprintf(buf_password, "%s", gtk_entry_get_text(password)); 
     sprintf(buf_password_repeated, "%s", gtk_entry_get_text(password_repeated));
-    if (strlen(buf_username) == 0 || strlen(buf_password) == 0 || strlen(buf_password_repeated) == 0)
+    if (strlen(buf_username) == 0 && strlen(buf_password) == 0)
         gtk_label_set_text(GTK_LABEL(label), "please enter your credentials");
+    else if (strlen(buf_username) == 0)
+        gtk_label_set_text(GTK_LABEL(label), "please enter your username");
+    else if (strlen(buf_password) == 0)
+        gtk_label_set_text(GTK_LABEL(label), "please enter your password");
+    else if (strlen(buf_password_repeated) == 0)
+        gtk_label_set_text(GTK_LABEL(label), "please confirm your password");
     else if (strcmp(buf_password, buf_password_repeated) != 0) 
         gtk_label_set_text(GTK_LABEL(label), "passwords do not match");
     else if (strcmp(buf_password, buf_password_repeated) == 0 && strlen(buf_password) < 6)
