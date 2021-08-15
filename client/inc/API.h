@@ -18,14 +18,19 @@ typedef enum s_api {
     OLD_DIALOGS
 }            t_api;
 
-typedef enum s_rs_status {
+typedef enum s_rs_login_status {
     SUCCESS = 0,
-    ERROR,
-    LOGIN_WRONG_USER,
-    LOGIN_WRONG_PASS,
-    SIGNUP_USER_EXIST,
-    ROOM_DOES_NOT_EXIST
-}            t_rs_status;
+    LOGIN_WRONG_USER = 1,
+    LOGIN_WRONG_PASS = 2,
+    ERROR = 3,
+    ROOM_DOES_NOT_EXIST = 4
+}            t_rs_login_status;
+
+typedef enum s_rs_signup_status {
+    SIGNUP_SUCCESS = 0,
+    SIGNUP_USER_EXIST = 1,
+    SIGNUP_ERROR = 2
+}           t_rs_signup_status;
 
 typedef enum s_update {
     TRUE = 0,

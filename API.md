@@ -56,7 +56,7 @@ ___
 ```json
 {
     "type": RESPONSE_SIGNUP,
-    "status": SUCCESS | SIGNUP_USER_EXIST | ERROR,
+    "status": SIGNUP_SUCCESS | SIGNUP_USER_EXIST | SIGNUP_ERROR,
 }
 ```
 ___

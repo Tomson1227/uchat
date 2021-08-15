@@ -80,13 +80,13 @@ static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
     
     /* PROCESS RESPONSE */
     switch((int) status->valuedouble) {
-        case SUCCESS:
+        case SIGNUP_SUCCESS:
             init_chat_window(chat, 1);
             break;
         case SIGNUP_USER_EXIST:
             display_error_user_exists(chat);
             break;
-        case ERROR:
+        case SIGNUP_ERROR:
             break;
         default:
             /*UNKNOWN STATUS*/
