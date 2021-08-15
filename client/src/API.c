@@ -87,6 +87,7 @@ static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
             display_error_user_exists(chat);
             break;
         case SIGNUP_ERROR:
+            display_error_undefined(chat);
             break;
         default:
             /*UNKNOWN STATUS*/

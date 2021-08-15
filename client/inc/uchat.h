@@ -84,6 +84,7 @@ void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat);
 void display_error_wrong_username_login(t_chat *chat);
 void display_error_wrong_password_login(t_chat *chat);
 void display_error_user_exists(t_chat *chat);
+void display_error_undefined(t_chat *chat);
 void create_room(GtkButton *btn, t_chat *chat);
 void delete_msg(GtkButton *btn, t_chat *chat);
 void show_room_settings(GtkButton *button, t_chat *chat);

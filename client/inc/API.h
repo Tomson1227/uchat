@@ -27,9 +27,9 @@ typedef enum s_rs_login_status {
 }            t_rs_login_status;
 
 typedef enum s_rs_signup_status {
-    SIGNUP_SUCCESS = 0,
-    SIGNUP_USER_EXIST = 1,
-    SIGNUP_ERROR = 2
+    SIGNUP_SUCCESS = 3,
+    SIGNUP_USER_EXIST = 4,
+    SIGNUP_ERROR = 5
 }           t_rs_signup_status;
 
 typedef enum s_update {
