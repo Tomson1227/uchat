@@ -294,7 +294,6 @@ void LogIn(t_message *message, char *user_login, char *user_pass)
 
 void Init_DB(t_server *server)
 {
-    t_message message;
     char *zErrMsg = 0;
     char *sql;
     int rc = sqlite3_open("uchat.db", &db);
@@ -307,15 +306,12 @@ void Init_DB(t_server *server)
         fprintf(stderr, "Opened database successfully\n");
     }
 
-    SignUp(&message, "mark", "123");
-    SignUp(&message, "maek", "123");
-
     sql = "CREATE TABLE IF NOT EXISTS USRS(" \
     "ID INT PRIMARY KEY," \
     "LOGIN TEXT," \
     "PASS  TEXT);";
 
-    sql = "SELECT * FROM USRS";
+    // sql = "SELECT * FROM USRS";
 
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
@@ -326,12 +322,11 @@ void Init_DB(t_server *server)
         fprintf(stdout, "Users table created successfully\n");
     }
 
-    CreateRoom(&message, "mark", "maek");
     sql = "CREATE TABLE IF NOT EXISTS ROOMS(ID INTEGER PRIMARY KEY NOT NULL, NAME TEXT, USER_ID INT, CUSTOMER_ID INT);";
 
 //    sql = "DROP TABLE ROOMS";
 
-   sql = "SELECT * FROM ROOMS";
+//    sql = "SELECT * FROM ROOMS";
 
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
@@ -342,8 +337,6 @@ void Init_DB(t_server *server)
         fprintf(stdout, "Rooms table created successfully\n");
     }
 
-    // SendMessage(&message, "mark", 1, "privet", M_MESSAGE);
-    DeleteMessage(&message, 2);
     sql = "CREATE TABLE IF NOT EXISTS MSSGS(" \
     "ID INTEGER PRIMARY KEY NOT NULL," \
     "USER_ID INT," \
@@ -351,7 +344,7 @@ void Init_DB(t_server *server)
     "DATE INT," \
     "message TEXT);";
 
-    sql = "SELECT * FROM MSSGS";
+    // sql = "SELECT * FROM MSSGS";
 
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
