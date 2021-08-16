@@ -66,13 +66,43 @@ void DeleteMessage(t_message *message, int messageID)
     }
 }
 
-void EditMessage(t_message *message, int roomID, char *newMessage)
+void EditMessage(t_message *message, int messageID, char *newMessage)
 {
+    int length, rc;
+    char *editMessageQuery, *errMssg;
+
     message->API = EDIT_MSG;
     message->status = SUCCESS;
-
     // message->Data.edit_message.id;
     // message->Data.edit_message.new_message;
+
+    length = snprintf(NULL, 0, "UPDATE MSSGS SET message = '%s' WHERE ID = '%d'", newMessage, messageID);
+    if (!(editMessageQuery = (char *)calloc(length, sizeof(char))))
+        perror("Allocation fail!\n");
+
+    sprintf(editMessageQuery, "UPDATE MSSGS SET message = '%s' WHERE ID = '%d'", newMessage, messageID);
+
+    rc = sqlite3_exec(db, editMessageQuery, 0, 0, &errMssg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL Error: %s\n", errMssg);
+
+        free(editMessageQuery);
+        sqlite3_free(errMssg);
+
+        message->status = ERROR;
+
+        return;
+    } else {
+        message->Data.edit_message.id = messageID;
+        message->Data.edit_message.new_message = newMessage;
+
+        free(editMessageQuery);
+        sqlite3_free(errMssg);
+
+        return;
+    }
+        
 }
 
 void UploadOldDialogs(t_message *message, char *username)
