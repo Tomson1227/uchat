@@ -136,7 +136,6 @@ void req_create_dialog(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
     
     //char *temp = send_rq_create_room_client(chat->username, const gchar *customer);
     //enQueue(chat->config->queue_send, temp);
-    printf("%s\n", customer);
     create_dialog(i, customer, chat);
     manage_visibility(box, chat);
 }

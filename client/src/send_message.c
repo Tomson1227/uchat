@@ -67,8 +67,10 @@ void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat) {
         gtk_widget_set_halign(lbl, GTK_ALIGN_END);
     else 
         gtk_widget_set_halign(lbl, GTK_ALIGN_START);
-    k++;//
     g_object_set_data(G_OBJECT(msg->row_msg), "msg", msg);
+    char *id = my_itoa(msg->msg_id);
+    g_object_set_data(G_OBJECT(row), "msg_id", id);
+    k++;//
     gtk_widget_show(row);
     gtk_widget_show(lbl);
     free(message);
@@ -87,10 +89,6 @@ void add_message(int id_of_room, int id_of_msg, char *time, t_chat *chat) {
     sprintf(buffer, "%s", gtk_entry_get_text(entry));
     t_msg *msg = fill_msg(chat->curr_chat->room_id, k, time, chat->username, buffer);
     //t_msg *msg = fill_msg(chat->curr_chat->room_id, id_of_msg, time, chat->username, buffer);
-
-    GtkWidget *r = gtk_list_box_row_new();
-    r = GTK_WIDGET(msg->row_msg);
-    g_object_set_data(G_OBJECT(r), "msg_id", my_itoa(id_of_msg));
     t_room *room = chat->curr_chat;
 
     if (strlen(buffer) > 0) {
