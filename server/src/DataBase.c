@@ -30,12 +30,40 @@ void DeleteRoom(t_message *message, int roomID)
     // message->Data.delete_room.id;
 }
 
-void DeleteMessage(t_message *message, int roomID)
+void DeleteMessage(t_message *message, int messageID)
 {
+    int length, rc;
+    char *deleteMessageQuery, *errMssg;
+
     message->API = DELETE_MSG;
     message->status = SUCCESS;
+    
 
-    // message->Data.delete_message.id;
+    length = snprintf(NULL, 0, "DELETE FROM MSSGS WHERE ID = %d", messageID);
+    if (!(deleteMessageQuery = (char *)calloc(length, sizeof(char))))
+        perror("Allocation fail!\n");
+    
+    sprintf(deleteMessageQuery, "DELETE FROM MSSGS WHERE ID = %d", messageID);
+
+    rc = sqlite3_exec(db, deleteMessageQuery, 0, 0, &errMssg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL error: %s\n", errMssg);
+
+        free(deleteMessageQuery);
+        sqlite3_free(errMssg);
+
+        message->status = ERROR;
+
+        return;
+    } else {
+        message->Data.delete_message.id = messageID;
+
+        free(deleteMessageQuery);
+        sqlite3_free(errMssg);
+
+        return;
+    }
 }
 
 void EditMessage(t_message *message, int roomID, char *newMessage)
@@ -58,19 +86,26 @@ void UploadOldDialogs(t_message *message, char *username)
 // End of list
 
 
-void SendMessage(t_message *message, int roomID) 
+void SendMessage(t_message *message, char *username, int roomID, char *text, t_msg_type M_MESSAGE)
 {
+    time_t currTime;
+    struct tm *local = localtime(&currTime);
+    
     message->API = SND_MSG;
     message->status = SUCCESS;
     message->Data.create_message.room_id = roomID;
-    // message->Data.create_message.date = ; //need to be added
     
-    int length, rc;
-    char *createmessageQuery, *errMsg;
+    int length, rc, userID;
+    char *createmessageQuery, *errMsg, Time[50];
     char *selectID = "SELECT MAX(ID) FROM MSSGS";
     sqlite3_stmt *stmt;
 
-    length = snprintf(NULL, 0, "INSERT INTO MSSGS (ROOM_ID) VALUES (%d)", roomID);
+    userID = getUserID(username);
+
+    strftime(Time, sizeof(Time), "%a %b %d %r", local);
+    message->Data.create_message.date = Time;
+
+    length = snprintf(NULL, 0, "INSERT INTO MSSGS (ROOM_ID, USER_ID, message, date) VALUES (%d, %d, '%s', '%s')", roomID, userID, text, Time);
     
     if (!(createmessageQuery = (char *)calloc(length, sizeof(char)))) {
         perror("Allocation fail!\n");
@@ -78,7 +113,14 @@ void SendMessage(t_message *message, int roomID)
         return;
     }
 
-    sprintf(createmessageQuery, "INSERT INTO MSSGS (ROOM_ID) VALUES (%d)", roomID);
+    sprintf(
+        createmessageQuery,
+        "INSERT INTO MSSGS (ROOM_ID, USER_ID, message, date) VALUES (%d, %d, '%s', '%s')", 
+        roomID, 
+        userID, 
+        text, 
+        Time
+    );
 
     rc = sqlite3_exec(db, createmessageQuery, 0, 0, &errMsg);
 
@@ -107,7 +149,7 @@ void CreateRoom(t_message *message, char *user, char *customer)
 
     message->API = CREATE_ROOM;
     message->status = SUCCESS;
-    // strdup(message->Data.create_room.customer, customer);
+    strdup(message->Data.create_room.customer, customer);
 
     userID = getUserID(user);
     customerID = getUserID(customer);
@@ -252,6 +294,7 @@ void LogIn(t_message *message, char *user_login, char *user_pass)
 
 void Init_DB(t_server *server)
 {
+    t_message message;
     char *zErrMsg = 0;
     char *sql;
     int rc = sqlite3_open("uchat.db", &db);
@@ -264,14 +307,15 @@ void Init_DB(t_server *server)
         fprintf(stderr, "Opened database successfully\n");
     }
 
+    SignUp(&message, "mark", "123");
+    SignUp(&message, "maek", "123");
+
     sql = "CREATE TABLE IF NOT EXISTS USRS(" \
     "ID INT PRIMARY KEY," \
     "LOGIN TEXT," \
     "PASS  TEXT);";
 
     sql = "SELECT * FROM USRS";
-
-//    sql = "SELECT * FROM USRS";
 
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
@@ -282,11 +326,12 @@ void Init_DB(t_server *server)
         fprintf(stdout, "Users table created successfully\n");
     }
 
+    CreateRoom(&message, "mark", "maek");
     sql = "CREATE TABLE IF NOT EXISTS ROOMS(ID INTEGER PRIMARY KEY NOT NULL, NAME TEXT, USER_ID INT, CUSTOMER_ID INT);";
 
 //    sql = "DROP TABLE ROOMS";
 
-//    sql = "SELECT * FROM ROOMS";
+   sql = "SELECT * FROM ROOMS";
 
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
@@ -297,6 +342,8 @@ void Init_DB(t_server *server)
         fprintf(stdout, "Rooms table created successfully\n");
     }
 
+    // SendMessage(&message, "mark", 1, "privet", M_MESSAGE);
+    DeleteMessage(&message, 2);
     sql = "CREATE TABLE IF NOT EXISTS MSSGS(" \
     "ID INTEGER PRIMARY KEY NOT NULL," \
     "USER_ID INT," \
@@ -304,7 +351,7 @@ void Init_DB(t_server *server)
     "DATE INT," \
     "message TEXT);";
 
-//    sql = "SELECT * FROM MSSGS";
+    sql = "SELECT * FROM MSSGS";
 
     rc = sqlite3_exec(server->db, sql, callback, 0, &zErrMsg);
 
@@ -312,7 +359,7 @@ void Init_DB(t_server *server)
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     } else {
-        fprintf(stdout, "messages table created successfully\n");
+        fprintf(stdout, "Messages table created successfully\n");
     }
 }
 
