@@ -27,11 +27,6 @@ typedef enum s_rs_status {
     ROOM_DOES_NOT_EXIST
 }            t_rs_status;
 
-typedef enum s_update {
-    TRUE = 0,
-    FALSE
-}            t_update;
-
 typedef enum s_msg_type {
     MESSAGE,
     FILE_M,

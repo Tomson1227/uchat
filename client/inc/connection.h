@@ -19,6 +19,7 @@ typedef struct s_config {
     struct sockaddr_in servaddr;
     int sockfd;
     pthread_t conn_thread;
+    pthread_t back_thread;
     queue_t *queue_send;
     queue_t *queue_recv;
 }               t_config;

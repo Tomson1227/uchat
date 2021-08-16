@@ -1,0 +1,6 @@
+uchat
+uchat_server
+*.a
+*.o
+*/obj/
+.vscode/

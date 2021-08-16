@@ -7,6 +7,7 @@ int main(int argc, char *argv[]) {
     connection_setup(config);
     t_chat *chat = NULL; 
     chat = init_chat(chat, config);
+    back_setup(chat);
     init_gui(chat);
     start_gui(chat);
     

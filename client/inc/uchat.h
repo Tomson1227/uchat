@@ -11,12 +11,16 @@
 #include <sys/types.h>
 #include <time.h>
 #include <stdlib.h>
-#include "connection.h"
-#include "queue.h"
-#include "API.h"
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <gtk/gtk.h>
+
+
+#include "connection.h"
+#include "queue.h"
+#include "API.h"
+#include "back.h"
+
 
 typedef struct s_msg t_msg;
 typedef struct s_room t_room;
