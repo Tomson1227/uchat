@@ -302,8 +302,7 @@ static char *server_edit_message(cJSON *rq)
     cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "id");
     cJSON *newMessage = cJSON_GetObjectItemCaseSensitive(rq, "new_msg");
     
-    /* EditMessage function from DB */
-    // EditMessage(&message, roomID->valuedouble, newMessage->valuestring);
+    EditMessage(&message, roomID->valuedouble, newMessage->valuestring);
     
     if((response = create_response(&message))) {
         line = cJSON_Print(response);

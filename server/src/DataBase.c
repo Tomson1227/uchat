@@ -32,47 +32,62 @@ void DeleteRoom(t_message *message, int roomID)
 
 void DeleteMessage(t_message *message, int messageID)
 {
+    message->API = DELETE_MSG;
+    message->status = SUCCESS;
+
     int length, rc;
     char *deleteMessageQuery, *errMssg;
 
-    message->API = DELETE_MSG;
-    message->status = SUCCESS;
-    
-
     length = snprintf(NULL, 0, "DELETE FROM MSSGS WHERE ID = %d", messageID);
-    if (!(deleteMessageQuery = (char *)calloc(length, sizeof(char))))
+
+    if (!(deleteMessageQuery = (char *)calloc(length, sizeof(char)))) {
         perror("Allocation fail!\n");
-    
+        message->status = ERROR;
+        return;
+    }
+
     sprintf(deleteMessageQuery, "DELETE FROM MSSGS WHERE ID = %d", messageID);
 
     rc = sqlite3_exec(db, deleteMessageQuery, 0, 0, &errMssg);
 
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", errMssg);
-
-        free(deleteMessageQuery);
         sqlite3_free(errMssg);
-
         message->status = ERROR;
-
-        return;
-    } else {
+    } else
         message->Data.delete_message.id = messageID;
 
-        free(deleteMessageQuery);
-        sqlite3_free(errMssg);
-
-        return;
-    }
+    free(deleteMessageQuery);
 }
 
-void EditMessage(t_message *message, int roomID, char *newMessage)
+void EditMessage(t_message *message, int messageID, char *newMessage)
 {
     message->API = EDIT_MSG;
     message->status = SUCCESS;
 
-    // message->Data.edit_message.id;
-    // message->Data.edit_message.new_message;
+    int length, rc;
+    char *editMessageQuery, *errMssg;
+
+    length = snprintf(NULL, 0, "UPDATE MSSGS SET message = '%s' WHERE ID = '%d'", newMessage, messageID);
+
+    if (!(editMessageQuery = (char *)calloc(length, sizeof(char)))) {
+        perror("Allocation fail!\n");
+        message->status = ERROR;
+        return;
+    }
+
+    sprintf(editMessageQuery, "UPDATE MSSGS SET message = '%s' WHERE ID = '%d'", newMessage, messageID);
+
+    rc = sqlite3_exec(db, editMessageQuery, 0, 0, &errMssg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL Error: %s\n", errMssg);
+        sqlite3_free(errMssg);
+        message->status = ERROR;
+    } else
+        message->Data.edit_message.id = messageID;
+
+    free(editMessageQuery);
 }
 
 void UploadOldDialogs(t_message *message, char *username)
@@ -87,22 +102,21 @@ void UploadOldDialogs(t_message *message, char *username)
 
 void SendMessage(t_message *message, char *username, int roomID, char *text, t_msg_type M_MESSAGE)
 {
-    time_t currTime;
-    struct tm *local = localtime(&currTime);
-    
     message->API = SND_MSG;
     message->status = SUCCESS;
-    message->Data.create_message.room_id = roomID;
     
     int length, rc, userID;
     char *createmessageQuery, *errMsg, Time[50];
     char *selectID = "SELECT MAX(ID) FROM MSSGS";
     sqlite3_stmt *stmt;
+    time_t currTime;
+    struct tm *local = localtime(&currTime);
+    message->Data.create_message.room_id = roomID;
 
     userID = getUserID(username);
 
     strftime(Time, sizeof(Time), "%a %b %d %r", local);
-    message->Data.create_message.date = Time;
+    message->Data.create_message.date = strdup(Time);
 
     length = snprintf(NULL, 0, "INSERT INTO MSSGS (ROOM_ID, USER_ID, message, date) VALUES (%d, %d, '%s', '%s')", roomID, userID, text, Time);
     
@@ -112,21 +126,15 @@ void SendMessage(t_message *message, char *username, int roomID, char *text, t_m
         return;
     }
 
-    sprintf(
-        createmessageQuery,
+    sprintf(createmessageQuery,
         "INSERT INTO MSSGS (ROOM_ID, USER_ID, message, date) VALUES (%d, %d, '%s', '%s')", 
-        roomID, 
-        userID, 
-        text, 
-        Time
-    );
+        roomID, userID, text, Time);
 
     rc = sqlite3_exec(db, createmessageQuery, 0, 0, &errMsg);
 
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", errMsg);
         sqlite3_free(errMsg);
-
         message->status = ERROR;
     } else {
         sqlite3_prepare_v2(db, selectID, -1, &stmt, NULL);
@@ -180,13 +188,14 @@ void CreateRoom(t_message *message, char *user, char *customer)
 
 void UserSearch(t_message *message, char *searchText) 
 {
+    message->API = SEARCH_USER;
+    message->status = SUCCESS;
+
     int lengthSearch, count = 0, size = 1;
     char *searchQuery;
     const unsigned char *result;
     sqlite3_stmt *stmt;
 
-    message->API = SEARCH_USER;
-    message->status = SUCCESS;
     message->Data.search_user.user = (char **) calloc(size, sizeof(char *));
 
     lengthSearch = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN LIKE '%c%s%c';", '%', searchText, '%');

@@ -44,6 +44,7 @@ int main(int argc , char *argv[])
     }
 
     close_server();
+    // system("leaks -q uls");
 }
 
 void send_message(char *message)

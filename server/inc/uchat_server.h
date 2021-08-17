@@ -96,7 +96,6 @@ typedef struct s_delete_room {
 
 typedef struct s_edit_message {
     int id;
-    char *new_message;
 }              t_edit_message;
 
 typedef struct s_upload_old_dialogs {
