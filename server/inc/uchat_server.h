@@ -4,6 +4,11 @@
 #include <time.h>
 #include <poll.h>
 #include <stdio.h>
+
+#ifdef __linux__
+    #define __USE_XOPEN_EXTENDED
+#endif
+
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -217,10 +222,11 @@ void SignUp(t_message *message, char *user_login, char *user_pass);
 void LogIn(t_message *message, char *user_login, char *user_pass);
 void CreateRoom(t_message *message, char *user, char *customer);
 void UserSearch(t_message *message, char *searchText);
-void SendMessage(t_message *message, int roomID);
-void ReadMessage(t_message *message, int roomID);
-void DeleteRoom(t_message *message, int roomID);
 void EditMessage(t_message *message, int roomID, char *newMessage);
+void SendMessage(t_message *message, char *username, int roomID, char *text, t_msg_type M_MESSAGE);
+void ReadMessage(t_message *message, int roomID);
+void DeleteMessage(t_message *message, int messageID);
+void DeleteRoom(t_message *message, int roomID);
 void UploadOldDialogs(t_message *message, char *username);
 
 //Server function

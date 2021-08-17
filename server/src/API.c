@@ -166,9 +166,12 @@ static char *server_send_message(cJSON *rq)
     t_message message;
     char *line = NULL;
     cJSON *response = NULL;
-    cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "username");
+    cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "room_id");
+    cJSON *username = cJSON_GetObjectItemCaseSensitive(rq, "username");
+    cJSON *msg = cJSON_GetObjectItemCaseSensitive(rq, "message");
+    cJSON *message_type = cJSON_GetObjectItemCaseSensitive(rq, "msg_type");
 
-    SendMessage(&message, roomID->valuedouble);
+    SendMessage(&message, username->valuestring, roomID->valuedouble, msg->valuestring, (t_msg_type) message_type->valuedouble);
 
     if((response = create_response(&message))) {
         cJSON *roomID = cJSON_CreateNumber(message.Data.create_message.room_id);
@@ -277,8 +280,7 @@ static char *server_delete_message(cJSON *rq)
     cJSON *response = NULL;
     cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "id");
 
-    /* DeleteMessage function from DB */
-    // DeleteMessage(&message, roomID->valuedouble);
+    DeleteMessage(&message, roomID->valuedouble);
     
     if((response = create_response(&message))) {
         cJSON *ID = cJSON_CreateNumber(message.Data.delete_message.id);

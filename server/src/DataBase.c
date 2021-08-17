@@ -85,7 +85,6 @@ void UploadOldDialogs(t_message *message, char *username)
 }
 // End of list
 
-
 void SendMessage(t_message *message, char *username, int roomID, char *text, t_msg_type M_MESSAGE)
 {
     time_t currTime;
@@ -149,7 +148,7 @@ void CreateRoom(t_message *message, char *user, char *customer)
 
     message->API = CREATE_ROOM;
     message->status = SUCCESS;
-    strdup(message->Data.create_room.customer, customer);
+    message->Data.create_room.customer = strdup(customer);
 
     userID = getUserID(user);
     customerID = getUserID(customer);
