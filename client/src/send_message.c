@@ -39,11 +39,6 @@ t_msg *fill_msg(int room_id, int msg_id, char *time, char *username, char *text)
     return msg;
 }
 
-void free_msg(t_msg *msg) {
-    //
-    free(msg);
-}
-
 char *form_msg(char *sender, char *time, char *text) {
     char *output = malloc(sizeof(char) * (strlen(sender) + strlen(text) + strlen(time) + 3));//strnew
 

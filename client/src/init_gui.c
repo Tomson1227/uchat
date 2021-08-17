@@ -32,9 +32,9 @@ static void on_btn_sign_up_clicked(GtkButton *btn_sign_up, t_chat *chat) {
     gtk_stack_set_visible_child_full (stack, "sign_up", 0);
 }
 
-void on_window_main_destroy() {
-    gtk_main_quit();
-}
+// void on_window_main_destroy() {
+//     gtk_main_quit();
+// }
 
 void on_btn_back_console_clicked(GtkButton *btn_back_console, GtkStack *stack) {
     gtk_stack_set_visible_child_full (stack, "menu", 0);

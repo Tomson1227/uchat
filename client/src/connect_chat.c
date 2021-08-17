@@ -36,7 +36,6 @@ void connect_chat(t_chat *chat) {
     GtkEntry *chat_message_entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
     GtkButton *btn_create_room = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_create_room"));
     GtkButton *btn_delete_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_delete_msg"));
-    GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
     GtkButton *btn_edit_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_edit_msg"));
     GtkButton *confirm_create_group = GTK_BUTTON(gtk_builder_get_object(chat->builder, "confirm_create_group"));
     GtkButton *cancel_create_group = GTK_BUTTON(gtk_builder_get_object(chat->builder, "cancel_create_group"));
@@ -48,8 +47,7 @@ void connect_chat(t_chat *chat) {
     g_signal_connect(btn_send_msg, "clicked", G_CALLBACK(on_btn_send_message_clicked), chat);
     g_signal_connect(chat_message_entry, "activate", G_CALLBACK(req_send_message), chat);
     g_signal_connect(btn_create_room, "clicked", G_CALLBACK(show_create_room_window), chat);
-    g_signal_connect(btn_delete_msg, "clicked", G_CALLBACK(delete_msg), chat);
-    g_signal_connect(btn_attach_file, "clicked", G_CALLBACK(attach_file), chat);
+    g_signal_connect(btn_delete_msg, "clicked", G_CALLBACK(req_delete_msg), chat);
     g_signal_connect(chat_edit_message, "activate", G_CALLBACK(send_edited_message), chat);
     g_signal_connect(btn_edit_msg, "clicked", G_CALLBACK(edit_message), chat);
     g_signal_connect(listbox_found_dlgs, "row-selected", G_CALLBACK(req_create_dialog), chat);

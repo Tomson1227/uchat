@@ -378,4 +378,3 @@ static void check_error(void) {
     if (error_ptr != NULL)
         fprintf(stderr, "Error before: %s\n", error_ptr);
 }
-

@@ -19,7 +19,7 @@ void connect_room_settings(t_chat *chat) {
     g_signal_connect(btn_block_user, "clicked", G_CALLBACK(show_block_user_window), chat);
     g_signal_connect(btn_confirm_clear_history, "clicked", G_CALLBACK(clear_history), chat);
     g_signal_connect(btn_cancel_clear_history, "clicked", G_CALLBACK(cancel_clear_history), chat);
-    g_signal_connect(btn_confirm_delete_room, "clicked", G_CALLBACK(delete_room), chat);
+    g_signal_connect(btn_confirm_delete_room, "clicked", G_CALLBACK(req_delete_room), chat);
     g_signal_connect(btn_cancel_delete_room, "clicked", G_CALLBACK(cancel_delete_room), chat);
     g_signal_connect(btn_confirm_block_user, "clicked", G_CALLBACK(block_user), chat);
     g_signal_connect(btn_cancel_block_user, "clicked", G_CALLBACK(cancel_block_user), chat);
@@ -30,8 +30,8 @@ void show_room_info(GtkButton *btn, t_chat *chat) {
     GObject *wndw_room_info = gtk_builder_get_object(chat->builder, "wndw_room_info");
     GtkBox *room_info_lstbx = GTK_BOX(gtk_builder_get_object(chat->builder, "room_info_lstbx"));
    
-    gtk_widget_show_all(GTK_WIDGET(wndw_room_info));
-    gtk_widget_show_all(GTK_WIDGET(room_info_lstbx));
+    gtk_widget_show(GTK_WIDGET(wndw_room_info));
+    gtk_widget_show(GTK_WIDGET(room_info_lstbx));
 }
 
 void show_clear_history_window(GtkButton *btn, t_chat *chat) {
@@ -87,10 +87,6 @@ void close_info(GtkButton *btn, t_chat *chat) {
  void on_close_edit_profile_clicked(GtkButton *btn, GObject *wnd) {
      gtk_widget_hide(GTK_WIDGET(wnd));
  }
-
-void on_cancel_attach_file_clicked(GtkButton *btn, GObject *wnd) {
-    gtk_widget_hide(GTK_WIDGET(wnd));
-}
 
 void on_btn_close_menu_clicked(GtkButton *btn, GObject *wnd) {
     gtk_widget_hide(GTK_WIDGET(wnd));

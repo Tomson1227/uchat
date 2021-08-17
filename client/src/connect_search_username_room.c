@@ -33,10 +33,13 @@ void restore_listbox(GtkEntry *entry, GtkListBox *box) {
 }
 
 void req_search_user(GtkEntry *entry, t_chat *chat) {
-    const gchar *text = gtk_entry_get_text(entry);
+    char *text = NULL;
+    text = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);
+    sprintf( text, "%s", gtk_entry_get_text(entry));
+
     // if (strlen(text) > 6) {
-    //     char *tmp = send_rq_search_username(text);
-    //     enQueue(chat->config->queue_send, tmp);
+        // char *tmp = send_rq_search_username(text);
+        // enQueue(chat->config->queue_send, tmp);
     // }
     char *names[2] = {"1", "5"}; 
     filter_search(names, 2, chat);
@@ -63,7 +66,8 @@ void filter_search(char **users, int n, t_chat *chat) {
                 gtk_container_add(GTK_CONTAINER(r), lbl);
                 gtk_widget_set_name(r, users[i]);
                 printf("widget name: %s\n", gtk_widget_get_name(r));
-                gtk_widget_show_all(r);
+                gtk_widget_show(r);
+                gtk_widget_show(lbl);
                 tmp++;
             }
         }
@@ -82,11 +86,11 @@ void filter_row(GtkWidget *wdg, char **users) {
     char *s = g_object_get_data(G_OBJECT(wdg), "room");
     int n = 0, i = 0;
     
-    gtk_widget_hide(wdg);
+    gtk_widget_hide(GTK_WIDGET(wdg));
     for (; users[n] != NULL; n++);
     while (i < n) {
         if (strcmp(s, users[i]) == 0)
-            gtk_widget_show(wdg);
+            gtk_widget_show(GTK_WIDGET(wdg));
         i++;
     }
 }

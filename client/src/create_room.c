@@ -9,8 +9,6 @@ static void add_messages_box(t_room *room, t_chat *chat, const gchar *name);
 static void init_room(t_room *room, t_chat *chat);
 
 void display_upper_panel(GtkListBox *box, GtkListBoxRow *r, GtkStack *stack_upper_dialog_toolbar) {
-    // int id = g_object_get_data(r, "msg_id");
-    // printf("selected msg with id: %d\n", id);
     if (r) 
         gtk_stack_set_visible_child_name (stack_upper_dialog_toolbar, "chat_topbar_wth_btns");
 }
@@ -29,30 +27,22 @@ void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
         //     enQueue(chat->config->queue_send, temp);
         //     //free(temp);
         // }
-        // else {
-        //     char *temp = send_req_upload_messages(READ_RECENT, room->room_id);
-        //     enQueue(chat->config->queue_send, temp);
-        //     //free(temp);
-        // }
     }
 }
 
 static void manage_room_visibility(t_chat *chat) {
+    GtkBox *bottom_bar_chat = GTK_BOX(gtk_builder_get_object(chat->builder, "bottom_bar_chat"));
     GtkStack *stack_entry = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_entry"));
-    GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
-    GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
     GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
-    GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
     GObject *create_group = gtk_builder_get_object(chat->builder, "create_group");
 
     gtk_widget_hide(GTK_WIDGET(create_group));
     gtk_widget_show(GTK_WIDGET(room_info));
-    gtk_widget_show(GTK_WIDGET(stack_entry));
+    gtk_widget_show_all(GTK_WIDGET(bottom_bar_chat));
+    // gtk_widget_show(GTK_WIDGET(stack_entry));
     gtk_stack_set_visible_child_name(stack_entry, "chat_message_entry");
-    gtk_widget_show(GTK_WIDGET(btn_send_msg));
-    gtk_widget_show(GTK_WIDGET(btn_send_sticker));
-    gtk_widget_show_all(GTK_WIDGET(chat->listbox_dlgs));
-    gtk_widget_show(GTK_WIDGET(btn_attach_file));
+    // gtk_widget_show_all(GTK_WIDGET(chat->listbox_dlgs));
+
 }
 
 static void add_dialog_row(t_room *room, t_chat *chat, const gchar *group_name) {
@@ -69,7 +59,7 @@ static void add_dialog_row(t_room *room, t_chat *chat, const gchar *group_name) 
     gtk_widget_show(lbl);
     g_object_set_data(G_OBJECT(row), "room", id);
     g_object_set_data(G_OBJECT(row), "room_name", id);
-    gtk_widget_show_all(GTK_WIDGET(chat->listbox_dlgs));    
+    // gtk_widget_show_all(GTK_WIDGET(chat->listbox_dlgs));    
 }
 
 static void add_messages_box(t_room *room, t_chat *chat, const gchar *name) {
@@ -90,7 +80,7 @@ static void add_messages_box(t_room *room, t_chat *chat, const gchar *name) {
     gtk_stack_set_visible_child(GTK_STACK(stack), scroll);
     room->stack = GTK_STACK(stack);
     room->scrll_wndw_msgs = GTK_SCROLLED_WINDOW(scroll);
-    gtk_widget_show_all(GTK_WIDGET(scroll));
+    gtk_widget_show_all(scroll);
     g_object_set_data(G_OBJECT(scroll), "dialog", room);
 }
 

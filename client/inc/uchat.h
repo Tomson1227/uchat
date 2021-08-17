@@ -52,7 +52,7 @@ struct s_room {
     char *chat_name;
     gint room_id;
     bool is_updated;
-    GHashTable *members;
+    char **members;
 };
 
 struct s_msg {
@@ -89,7 +89,7 @@ void display_error_wrong_username_login(t_chat *chat);
 void display_error_wrong_password_login(t_chat *chat);
 void display_error_user_exists(t_chat *chat);
 void create_room(GtkButton *btn, t_chat *chat);
-void delete_msg(GtkButton *btn, t_chat *chat);
+void req_delete_msg(GtkButton *btn, t_chat *chat);
 void show_room_settings(GtkButton *button, t_chat *chat);
 void show_profile_settings(GtkButton *button, t_chat *chat);
 void on_btn_send_message_clicked(GtkButton *btn, t_chat *chat);
@@ -99,7 +99,9 @@ void show_delete_room_window(GtkButton *btn, t_chat *chat);
 void show_block_user_window(GtkButton *btn, t_chat *chat);
 void clear_history(GtkButton *btn, t_chat *chat);
 void cancel_clear_history(GtkButton *btn, t_chat *chat);
-void delete_room(GtkButton *btn, t_chat *chat);
+void req_delete_room(GtkButton *btn, t_chat *chat);
+void delete_msg(GtkWidget *wdg, t_room *room);
+void delete_room(t_room *room, t_chat *chat); 
 void cancel_delete_room(GtkButton *btn, t_chat *chat);
 void block_user(GtkButton *btn, t_chat *chat);
 void cancel_block_user(GtkButton *btn, t_chat *chat); 
@@ -128,6 +130,8 @@ void req_create_dialog(GtkListBox *box, GtkListBoxRow *row, t_chat *chat);
 void manage_visibility(GtkListBox *box, t_chat *chat);
 void create_dialog(int id, char *customer_string, t_chat *chat);
 void upload_old_dialogs(char **dialogs, int *ids, int *msg_ids, int n, t_chat *chat);
+void mx_free(void **ptr);
+void set_default_settings(t_room *room, GtkBuilder *builder);
 
 //api
 void process_rs_client(const char *const string, t_chat *chat);
