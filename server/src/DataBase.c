@@ -214,7 +214,7 @@ void UserSearch(t_message *message, char *searchText)
         result = sqlite3_column_text(stmt, 0);
 
         if (result != NULL) {
-            message->Data.search_user.user[count] = (char *)result;
+            message->Data.search_user.user[count] = strdup(result);
             message->Data.search_user.user = realloc(message->Data.search_user.user, ++size * sizeof(char *));
         } else
             break;
@@ -274,7 +274,7 @@ void LogIn(t_message *message, char *user_login, char *user_pass)
     const unsigned char *pass;
     char *query;
 
-    if (!checkLogin(user_login) == 0) {
+    if (!checkLogin(user_login)) {
         message->status = LOGIN_WRONG_USER;
         return;
     }
