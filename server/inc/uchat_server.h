@@ -4,6 +4,11 @@
 #include <time.h>
 #include <poll.h>
 #include <stdio.h>
+
+#ifdef __linux__
+    #define __USE_XOPEN_EXTENDED
+#endif
+
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -70,44 +75,48 @@ typedef struct s_send_message {
 typedef struct s_read_message {
     int room_id;
     int message_id;
-    int msg_type;
+    int message_type;
     char *message;
     char *date;
+    char *sender;
+    t_update update;
 }              t_read_message;
 
 typedef struct s_search_user {
     char **user;
-    unsigned int count;
 }              t_search_user;
 
 typedef struct s_delete_message {
     int id;
 }              t_delete_message;
 
+typedef struct s_delete_room {
+    int id;
+}              t_delete_room;
+
 typedef struct s_edit_message {
     int id;
-    char *new_message;
 }              t_edit_message;
 
 typedef struct s_upload_old_dialogs {
     int *id;
-    int *first_message_id;
     char **dialogs;
 }              t_upload_old_dialogs;
 
-typedef struct s_create_msg {
+typedef struct s_create_message {
     int room_id;
-    int msg_id;
+    int message_id;
     char *date;
-}              t_create_msg;
+}              t_create_message;
 
 typedef union u_union_api {
-    t_create_msg create_msg;
+    t_create_message create_message;
     t_create_room create_room;
     t_send_message send_message;
     t_read_message read_message;
     t_search_user search_user;
     t_delete_message delete_message;
+    t_delete_room delete_room;
     t_edit_message edit_message;
     t_upload_old_dialogs upload_old_dialogs;
 }             t_union_api;
@@ -212,9 +221,14 @@ void SignUp(t_message *message, char *user_login, char *user_pass);
 void LogIn(t_message *message, char *user_login, char *user_pass);
 void CreateRoom(t_message *message, char *user, char *customer);
 void UserSearch(t_message *message, char *searchText);
-void CreateMessage(t_message *message, int roomID);
+void EditMessage(t_message *message, int roomID, char *newMessage);
+void SendMessage(t_message *message, char *username, int roomID, char *text, t_msg_type M_MESSAGE);
+void ReadMessage(t_message *message, int roomID);
+void DeleteMessage(t_message *message, int messageID);
+void DeleteRoom(t_message *message, int roomID);
+void UploadOldDialogs(t_message *message, char *username);
 
 //Server function
-void process_rq_server(const char *const string, sqlite3 *db, int fd);
+void process_rq_server(const char *const string, int fd);
 
 #endif /* UCHAT_SERVER_H */
