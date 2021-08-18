@@ -35,27 +35,24 @@ t_chat *init_chat(t_chat *chat, t_config *config) {
 
 void init_chat_window(t_chat *chat, int type) {
     GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
+    gtk_widget_set_visible(GTK_WIDGET(wnd_main), FALSE);
+
     GObject *chat_wndw = gtk_builder_get_object(chat->builder, "chat_main");
     GtkStack *stack_entry = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_entry"));
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
-    GtkButton *btn_send_sticker = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_sticker"));
     GtkLabel *lbl = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_username"));
-    GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
-    GtkButton *btn_attach_file = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_attach_file"));
+    GtkStack *stack_upper_dialog_toolbar = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_upper_dialog_toolbar"));
     GtkLabel *lbl_local_search = GTK_LABEL(gtk_builder_get_object(chat->builder,"lbl_local_search"));
     GtkLabel *lbl_local_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_local_search_nothing_found"));
     GtkLabel *lbl_global_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search"));
     GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
 
     
-    gtk_widget_hide(GTK_WIDGET(wnd_main));
     gtk_widget_show(GTK_WIDGET(chat_wndw));
     gtk_label_set_text(lbl, chat->username);
-    gtk_widget_hide(GTK_WIDGET(room_info));
+    gtk_widget_hide(GTK_WIDGET(stack_upper_dialog_toolbar));
     gtk_widget_hide(GTK_WIDGET(btn_send_msg));
-    gtk_widget_hide(GTK_WIDGET(btn_send_sticker));
     gtk_widget_hide(GTK_WIDGET(stack_entry));
-    gtk_widget_hide(GTK_WIDGET(btn_attach_file));
     gtk_widget_hide(GTK_WIDGET(lbl_local_search));
     gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));
     gtk_widget_hide(GTK_WIDGET(lbl_global_search_nothing_found));

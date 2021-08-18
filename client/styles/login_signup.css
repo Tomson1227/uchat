@@ -5,7 +5,8 @@
 headerbar {
     /* background-image: none; */
     /* background-color: #00ff00; */
-    background-image: linear-gradient(to bottom, shade(#002500,1.2), shade(rgb(0, 0, 0), 0.8));
+    background: black;
+    /* background-image: linear-gradient(to bottom, shade(#002500,1.2), shade(rgb(0, 0, 0), 0.8)); */
     border-width: 0;
     color: #00ff00;
 }
@@ -24,7 +25,7 @@ window {
 }
 
 row {
-	background: #3A466B;
+	background: black;
 }
 
 button {
@@ -46,8 +47,41 @@ entry {
     background: #202020;
     border-color: #001000;
     color: #00ff00;
+    font-size: 14px;
 }
 
 entry:focus {
     border-color: #00ff00;
+}
+
+GtkButton:hover {
+    background-color: #3085a9;
+}
+
+.message_own {
+    padding: 6px 9px;
+    margin-top: 10px;
+    background-color: rgb(36, 36, 36);
+    font-size: 14px;
+    border-radius: 8px 8px 0 8px;
+}
+
+.message_received {
+    padding: 6px 9px;
+    margin-top: 10px;
+    background-color: rgb(36, 36, 36);
+    font-size: 14px;
+    border-radius: 8px 8px 8px 0;
+}
+
+.stack_dialogs scrolledwindow,
+.stack_dialogs viewport,
+.stack_dialogs list {
+    background: #101010;
+}
+
+.stack_messages scrolledwindow,
+.stack_messages viewport,
+.stack_messages list {
+    background: #101010;
 }

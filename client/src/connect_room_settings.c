@@ -53,7 +53,12 @@ void show_block_user_window(GtkButton *btn, t_chat *chat) {
 }
 
 void clear_history(GtkButton *btn, t_chat *chat) {
-
+    GObject *clear_history = gtk_builder_get_object(chat->builder, "clear_history");
+    GObject *wndw_room_info = gtk_builder_get_object(chat->builder, "wndw_room_info");
+    
+    gtk_widget_hide(GTK_WIDGET(clear_history));
+    gtk_widget_hide(GTK_WIDGET(wndw_room_info));
+    gtk_container_foreach(GTK_CONTAINER(chat->curr_chat->listbox_msgs), (GtkCallback)delete_msg, chat->curr_chat);
 }
 
 void cancel_clear_history(GtkButton *btn, t_chat *chat) {

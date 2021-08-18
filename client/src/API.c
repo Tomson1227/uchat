@@ -18,8 +18,7 @@ static void receive_rs_old_dialogs(cJSON *rs, t_chat *chat);
 void process_rs_client(const char *const string, t_chat *chat) {
     cJSON *rq = NULL;
 
-    if ((rq = cJSON_Parse(string)))
-    {
+    if ((rq = cJSON_Parse(string))) {
         cJSON *type = cJSON_GetObjectItemCaseSensitive(rq, "type");
 
         switch ((int)type->valuedouble)
@@ -190,24 +189,30 @@ static void receive_rs_send_msg_client(cJSON *json, t_chat *chat) {
 }
 
 static void receive_rs_search_username(cJSON *json, t_chat *chat) {
+    printf("entered the search req function\n");
     const cJSON *array = NULL;
     const cJSON *name = NULL;
     array = cJSON_GetObjectItemCaseSensitive(json, "user");
     int n = cJSON_GetArraySize(array);
-    printf("%d\n", n);
-    char **output = NULL;
-    output = malloc(sizeof(char *) * n);
+    printf("array size: %d\n", n);
 
-    for (int i = 0; i < n; i++) {
-        name = cJSON_GetArrayItem(array, i);
-        output[i] = g_strdup(name->valuestring);
-        printf("%s\n", output[i]);
+    if (n == 0) {
+        char *result = NULL;
+        name = cJSON_GetObjectItemCaseSensitive(json, "user");
+        result = malloc(sizeof(char) * strlen(name->valuestring) + 1);
+        result = g_strdup(name->valuestring);
+        filter_search(result, 0, chat);   
     }
-    filter_search(output, n, chat);
+
+    // char **output = NULL;
+    // output = malloc(sizeof(char *) * n);
+
     // for (int i = 0; i < n; i++) {
-    //     free(output[i]);
+    //     name = cJSON_GetArrayItem(array, i);
+    //     output[i] = g_strdup(name->valuestring);
+    //     printf("user: %s\n", output[i]);
     // }
-    // free(output);
+    // filter_search(output, n, chat);
 }
 
 char *send_req_upload_messages(int type, int room_id) {

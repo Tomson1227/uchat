@@ -152,6 +152,7 @@
                     <property name="can_focus">True</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
+                    <property name="max_length">40</property>
                     <property name="invisible_char">•</property>
                     <property name="placeholder_text" translatable="yes">username</property>
                   </object>
@@ -166,6 +167,7 @@
                     <property name="can_focus">True</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
+                    <property name="max_length">40</property>
                     <property name="visibility">False</property>
                     <property name="invisible_char">•</property>
                     <property name="secondary_icon_pixbuf">../src/resources/rsz_eye.png</property>
@@ -300,6 +302,7 @@
                     <property name="can_focus">True</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
+                    <property name="max_length">40</property>
                     <property name="invisible_char">•</property>
                     <property name="placeholder_text" translatable="yes">username</property>
                   </object>
@@ -314,6 +317,7 @@
                     <property name="can_focus">True</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
+                    <property name="max_length">40</property>
                     <property name="visibility">False</property>
                     <property name="invisible_char">•</property>
                     <property name="secondary_icon_pixbuf">../src/resources/rsz_eye copy.png</property>
@@ -332,6 +336,7 @@
                     <property name="can_focus">True</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
+                    <property name="max_length">40</property>
                     <property name="visibility">False</property>
                     <property name="invisible_char">•</property>
                     <property name="placeholder_text" translatable="yes">repeat password</property>
@@ -522,9 +527,10 @@
     <property name="icon_name">mail-send</property>
   </object>
   <object class="GtkWindow" id="chat_main">
-    <property name="width_request">700</property>
+    <property name="width_request">720</property>
     <property name="height_request">540</property>
     <property name="can_focus">False</property>
+    <property name="resizable">False</property>
     <property name="default_width">0</property>
     <property name="default_height">540</property>
     <property name="destroy_with_parent">True</property>
@@ -543,23 +549,21 @@
             <property name="can_focus">False</property>
             <child>
               <object class="GtkBox">
-                <property name="width_request">200</property>
+                <property name="height_request">540</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <property name="baseline_position">bottom</property>
                 <child>
                   <object class="GtkGrid" id="chat_search_grid">
-                    <property name="width_request">200</property>
                     <property name="height_request">20</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="valign">start</property>
                     <property name="margin_top">4</property>
                     <child>
                       <object class="GtkEntry" id="chat_search_user">
                         <property name="name">chat_search_user</property>
-                        <property name="width_request">180</property>
+                        <property name="width_request">200</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="max_length">50</property>
@@ -596,7 +600,6 @@
                 </child>
                 <child>
                   <object class="GtkStack" id="stack_dialog_box">
-                    <property name="width_request">200</property>
                     <property name="height_request">520</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -604,21 +607,19 @@
                     <property name="vhomogeneous">False</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrll_wndw_dlgs">
-                        <property name="width_request">200</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <object class="GtkViewport" id="viewport_dlgs">
-                            <property name="width_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkBox">
-                                <property name="width_request">200</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
+                                <property name="homogeneous">True</property>
                                 <child>
                                   <object class="GtkLabel" id="lbl_local_search">
                                     <property name="visible">True</property>
@@ -702,23 +703,19 @@
                     </child>
                     <child>
                       <object class="GtkScrolledWindow" id="scrll_wndw_dlgs1">
-                        <property name="width_request">200</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <object class="GtkViewport">
-                            <property name="width_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkListBox">
-                                <property name="width_request">200</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
                                   <object class="GtkListBoxRow">
-                                    <property name="width_request">200</property>
                                     <property name="height_request">80</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -732,7 +729,6 @@
                                 </child>
                                 <child>
                                   <object class="GtkListBoxRow">
-                                    <property name="width_request">200</property>
                                     <property name="height_request">80</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -747,7 +743,6 @@
                                 </child>
                                 <child>
                                   <object class="GtkListBoxRow" id="row_settings">
-                                    <property name="width_request">200</property>
                                     <property name="height_request">80</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -764,7 +759,6 @@
                                 </child>
                                 <child>
                                   <object class="GtkListBoxRow">
-                                    <property name="width_request">200</property>
                                     <property name="height_request">80</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -787,7 +781,6 @@
                                 </child>
                                 <child>
                                   <object class="GtkListBoxRow">
-                                    <property name="width_request">200</property>
                                     <property name="height_request">80</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -813,6 +806,9 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <style>
+                      <class name="stack_dialogs"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -830,20 +826,18 @@
             <child>
               <object class="GtkBox">
                 <property name="width_request">500</property>
+                <property name="height_request">540</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox">
-                    <property name="width_request">500</property>
                     <property name="height_request">20</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="valign">start</property>
                     <child>
                       <object class="GtkStack" id="stack_upper_dialog_toolbar">
                         <property name="name">stack_upper_dialog_toolbar</property>
-                        <property name="width_request">500</property>
                         <property name="height_request">20</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -857,7 +851,6 @@
                             <child>
                               <object class="GtkButton" id="room_info">
                                 <property name="label" translatable="yes">info</property>
-                                <property name="width_request">500</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
@@ -879,7 +872,6 @@
                             <property name="height_request">20</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="hexpand">True</property>
                             <property name="row_homogeneous">True</property>
                             <child>
                               <object class="GtkButton" id="btn_edit_msg">
@@ -962,7 +954,6 @@
                 </child>
                 <child>
                   <object class="GtkStack" id="stack">
-                    <property name="width_request">500</property>
                     <property name="height_request">500</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -970,8 +961,6 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
                         <property name="label" translatable="yes">select a chat to start messaging</property>
                       </object>
                       <packing>
@@ -979,6 +968,9 @@
                         <property name="title" translatable="yes">page0</property>
                       </packing>
                     </child>
+                    <style>
+                      <class name="stack_messages"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -988,7 +980,6 @@
                 </child>
                 <child>
                   <object class="GtkBox" id="bottom_bar_chat">
-                    <property name="width_request">500</property>
                     <property name="height_request">20</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -1003,7 +994,6 @@
                         <child>
                           <object class="GtkEntry" id="chat_message_entry">
                             <property name="name">chat_message_entry</property>
-                            <property name="width_request">400</property>
                             <property name="height_request">20</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1027,7 +1017,6 @@
                         <child>
                           <object class="GtkEntry" id="chat_edit_message">
                             <property name="name">chat_message_entry</property>
-                            <property name="width_request">400</property>
                             <property name="height_request">20</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>

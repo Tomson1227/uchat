@@ -33,16 +33,14 @@ void select_room(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
 static void manage_room_visibility(t_chat *chat) {
     GtkBox *bottom_bar_chat = GTK_BOX(gtk_builder_get_object(chat->builder, "bottom_bar_chat"));
     GtkStack *stack_entry = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_entry"));
-    GtkButton *room_info = GTK_BUTTON(gtk_builder_get_object(chat->builder, "room_info"));
+    GtkStack *stack_upper_dialog_toolbar = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_upper_dialog_toolbar"));
     GObject *create_group = gtk_builder_get_object(chat->builder, "create_group");
 
     gtk_widget_hide(GTK_WIDGET(create_group));
-    gtk_widget_show(GTK_WIDGET(room_info));
     gtk_widget_show_all(GTK_WIDGET(bottom_bar_chat));
-    // gtk_widget_show(GTK_WIDGET(stack_entry));
     gtk_stack_set_visible_child_name(stack_entry, "chat_message_entry");
-    // gtk_widget_show_all(GTK_WIDGET(chat->listbox_dlgs));
-
+    gtk_stack_set_visible_child_name(stack_upper_dialog_toolbar, "chat_topbar_grid");
+    gtk_widget_show_all(GTK_WIDGET(stack_upper_dialog_toolbar));
 }
 
 static void add_dialog_row(t_room *room, t_chat *chat, const gchar *group_name) {
@@ -58,8 +56,7 @@ static void add_dialog_row(t_room *room, t_chat *chat, const gchar *group_name) 
     gtk_container_add(GTK_CONTAINER(row), lbl);
     gtk_widget_show(lbl);
     g_object_set_data(G_OBJECT(row), "room", id);
-    g_object_set_data(G_OBJECT(row), "room_name", id);
-    // gtk_widget_show_all(GTK_WIDGET(chat->listbox_dlgs));    
+    g_object_set_data(G_OBJECT(row), "room_name", id);   
 }
 
 static void add_messages_box(t_room *room, t_chat *chat, const gchar *name) {
@@ -123,10 +120,10 @@ void req_create_dialog(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
     char *customer = NULL;
     customer  = malloc(sizeof(char) * strlen(gtk_widget_get_name(GTK_WIDGET(row))) + 1);
     sprintf(customer, "%s", gtk_widget_get_name(GTK_WIDGET(row)));
-    
-    //char *temp = send_rq_create_room_client(chat->username, const gchar *customer);
-    //enQueue(chat->config->queue_send, temp);
-    create_dialog(i, customer, chat);
+    printf("got name: %s\n", customer);
+    char *temp = send_rq_create_room_client(chat->username, customer);
+    enQueue(chat->config->queue_send, temp);
+    // create_dialog(i, customer, chat);
     manage_visibility(box, chat);
 }
 

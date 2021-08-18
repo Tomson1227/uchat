@@ -58,16 +58,21 @@ void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat) {
     msg->row_msg = GTK_LIST_BOX_ROW(row);
     gtk_container_add(GTK_CONTAINER(room->listbox_msgs), row);
     gtk_container_add(GTK_CONTAINER(row), lbl);
-    if (strcmp(chat->username, msg->sender) == 0)
+    if (strcmp(chat->username, msg->sender) == 0) {
         gtk_widget_set_halign(lbl, GTK_ALIGN_END);
-    else 
+        set_widget_class(lbl, "message_own");
+    }
+    else {
         gtk_widget_set_halign(lbl, GTK_ALIGN_START);
+        set_widget_class(lbl, "message_received");
+    } 
     g_object_set_data(G_OBJECT(msg->row_msg), "msg", msg);
     char *id = my_itoa(msg->msg_id);
     g_object_set_data(G_OBJECT(row), "msg_id", id);
     k++;//
     gtk_widget_show(row);
     gtk_widget_show(lbl);
+
     free(message);
 }
 
@@ -95,11 +100,13 @@ void add_message(int id_of_room, int id_of_msg, char *time, t_chat *chat) {
             AddListItem(chat, buffer, msg, room);
         gtk_entry_set_text(entry,""); 
     }
-    // recv_message(-1, -1, "21.40.41", "Hello", chat, "sender");
+    recv_message(-1, -1, "21.40.41", "Hello", chat, "sender");
 }
 
 void req_send_message(GtkEntry *entry, t_chat *chat) {
-    // const gchar *buffer = gtk_entry_get_text(entry);
+    char *buffer = NULL;
+    buffer = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);
+    sprintf(buffer, "%s", gtk_entry_get_text(entry));
     // char *tmp = send_rq_send_msg_client(chat->username, chat->curr_chat->room_id, buffer);
     // enQueue(chat->config->queue_send, tmp);
     t_room *room = chat->curr_chat;

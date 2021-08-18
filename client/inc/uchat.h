@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UCHAT_H
+#define UCHAT_H
 
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -14,7 +15,6 @@
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <gtk/gtk.h>
-
 
 #include "connection.h"
 #include "queue.h"
@@ -119,8 +119,10 @@ void log_out(GtkButton *btn, t_chat *chat);
 void close_info(GtkButton *btn, t_chat *chat); 
 void req_search_user(GtkEntry *entry, t_chat *chat);
 void change_password_visibility(GtkEntry *entry);
-void filter_search(char **users, int n, t_chat *chat);
-void filter_row(GtkWidget *wdg, char **users);
+// void filter_search(char **users, int n, t_chat *chat);
+// void filter_row(GtkWidget *wdg, char **users);
+void filter_search(char *users, int n, t_chat *chat);
+void filter_row(GtkWidget *wdg, char *users);
 void edit_message(GtkButton *button, t_chat *chat);
 void send_edited_message(GtkEntry *entry, t_chat *chat);
 void show_create_room_window(GtkButton *btn, t_chat *chat);
@@ -132,6 +134,7 @@ void create_dialog(int id, char *customer_string, t_chat *chat);
 void upload_old_dialogs(char **dialogs, int *ids, int *msg_ids, int n, t_chat *chat);
 void mx_free(void **ptr);
 void set_default_settings(t_room *room, GtkBuilder *builder);
+void set_widget_class(GtkWidget *widget, gchar *class_name);
 
 //api
 void process_rs_client(const char *const string, t_chat *chat);
@@ -143,6 +146,11 @@ char *send_rq_send_msg_client(char *username, gint room_id, char *message);
 char *send_req_old_dialogs(char *username);
 char *send_rq_delete_room(int room_id); 
 char *send_rq_delete_msg(int msg_id);
+char *send_rq_search_username(char *start_of_username);
 
 //additional functions
 char *my_itoa(long long number);
+
+void back_setup(t_chat *chat);
+
+#endif /* UCHAT_H */
