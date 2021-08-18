@@ -116,7 +116,7 @@ void EditMessage(t_message *message, int messageID, char *newMessage)
 void UploadOldDialogs(t_message *message, char *username)
 {
     sqlite3_stmt *stmt;
-    int length, rc, count = 0, userID, roomID, size;
+    int length, rc, count, userID, roomID, size;
     char *uploadDialogsQuery, *errMssg, *roomName;
 
     message->API = OLD_DIALOGS;
@@ -129,27 +129,25 @@ void UploadOldDialogs(t_message *message, char *username)
     message->Data.upload_old_dialogs.id = (int *)calloc(size, sizeof(int));
 
     length = snprintf(NULL, 0, "SELECT ID, NAME FROM ROOMS WHERE USER_ID = %d", userID);
+
     if (!(uploadDialogsQuery = (char *)calloc(length, sizeof(char)))) {
         perror("Allocation fali!\n");
-        
         message->status = ERROR;
         return;
     }
 
     sprintf(uploadDialogsQuery, "SELECT ID, NAME FROM ROOMS WHERE USER_ID = %d", userID);
-
     sqlite3_prepare_v2(db, uploadDialogsQuery, -1, &stmt, NULL);
     
-    while (count < size) {
+    for (count = 0; count < size; ++count) {
         sqlite3_step(stmt);
         message->Data.upload_old_dialogs.id[count] = sqlite3_column_int(stmt, 0);
-        message->Data.upload_old_dialogs.dialogs[count] = (char *)sqlite3_column_text(stmt, 1);
+        message->Data.upload_old_dialogs.dialogs[count] = strdup(sqlite3_column_text(stmt, 1));
         
-        printf("%s %d\n", message->Data.upload_old_dialogs.dialogs[count], message->Data.upload_old_dialogs.id[count]);
-        ++count;
+        // printf("%s %d\n", message->Data.upload_old_dialogs.dialogs[count], message->Data.upload_old_dialogs.id[count]);
     }
 
-    // message->Data.upload_old_dialogs.dialogs[count] = NULL;
+    message->Data.upload_old_dialogs.dialogs[count] = NULL;
     // printf("%s\n", message->Data.upload_old_dialogs.dialogs[count]);
     
     free(uploadDialogsQuery);
@@ -172,7 +170,7 @@ void SendMessage(t_message *message, char *username, int roomID, char *text, t_m
     userID = getUserID(username);
 
     strftime(Time, sizeof(Time), "%a %b %d %r", local);
-    message->Data.create_message.date = strdup(Time);
+    memcpy(message->Data.create_message.date, Time, strlen(Time));
 
     length = snprintf(NULL, 0, "INSERT INTO MSSGS (ROOM_ID, USER_ID, message, date) VALUES (%d, %d, '%s', '%s')", roomID, userID, text, Time);
     
@@ -212,7 +210,7 @@ void CreateRoom(t_message *message, char *user, char *customer)
 
     message->API = CREATE_ROOM;
     message->status = SUCCESS;
-    message->Data.create_room.customer = strdup(customer);
+    memcpy(message->Data.create_room.customer, customer, strlen(customer));
 
     userID = getUserID(user);
     customerID = getUserID(customer);
@@ -252,7 +250,7 @@ void UserSearch(t_message *message, char *searchText)
     const unsigned char *result;
     sqlite3_stmt *stmt;
 
-    message->Data.search_user.user = (char **) calloc(size, sizeof(char *));
+    message->Data.search_user.users = calloc(size, sizeof(char *));
 
     lengthSearch = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN LIKE '%c%s%c';", '%', searchText, '%');
 
@@ -270,15 +268,16 @@ void UserSearch(t_message *message, char *searchText)
         result = sqlite3_column_text(stmt, 0);
 
         if (result != NULL) {
-            message->Data.search_user.user[count] = (char *)result;
-            message->Data.search_user.user = realloc(message->Data.search_user.user, ++size * sizeof(char *));
-        } else
+            message->Data.search_user.users[count] = strdup(result);
+            message->Data.search_user.users = realloc(message->Data.search_user.users, ++size * sizeof(char *));
+        } else {
+            message->Data.search_user.users[count] = NULL;
             break;
+        }
 
         ++count;
     }
 
-    message->Data.search_user.user[count] = NULL;
     free(searchQuery);
 }
 
@@ -330,7 +329,7 @@ void LogIn(t_message *message, char *user_login, char *user_pass)
     const unsigned char *pass;
     char *query;
 
-    if (!checkLogin(user_login) == 0) {
+    if (!checkLogin(user_login)) {
         message->status = LOGIN_WRONG_USER;
         return;
     }
