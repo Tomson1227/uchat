@@ -175,18 +175,22 @@ static void receive_old_msgs(cJSON *json, t_chat *chat) {
 }
 
 static void receive_rs_send_msg_client(cJSON *json, t_chat *chat) {
+    printf("entered receive_rs_send_msg_client function\n");
     cJSON *status = cJSON_GetObjectItemCaseSensitive(json, "status");
 
-    if (status->valuedouble == SUCCESS) {
+    // if (status->valuedouble == 0) {
         cJSON *room_id = cJSON_GetObjectItemCaseSensitive(json, "room_id");
         cJSON *message_id = cJSON_GetObjectItemCaseSensitive(json, "message_id");
         cJSON *date = cJSON_GetObjectItemCaseSensitive(json, "date");
 
-        char *time = cJSON_Print(date);
-        int id_of_msg = atoi(message_id->valuestring);
-        int id_of_room = atoi(room_id->valuestring);
+        char *time = g_strdup(date->valuestring);
+        printf("got time: %s\n", time);
+        int id_of_msg = message_id->valuedouble;
+        printf("got id of msg: %d\n", id_of_msg);
+        int id_of_room = room_id->valuedouble;
+        printf("got id of room: %d\n", id_of_room);
         add_message(id_of_room, id_of_msg, time, chat);
-    }
+    // }
 }
 
 static void receive_rs_search_username(cJSON *json, t_chat *chat) {

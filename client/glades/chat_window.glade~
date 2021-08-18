@@ -806,6 +806,9 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <style>
+                      <class name="stack_dialogs"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
