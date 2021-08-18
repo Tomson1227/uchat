@@ -6,6 +6,7 @@ static sqlite3 *db = NULL;
 static int callback(void *data, int argc, char **argv, char **azColName);
 static int checkLogin(char *user_login); 
 static int getUserID(char *username);
+static int countSelectedRows(int userID);
 
 /* Need to be developed */
 void ReadMessage(t_message *message, int roomID)
@@ -24,10 +25,32 @@ void ReadMessage(t_message *message, int roomID)
 
 void DeleteRoom(t_message *message, int roomID)
 {
+    int length, rc;
+    char *deleteRoomQuery, *errMssg;
+
     message->API = DELETE_ROOM;
     message->status = SUCCESS;
 
-    // message->Data.delete_room.id;
+    length = snprintf(NULL, 0, "DELETE FROM ROOMS WHERE ID = %d", roomID);
+    if (!(deleteRoomQuery = (char *)calloc(length, sizeof(char)))) {
+        perror("Allocation fail!\n");
+        return;
+    }
+    
+    sprintf(deleteRoomQuery, "DELETE FROM ROOMS WHERE ID = %d", roomID);
+
+    rc = sqlite3_exec(db, deleteRoomQuery, 0, 0, &errMssg);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL Error: %s\n", errMssg);
+
+        message->status = ERROR;
+
+        sqlite3_free(errMssg);
+    } else
+        message->Data.delete_room.id = roomID;
+
+    free(deleteRoomQuery);
 }
 
 void DeleteMessage(t_message *message, int messageID)
@@ -92,11 +115,42 @@ void EditMessage(t_message *message, int messageID, char *newMessage)
 
 void UploadOldDialogs(t_message *message, char *username)
 {
+    sqlite3_stmt *stmt;
+    int length, rc, count, userID, roomID, size;
+    char *uploadDialogsQuery, *errMssg, *roomName;
+
     message->API = OLD_DIALOGS;
     message->status = SUCCESS;
 
-    // message->Data.upload_old_dialogs.id;
-    // message->Data.upload_old_dialogs.dialogs;
+    userID = getUserID(username);
+    size = countSelectedRows(userID);
+    
+    message->Data.upload_old_dialogs.dialogs = (char **)calloc(size + 1, sizeof(char *));
+    message->Data.upload_old_dialogs.id = (int *)calloc(size, sizeof(int));
+
+    length = snprintf(NULL, 0, "SELECT ID, NAME FROM ROOMS WHERE USER_ID = %d", userID);
+
+    if (!(uploadDialogsQuery = (char *)calloc(length, sizeof(char)))) {
+        perror("Allocation fali!\n");
+        message->status = ERROR;
+        return;
+    }
+
+    sprintf(uploadDialogsQuery, "SELECT ID, NAME FROM ROOMS WHERE USER_ID = %d", userID);
+    sqlite3_prepare_v2(db, uploadDialogsQuery, -1, &stmt, NULL);
+    
+    for (count = 0; count < size; ++count) {
+        sqlite3_step(stmt);
+        message->Data.upload_old_dialogs.id[count] = sqlite3_column_int(stmt, 0);
+        message->Data.upload_old_dialogs.dialogs[count] = strdup(sqlite3_column_text(stmt, 1));
+        
+        // printf("%s %d\n", message->Data.upload_old_dialogs.dialogs[count], message->Data.upload_old_dialogs.id[count]);
+    }
+
+    message->Data.upload_old_dialogs.dialogs[count] = NULL;
+    // printf("%s\n", message->Data.upload_old_dialogs.dialogs[count]);
+    
+    free(uploadDialogsQuery);
 }
 // End of list
 
@@ -116,7 +170,7 @@ void SendMessage(t_message *message, char *username, int roomID, char *text, t_m
     userID = getUserID(username);
 
     strftime(Time, sizeof(Time), "%a %b %d %r", local);
-    message->Data.create_message.date = strdup(Time);
+    memcpy(message->Data.create_message.date, Time, strlen(Time));
 
     length = snprintf(NULL, 0, "INSERT INTO MSSGS (ROOM_ID, USER_ID, message, date) VALUES (%d, %d, '%s', '%s')", roomID, userID, text, Time);
     
@@ -156,12 +210,12 @@ void CreateRoom(t_message *message, char *user, char *customer)
 
     message->API = CREATE_ROOM;
     message->status = SUCCESS;
-    message->Data.create_room.customer = strdup(customer);
+    memcpy(message->Data.create_room.customer, customer, strlen(customer));
 
     userID = getUserID(user);
     customerID = getUserID(customer);
 
-    length = snprintf(NULL, 0, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID) VALUES (%d, %d)", userID, customerID);
+    length = snprintf(NULL, 0, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID, NAME) VALUES (%d, %d, '%s')", userID, customerID, customer);
 
     if (!(roomQuery = (char *)calloc(length, sizeof(char)))) {
         perror("Allocation fail!");
@@ -169,7 +223,7 @@ void CreateRoom(t_message *message, char *user, char *customer)
         return;
     }
 
-    sprintf(roomQuery, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID) VALUES (%d, %d)", userID, customerID);
+    sprintf(roomQuery, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID, NAME) VALUES (%d, %d, '%s')", userID, customerID, customer);
 
     rc = sqlite3_exec(db, roomQuery, 0, 0, &errMsg);
 
@@ -196,7 +250,7 @@ void UserSearch(t_message *message, char *searchText)
     const unsigned char *result;
     sqlite3_stmt *stmt;
 
-    message->Data.search_user.user = (char **) calloc(size, sizeof(char *));
+    message->Data.search_user.users = calloc(size, sizeof(char *));
 
     lengthSearch = snprintf(NULL, 0, "SELECT LOGIN FROM USRS WHERE LOGIN LIKE '%c%s%c';", '%', searchText, '%');
 
@@ -214,15 +268,16 @@ void UserSearch(t_message *message, char *searchText)
         result = sqlite3_column_text(stmt, 0);
 
         if (result != NULL) {
-            message->Data.search_user.user[count] = (char *)result;
-            message->Data.search_user.user = realloc(message->Data.search_user.user, ++size * sizeof(char *));
-        } else
+            message->Data.search_user.users[count] = strdup(result);
+            message->Data.search_user.users = realloc(message->Data.search_user.users, ++size * sizeof(char *));
+        } else {
+            message->Data.search_user.users[count] = NULL;
             break;
+        }
 
         ++count;
     }
 
-    message->Data.search_user.user[count] = NULL;
     free(searchQuery);
 }
 
@@ -274,7 +329,7 @@ void LogIn(t_message *message, char *user_login, char *user_pass)
     const unsigned char *pass;
     char *query;
 
-    if (!checkLogin(user_login) == 0) {
+    if (!checkLogin(user_login)) {
         message->status = LOGIN_WRONG_USER;
         return;
     }
@@ -425,4 +480,27 @@ static int checkLogin(char *user_login)
     free(checkQuery);
 
     return checkLogin != NULL;
+}
+
+static int countSelectedRows(int userID) {
+    int length, count;
+    char *countQuery;
+    sqlite3_stmt *stmt;
+
+    length = snprintf(NULL, 0, "SELECT COUNT(*) FROM ROOMS WHERE USER_ID = %d", userID);
+    if (!(countQuery = (char *)calloc(length, sizeof(char)))) {
+        perror("Allocation fail!\n");
+        return 0;
+    }
+
+    sprintf(countQuery, "SELECT COUNT(*) FROM ROOMS WHERE USER_ID = %d", userID);
+
+    sqlite3_prepare_v2(db, countQuery, -1, &stmt, NULL);
+    sqlite3_step(stmt);
+
+    count = sqlite3_column_int(stmt, 0);
+
+    free(countQuery);
+
+    return count;
 }
