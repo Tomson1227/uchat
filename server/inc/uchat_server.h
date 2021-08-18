@@ -50,11 +50,6 @@ typedef enum s_rs_status {
     ROOM_DOES_NOT_EXIST
 }            t_rs_status;
 
-typedef enum s_update {
-    TRUE = 0,
-    FALSE
-}            t_update;
-
 typedef enum s_msg_type {
     M_MESSAGE,
     M_FILE,
@@ -63,13 +58,13 @@ typedef enum s_msg_type {
 
 typedef struct s_create_room {
     int id;
-    char *customer;
+    char customer[40];
 }              t_create_room;
 
 typedef struct s_send_message {
     int room_id;
     int message_id;
-    char *date;
+    char date[20];
 }              t_send_message;
 
 typedef struct s_read_message {
@@ -77,13 +72,13 @@ typedef struct s_read_message {
     int message_id;
     int message_type;
     char *message;
-    char *date;
-    char *sender;
-    t_update update;
+    char date[20];
+    char sender[40];
+    bool update;
 }              t_read_message;
 
 typedef struct s_search_user {
-    char **user;
+    char **users;
 }              t_search_user;
 
 typedef struct s_delete_message {
@@ -106,7 +101,7 @@ typedef struct s_upload_old_dialogs {
 typedef struct s_create_message {
     int room_id;
     int message_id;
-    char *date;
+    char date[20];
 }              t_create_message;
 
 typedef union u_union_api {

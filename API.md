@@ -79,7 +79,6 @@ ___
 {
     "type": CREATE_ROOM,
     "id": id,
-    "customer": "customer"
     "status": SUCCESS | ERROR
 }
 ```

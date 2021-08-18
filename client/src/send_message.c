@@ -107,10 +107,10 @@ void req_send_message(GtkEntry *entry, t_chat *chat) {
     char *buffer = NULL;
     buffer = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);
     sprintf(buffer, "%s", gtk_entry_get_text(entry));
-    // char *tmp = send_rq_send_msg_client(chat->username, chat->curr_chat->room_id, buffer);
-    // enQueue(chat->config->queue_send, tmp);
-    t_room *room = chat->curr_chat;
-    add_message(room->room_id, k, "21:78:32", chat);
+    char *tmp = send_rq_send_msg_client(chat->username, chat->curr_chat->room_id, buffer);
+    enQueue(chat->config->queue_send, tmp);
+    // t_room *room = chat->curr_chat;
+    // add_message(room->room_id, k, "21:78:32", chat);
 }
 
 void on_btn_send_message_clicked(GtkButton *btn, t_chat *chat) {

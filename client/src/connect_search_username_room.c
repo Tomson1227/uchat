@@ -35,68 +35,15 @@ void req_search_user(GtkEntry *entry, t_chat *chat) {
     text = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);
     sprintf(text, "%s", gtk_entry_get_text(entry));
 
-    // if (strlen(text) > 6) {
-    char *tmp = send_rq_search_username(text);
-    enQueue(chat->config->queue_send, tmp);
-    // }
+    if (strlen(text) > 6) {
+        char *tmp = send_rq_search_username(text);
+        enQueue(chat->config->queue_send, tmp);
+    }
     // char *names[2] = {"1", "5"}; 
     // filter_search(names, 2, chat);
 }
 
-// void filter_search(char **users, int n, t_chat *chat) {
-//     GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
-//     GtkListBox *listbox_found_dlgs = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_found_dlgs"));
-//     GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
-//     GtkLabel *lbl_global_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search"));
-//     GtkLabel *lbl_local_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_local_search"));
-//     GtkLabel *lbl_local_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_local_search_nothing_found"));
-//     gtk_widget_show(GTK_WIDGET(lbl_local_search));
-//     gtk_widget_show(GTK_WIDGET(lbl_global_search));
-//     int tmp = 0;
-//     gtk_container_foreach((GtkContainer *)chat->listbox_dlgs, (GtkCallback)filter_row, users);
-//     for (int i = 0; i < n; i++) {
-//         if (gtk_stack_get_child_by_name(stack, users[i]) == NULL) { 
-//             if (!row_is_already_in_list(users[i], listbox_found_dlgs)) {
-//                 GtkWidget *r = gtk_list_box_row_new();
-//                 GtkWidget *lbl = gtk_label_new(users[i]);
-//                 gtk_container_add(GTK_CONTAINER(listbox_found_dlgs), r);
-//                 gtk_container_add(GTK_CONTAINER(r), lbl);
-//                 gtk_widget_set_name(r, users[i]);
-//                 gtk_widget_show(r);
-//                 gtk_widget_show(lbl);
-//                 tmp++;
-//             }
-//         }
-//     }
-//     if (gtk_container_get_children(GTK_CONTAINER(listbox_found_dlgs)) == NULL)
-//         gtk_widget_show(GTK_WIDGET(lbl_global_search_nothing_found));
-//     else 
-//         gtk_widget_hide(GTK_WIDGET(lbl_global_search_nothing_found));
-//     if (tmp == n)
-//         gtk_widget_show(GTK_WIDGET(lbl_local_search_nothing_found));
-//     else 
-//         gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));
-//     //for (int i = 0; i < n; i++) {
-//     //    free(users[i]);
-//     //}
-//     //free(users);
-//     //users = NULL:
-// }
-
-// void filter_row(GtkWidget *wdg, char **users) {
-//     char *s = g_object_get_data(G_OBJECT(wdg), "room");
-//     int n = 0, i = 0;
-    
-//     gtk_widget_hide(GTK_WIDGET(wdg));
-//     for (; users[n] != NULL; n++);
-//     while (i < n) {
-//         if (strcmp(s, users[i]) == 0)
-//             gtk_widget_show(GTK_WIDGET(wdg));
-//         i++;
-//     }
-// }
-
-void filter_search(char *users, int n, t_chat *chat) {
+void filter_search(char **users, int n, t_chat *chat) {
     GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
     GtkListBox *listbox_found_dlgs = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_found_dlgs"));
     GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
@@ -106,21 +53,24 @@ void filter_search(char *users, int n, t_chat *chat) {
     gtk_widget_show(GTK_WIDGET(lbl_local_search));
     gtk_widget_show(GTK_WIDGET(lbl_global_search));
     int tmp = 0;
+
     gtk_container_foreach((GtkContainer *)chat->listbox_dlgs, (GtkCallback)filter_row, users);
-    // for (int i = 0; i < n; i++) {
-        if (gtk_stack_get_child_by_name(stack, users) == NULL) { 
-            if (!row_is_already_in_list(users, listbox_found_dlgs)) {
-                GtkWidget *r = gtk_list_box_row_new();
-                GtkWidget *lbl = gtk_label_new(users);
-                gtk_container_add(GTK_CONTAINER(listbox_found_dlgs), r);
-                gtk_container_add(GTK_CONTAINER(r), lbl);
-                gtk_widget_set_name(r, users);
-                gtk_widget_show(r);
-                gtk_widget_show(lbl);
-                tmp++;
+    for (int i = 0; i < n; i++) {
+        if (gtk_stack_get_child_by_name(stack, users[i]) == NULL) { 
+            if (!row_is_already_in_list(users[i], listbox_found_dlgs)) {
+                if (strcmp(chat->username, users[i]) != 0) {
+                    GtkWidget *r = gtk_list_box_row_new();
+                    GtkWidget *lbl = gtk_label_new(users[i]);
+                    gtk_container_add(GTK_CONTAINER(listbox_found_dlgs), r);
+                    gtk_container_add(GTK_CONTAINER(r), lbl);
+                    gtk_widget_set_name(r, users[i]);
+                    gtk_widget_show(r);
+                    gtk_widget_show(lbl);
+                    tmp++;
+                }
             }
         }
-    // }
+    }
     if (gtk_container_get_children(GTK_CONTAINER(listbox_found_dlgs)) == NULL)
         gtk_widget_show(GTK_WIDGET(lbl_global_search_nothing_found));
     else 
@@ -129,22 +79,22 @@ void filter_search(char *users, int n, t_chat *chat) {
         gtk_widget_show(GTK_WIDGET(lbl_local_search_nothing_found));
     else 
         gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));
-    //for (int i = 0; i < n; i++) {
+    // for (int i = 0; i < n; i++) {
     //    free(users[i]);
-    //}
-    //free(users);
-    //users = NULL:
+    // }
+    // free(users);
+    // users = NULL;
 }
 
-void filter_row(GtkWidget *wdg, char *users) {
+void filter_row(GtkWidget *wdg, char **users) {
     char *s = g_object_get_data(G_OBJECT(wdg), "room");
-    // int n = 0, i = 0;
+    int n = 0, i = 0;
     
-    // gtk_widget_hide(GTK_WIDGET(wdg));
-    // for (; users[n] != NULL; n++);
-    // while (i < n) {
-        if (strcmp(s, users) == 0)
+    gtk_widget_hide(GTK_WIDGET(wdg));
+    for (; users[n] != NULL; n++);
+    while (i < n) {
+        if (strcmp(s, users[i]) == 0)
             gtk_widget_show(GTK_WIDGET(wdg));
-        // i++;
-    // }
+        i++;
+    }
 }

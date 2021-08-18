@@ -108,17 +108,17 @@ static char *server_user_search(cJSON *rq)
         cJSON *users = cJSON_CreateArray();
         cJSON *user = NULL;
 
-        for (register unsigned int index = 0; message.Data.search_user.user[index]; ++index) {
-            user = cJSON_CreateString(message.Data.search_user.user[index]);
+        for (register unsigned int index = 0; message.Data.search_user.users[index]; ++index) {
+            user = cJSON_CreateString(message.Data.search_user.users[index]);
             cJSON_AddItemToArray(users, user);
-            free(message.Data.search_user.user[index]);
+            free(message.Data.search_user.users[index]);
         }
 
-        cJSON_AddItemToObject(response, "user", user);
+        cJSON_AddItemToObject(response, "user", users);
 
         line = cJSON_Print(response);
         cJSON_Delete(response);
-        free(message.Data.search_user.user);
+        free(message.Data.search_user.users);
     }
 
     return line;
@@ -153,8 +153,6 @@ static char *server_read_message(cJSON *rq)
 
         line = cJSON_Print(response);
         cJSON_Delete(response);
-        free(message.Data.read_message.date);
-        free(message.Data.read_message.sender);
         free(message.Data.read_message.message);
     }
 
@@ -184,7 +182,6 @@ static char *server_send_message(cJSON *rq)
 
         line = cJSON_Print(response);
         cJSON_Delete(response);
-        free(message.Data.create_message.date);
     }
 
     return line;
@@ -195,8 +192,8 @@ static char *server_create_room(cJSON *rq)
     t_message message;
     char *line = NULL;
     cJSON *response = NULL;
-    cJSON *username = cJSON_GetObjectItemCaseSensitive(rq, "username");
-    cJSON *customer = cJSON_GetObjectItemCaseSensitive(rq, "customer");
+    cJSON *username = cJSON_GetObjectItemCaseSensitive(rq, "sender");
+    cJSON *customer = cJSON_GetObjectItemCaseSensitive(rq, "receiver");
 
     CreateRoom(&message, username->valuestring, customer->valuestring);
 
@@ -209,7 +206,6 @@ static char *server_create_room(cJSON *rq)
 
         line = cJSON_Print(response);
         cJSON_Delete(response);
-        free(message.Data.create_room.customer);
     }
     
     return line;
@@ -319,24 +315,29 @@ static char *server_upload_old_dialogs(cJSON *rq)
     cJSON *response = NULL;
     cJSON *username = cJSON_GetObjectItemCaseSensitive(rq, "username");
     
-    /* UploadOldDialogs function from DB */
-    // UploadOldDialogs(&message, username->valuestring);
+    UploadOldDialogs(&message, username->valuestring);
     
     if((response = create_response(&message))) {
-        cJSON *users = cJSON_CreateArray();
-        cJSON *user = NULL;
+        cJSON *dialogs = cJSON_CreateArray();
+        cJSON *room_ids = cJSON_CreateArray();
+        cJSON *id = NULL;
+        cJSON *dialog = NULL;
 
-        for (register unsigned int index = 0; ; ++index) {
-            user = cJSON_CreateString(message.Data.search_user.user[index]);
-            cJSON_AddItemToArray(users, user);
-            free(message.Data.search_user.user[index]);
+        for (register unsigned int index = 0; message.Data.upload_old_dialogs.dialogs[index]; ++index) {
+            dialog = cJSON_CreateString(message.Data.upload_old_dialogs.dialogs[index]);
+            id = cJSON_CreateNumber(message.Data.upload_old_dialogs.id[index]);
+            cJSON_AddItemToArray(dialogs, dialog);
+            cJSON_AddItemToArray(room_ids, id);
+            free(message.Data.upload_old_dialogs.dialogs[index]);
         }
 
-        cJSON_AddItemToObject(response, "user", user);
+        cJSON_AddItemToObject(response, "dialogs", dialogs);
+        cJSON_AddItemToObject(response, "id", room_ids);
 
         line = cJSON_Print(response);
         cJSON_Delete(response);
-        free(message.Data.search_user.user);
+        free(message.Data.upload_old_dialogs.dialogs);
+        free(message.Data.upload_old_dialogs.id);
     }
     
     return line;
