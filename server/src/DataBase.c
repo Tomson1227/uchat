@@ -32,21 +32,20 @@ void DeleteRoom(t_message *message, int roomID)
     message->status = SUCCESS;
 
     length = snprintf(NULL, 0, "DELETE FROM ROOMS WHERE ID = %d", roomID);
+
     if (!(deleteRoomQuery = (char *)calloc(length, sizeof(char)))) {
         perror("Allocation fail!\n");
+        message->status = ERROR;
         return;
     }
     
     sprintf(deleteRoomQuery, "DELETE FROM ROOMS WHERE ID = %d", roomID);
-
     rc = sqlite3_exec(db, deleteRoomQuery, 0, 0, &errMssg);
 
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL Error: %s\n", errMssg);
-
-        message->status = ERROR;
-
         sqlite3_free(errMssg);
+        message->status = ERROR;
     } else
         message->Data.delete_room.id = roomID;
 
@@ -70,7 +69,6 @@ void DeleteMessage(t_message *message, int messageID)
     }
 
     sprintf(deleteMessageQuery, "DELETE FROM MSSGS WHERE ID = %d", messageID);
-
     rc = sqlite3_exec(db, deleteMessageQuery, 0, 0, &errMssg);
 
     if (rc != SQLITE_OK) {
@@ -100,7 +98,6 @@ void EditMessage(t_message *message, int messageID, char *newMessage)
     }
 
     sprintf(editMessageQuery, "UPDATE MSSGS SET message = '%s' WHERE ID = '%d'", newMessage, messageID);
-
     rc = sqlite3_exec(db, editMessageQuery, 0, 0, &errMssg);
 
     if (rc != SQLITE_OK) {
@@ -143,7 +140,6 @@ void UploadOldDialogs(t_message *message, char *username)
         sqlite3_step(stmt);
         message->Data.upload_old_dialogs.id[count] = sqlite3_column_int(stmt, 0);
         message->Data.upload_old_dialogs.dialogs[count] = strdup(sqlite3_column_text(stmt, 1));
-        
         // printf("%s %d\n", message->Data.upload_old_dialogs.dialogs[count], message->Data.upload_old_dialogs.id[count]);
     }
 
@@ -152,7 +148,6 @@ void UploadOldDialogs(t_message *message, char *username)
     
     free(uploadDialogsQuery);
 }
-// End of list
 
 void SendMessage(t_message *message, char *username, int roomID, char *text, t_msg_type M_MESSAGE)
 {
@@ -224,7 +219,6 @@ void CreateRoom(t_message *message, char *user, char *customer)
     }
 
     sprintf(roomQuery, "INSERT INTO ROOMS (USER_ID, CUSTOMER_ID, NAME) VALUES (%d, %d, '%s')", userID, customerID, customer);
-
     rc = sqlite3_exec(db, roomQuery, 0, 0, &errMsg);
 
     if (rc != SQLITE_OK) {

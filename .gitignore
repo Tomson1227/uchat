@@ -54,6 +54,7 @@ dkms.conf
 #Project-specific
 uchat
 uchat_server
+*.db
 .DS_Store
 .vscode
 .json
