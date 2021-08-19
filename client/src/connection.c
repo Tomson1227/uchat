@@ -152,7 +152,7 @@ static void client_recv(t_config *config, int timeout) {
                     client_check_connection(config);
                     return;
                 } else {
-                    char *enq = (char*)calloc(128, sizeof(char));
+                    char *enq = (char*)calloc(CONN_BUFF_SIZE, sizeof(char));
                     strcpy(enq, temp_buff);
                     enQueue(config->queue_recv, enq);
                     printf("[RECV]    Receieved: %s\n", enq);
