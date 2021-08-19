@@ -218,10 +218,13 @@ void CreateRoom(t_message *message, char *user, char *customer);
 void UserSearch(t_message *message, char *searchText);
 void EditMessage(t_message *message, int roomID, char *newMessage);
 void SendMessage(t_message *message, char *username, int roomID, char *text, t_msg_type M_MESSAGE);
-void ReadMessage(t_message *message, int roomID);
+void ReadMessage(cJSON *rq, int fd);
 void DeleteMessage(t_message *message, int messageID);
 void DeleteRoom(t_message *message, int roomID);
 void UploadOldDialogs(t_message *message, char *username);
+
+void send_response(char* message, int fd);
+cJSON *create_response(t_message *message);
 
 //Server function
 void process_rq_server(const char *const string, int fd);
