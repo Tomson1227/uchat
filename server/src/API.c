@@ -1,12 +1,9 @@
 #include "uchat_server.h"
 
 /*--- Static fuctions declarations ---*/
-static cJSON *create_response(t_message *message);
-static void send_response(char* message, int fd);
 static char *server_upload_old_dialogs(cJSON *rq); 
 static char *server_delete_message(cJSON *rq); //In develop
 static char *server_send_message(cJSON *rq);
-static char *server_read_message(cJSON *rq); //In develop
 static char *server_edit_message(cJSON *rq); //In develop
 static char *server_create_room(cJSON *rq); 
 static char *server_delete_room(cJSON *rq); //In develop
@@ -39,7 +36,7 @@ void process_rq_server(const char *const string, int fd)
                 response = server_send_message(rq);
                 break;
             case READ_MSG:
-                response = server_read_message(rq);
+                ReadMessage(rq, fd);
                 break;
             case SEARCH_USER:
                 response = server_user_search(rq);
@@ -70,11 +67,13 @@ void process_rq_server(const char *const string, int fd)
         check_error();
 }
 
-/*-------------------------------------*/
-/*--- Static fuctions definitions ---*/
-/*-------------------------------------*/
+void send_response(char* message, int fd)
+{
+    if(message && send(fd, message, strlen(message), 0) < 0)
+        perror("send fail");
+}
 
-static cJSON *create_response(t_message *message)
+cJSON *create_response(t_message *message)
 {
     cJSON *json = NULL;
 
@@ -89,11 +88,9 @@ static cJSON *create_response(t_message *message)
     return json;
 }
 
-static void send_response(char* message, int fd)
-{
-    if(message && send(fd, message, strlen(message), 0) < 0)
-        perror("send fail");
-}
+/*-------------------------------------*/
+/*--- Static fuctions definitions ---*/
+/*-------------------------------------*/
 
 static char *server_user_search(cJSON *rq) 
 {
@@ -123,41 +120,6 @@ static char *server_user_search(cJSON *rq)
 
     return line;
 }
-
-static char *server_read_message(cJSON *rq)
-{
-    t_message message;
-    char *line = NULL;
-    cJSON *response = NULL;
-    cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "room_id");
-
-    /* ReadMessage function from DB */
-    // ReadMessage(&message, roomID->valuedouble);
-
-    if((response = create_response(&message))) {
-        cJSON *roomID = cJSON_CreateNumber(message.Data.read_message.room_id);
-        cJSON *messageID = cJSON_CreateNumber(message.Data.read_message.message_id);
-        cJSON *messageType = cJSON_CreateNumber(message.Data.read_message.message_type);
-        cJSON *msg = cJSON_CreateString(message.Data.read_message.message);
-        cJSON *sender = cJSON_CreateString(message.Data.read_message.sender);
-        cJSON *date = cJSON_CreateString(message.Data.read_message.date);
-        cJSON *update = cJSON_CreateNumber(message.Data.read_message.update);
-
-        cJSON_AddItemToObject(response, "room_id", roomID);
-        cJSON_AddItemToObject(response, "message_id", messageID);
-        cJSON_AddItemToObject(response, "msg_type", messageType);
-        cJSON_AddItemToObject(response, "message", msg);
-        cJSON_AddItemToObject(response, "date", date);
-        cJSON_AddItemToObject(response, "sender", sender);
-        cJSON_AddItemToObject(response, "update", update);
-
-        line = cJSON_Print(response);
-        cJSON_Delete(response);
-        free(message.Data.read_message.message);
-    }
-
-    return line;
-} 
 
 static char *server_send_message(cJSON *rq) 
 {
