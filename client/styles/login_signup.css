@@ -1,6 +1,6 @@
-/* * {
-    font-family: "Helvetica";
-} */
+* {
+    font-family: "Roboto";
+}
 
 headerbar {
     /* background-image: none; */
@@ -30,13 +30,17 @@ row {
 
 button {
     color: rgb(0, 255, 0);
-    outline-color: rgb(0, 255, 0);
+    /* outline-color: rgb(0, 255, 0); */
     background: #101010;
 } 
 
+button:active {
+    background: rgb(78, 78, 78);
+}
+
 button:hover {
     background: #202020;
-    border-color: #0f0;
+    /* border-color: #0f0; */
 }
 
 label {
@@ -52,10 +56,6 @@ entry {
 
 entry:focus {
     border-color: #00ff00;
-}
-
-GtkButton:hover {
-    background-color: #3085a9;
 }
 
 .message_own {
@@ -83,5 +83,18 @@ GtkButton:hover {
 .stack_messages scrolledwindow,
 .stack_messages viewport,
 .stack_messages list {
+    background: #101010;
+}
+
+dialog {
+    background: #333333;
+    /* border: rgb(0, 255, 0); */
+}
+
+.auxiliary_windows box {
+    background: #101010;
+}
+
+.window_log_out window {
     background: #101010;
 }

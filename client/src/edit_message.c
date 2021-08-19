@@ -22,8 +22,7 @@ void send_edited_message(GtkEntry *entry, t_chat *chat) {
     free(msg->msg);
     msg->msg = NULL;
     msg->msg = malloc(sizeof(char) * gtk_entry_get_text_length(chat_edit_message) + 1);
-    const gchar *text = gtk_entry_get_text(entry);
-    strcpy(msg->msg, text);
+    sprintf(msg->msg, "%s", gtk_entry_get_text(chat_edit_message));
     char *new_msg = form_msg(msg->sender, msg->time, msg->msg);
     gtk_label_set_text(msg->msg_text, new_msg);
     free(new_msg);
@@ -31,4 +30,6 @@ void send_edited_message(GtkEntry *entry, t_chat *chat) {
     gtk_stack_set_visible_child_name(stack_upper_dialog_toolbar, "chat_topbar_grid");
     gtk_entry_set_text(chat_edit_message, "");
     gtk_list_box_unselect_all(room->listbox_msgs);
+    char *temp = send_req_edit_msg(msg->msg_id, msg->msg);
+    enQueue(chat->config->queue_send, temp);
 }

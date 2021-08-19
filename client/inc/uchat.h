@@ -133,6 +133,8 @@ void upload_old_dialogs(char **dialogs, int *ids, int *msg_ids, int n, t_chat *c
 void mx_free(void **ptr);
 void set_default_settings(t_room *room, GtkBuilder *builder);
 void set_widget_class(GtkWidget *widget, gchar *class_name);
+void confirm_delete_msg(t_chat *chat);
+void delete_room_confirm(t_chat *chat);
 
 //api
 void process_rs_client(const char *const string, t_chat *chat);
@@ -145,6 +147,7 @@ char *send_req_old_dialogs(char *username);
 char *send_rq_delete_room(int room_id); 
 char *send_rq_delete_msg(int msg_id);
 char *send_rq_search_username(char *start_of_username);
+char *send_req_edit_msg(int msg_id, char *new_text);
 
 //additional functions
 char *my_itoa(long long number);

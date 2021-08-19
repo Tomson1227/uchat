@@ -51,7 +51,6 @@ char *form_msg(char *sender, char *time, char *text) {
 }
 
 void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat) {
-    printf("entered addrowmsg function");
     GtkWidget *row = gtk_list_box_row_new(); 
     GtkWidget *lbl = gtk_label_new(message);
 
@@ -78,14 +77,12 @@ void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat) {
 }
 
 void AddListItem(t_chat *chat, char *sText, t_msg *msg, t_room *room) {
-    printf("entered addlistitem function");
     char *message = form_msg(msg->sender, msg->time, sText);
     if (room)
         add_row_msg(room, msg, message, chat);
 }
 
 void add_message(int id_of_room, int id_of_msg, char *time, t_chat *chat) {
-    printf("entered add message function");
     GtkEntry *entry = GTK_ENTRY(gtk_builder_get_object(chat->builder, "chat_message_entry"));
     char *buffer = NULL;
     buffer = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);

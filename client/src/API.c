@@ -10,13 +10,14 @@ static void receive_rs_create_room_client(cJSON *rs, t_chat *chat);
 static void receive_rs_send_msg_client(cJSON *rs, t_chat *chat);
 static void receive_old_msgs(cJSON *rs, t_chat *chat);
 static void receive_rs_old_dialogs(cJSON *rs, t_chat *chat);
+static void receive_rs_delete_msg(cJSON *rs, t_chat *chat);
+static void receive_rs_delete_room(cJSON *rq, t_chat *chat);
 
 // static void recieve_rq_send_message(cJSON *rq, t_chat *chat);
 /*-------------------------------------*/
 /*--- Public functions definitions ---*/
 
 void process_rs_client(const char *const string, t_chat *chat) {
-    printf("entered the processing response function\n");
     cJSON *rq = NULL;
 
     if ((rq = cJSON_Parse(string))) {
@@ -45,6 +46,12 @@ void process_rs_client(const char *const string, t_chat *chat) {
         case OLD_DIALOGS:
             receive_rs_old_dialogs(rq, chat);
             break;
+        case DELETE_MSG: 
+            receive_rs_delete_msg(rq, chat);
+            break;
+        case DELETE_ROOM:
+            receive_rs_delete_room(rq, chat);
+            break;
         default:
             /* UNKNOWN RESPONSE */
             break;
@@ -56,7 +63,7 @@ void process_rs_client(const char *const string, t_chat *chat) {
 }
 
 static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
-    cJSON *status = status = cJSON_GetObjectItemCaseSensitive(rs, "status");
+    cJSON *status = cJSON_GetObjectItemCaseSensitive(rs, "status");
 
     /* PROCESS RESPONSE */
     switch((int)status->valuedouble) {
@@ -73,6 +80,20 @@ static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
             /* UNKNOWN STATUS */
             break;
     }
+}
+
+static void receive_rs_delete_room(cJSON *rq, t_chat *chat) {
+    cJSON *status = cJSON_GetObjectItemCaseSensitive(rq, "status");
+
+    if (status->valuedouble == SUCCESS)
+        delete_room_confirm(chat);
+}
+
+static void receive_rs_delete_msg(cJSON *rs, t_chat *chat) {
+    cJSON *status = cJSON_GetObjectItemCaseSensitive(rs, "status");
+
+    if (status->valuedouble == SUCCESS)
+        confirm_delete_msg(chat);
 }
 
 static void receive_rs_sign_up_client(cJSON *rs, t_chat *chat) {
@@ -114,8 +135,9 @@ static void receive_rs_create_room_client(cJSON *json, t_chat *chat) {
     cJSON *id = cJSON_GetObjectItemCaseSensitive(json, "id");
     cJSON *customer = cJSON_GetObjectItemCaseSensitive(json, "customer");
     char *customer_string = cJSON_Print(customer);
-    // printf("received customer name: %s\n", customer_string);
-    int room_id = atoi(id->valuestring);
+    printf("received customer name: %s\n", customer_string);
+
+    int room_id = id->valuedouble;
     create_dialog(room_id, customer_string, chat);
 }
 
@@ -175,22 +197,18 @@ static void receive_old_msgs(cJSON *json, t_chat *chat) {
 }
 
 static void receive_rs_send_msg_client(cJSON *json, t_chat *chat) {
-    printf("entered receive_rs_send_msg_client function\n");
     cJSON *status = cJSON_GetObjectItemCaseSensitive(json, "status");
 
-    // if (status->valuedouble == 0) {
+    if (status->valuedouble == 0) {
         cJSON *room_id = cJSON_GetObjectItemCaseSensitive(json, "room_id");
         cJSON *message_id = cJSON_GetObjectItemCaseSensitive(json, "message_id");
         cJSON *date = cJSON_GetObjectItemCaseSensitive(json, "date");
 
         char *time = g_strdup(date->valuestring);
-        printf("got time: %s\n", time);
         int id_of_msg = message_id->valuedouble;
-        printf("got id of msg: %d\n", id_of_msg);
         int id_of_room = room_id->valuedouble;
-        printf("got id of room: %d\n", id_of_room);
         add_message(id_of_room, id_of_msg, time, chat);
-    // }
+    }
 }
 
 static void receive_rs_search_username(cJSON *json, t_chat *chat) {
@@ -198,14 +216,6 @@ static void receive_rs_search_username(cJSON *json, t_chat *chat) {
     const cJSON *name = NULL;
     array = cJSON_GetObjectItemCaseSensitive(json, "user");
     int n = cJSON_GetArraySize(array);
-
-    // if (n == 0) {
-    //     char *result = NULL;
-    //     name = cJSON_GetObjectItemCaseSensitive(json, "user");
-    //     result = malloc(sizeof(char) * strlen(name->valuestring) + 1);
-    //     result = g_strdup(name->valuestring);
-    //     filter_search(result, 0, chat);   
-    // }
 
     char **output = NULL;
     output = malloc(sizeof(char *) * n);
@@ -215,6 +225,24 @@ static void receive_rs_search_username(cJSON *json, t_chat *chat) {
         output[i] = g_strdup(name->valuestring);
     }
     filter_search(output, n, chat);
+}
+
+char *send_req_edit_msg(int msg_id, char *new_text) {
+    char *string = NULL;
+    cJSON *req_edit_msg = NULL;
+
+    if ((req_edit_msg = cJSON_CreateObject())) {
+        cJSON *type = cJSON_CreateNumber(EDIT_MSG);
+        cJSON *id = cJSON_CreateNumber(msg_id);
+        cJSON *text = cJSON_CreateString(new_text);
+
+        cJSON_AddItemToObject(req_edit_msg, "type", type);
+        cJSON_AddItemToObject(req_edit_msg, "id", id);
+        cJSON_AddItemToObject(req_edit_msg, "new_msg", text);
+        string = cJSON_Print(req_edit_msg);
+        cJSON_Delete(req_edit_msg);
+    }
+    return string;
 }
 
 char *send_req_upload_messages(int type, int room_id) {
@@ -227,10 +255,10 @@ char *send_req_upload_messages(int type, int room_id) {
 
         cJSON_AddItemToObject(req_old_msgs, "type", type_of_rq);
         cJSON_AddItemToObject(req_old_msgs, "room_id", id_of_room);
-
         string = cJSON_Print(req_old_msgs);
         cJSON_Delete(req_old_msgs);
     }
+    return string;
 }
 
 char *send_req_old_dialogs(char *username) {

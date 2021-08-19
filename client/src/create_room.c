@@ -86,7 +86,7 @@ static t_room *fill_room(int id, char *name, t_chat *chat) {
     init_room(room, chat);
 
     room->room_id = i;
-    room->chat_name = malloc(sizeof(const gchar) * strlen(name) + 1);
+    room->chat_name = malloc(sizeof(const gchar) * strlen(name));
     strcpy(room->chat_name, name);
     i++;
     return room;
@@ -118,18 +118,18 @@ void create_room(GtkButton *btn, t_chat *chat) {
 
 void req_create_dialog(GtkListBox *box, GtkListBoxRow *row, t_chat *chat) {
     char *customer = NULL;
-    customer  = malloc(sizeof(char) * strlen(gtk_widget_get_name(GTK_WIDGET(row))) + 1);
-    sprintf(customer, "%s", gtk_widget_get_name(GTK_WIDGET(row)));
-    printf("got name: %s\n", customer);
-    char *temp = send_rq_create_room_client(chat->username, customer);
-    enQueue(chat->config->queue_send, temp);
-    // create_dialog(i, customer, chat);
-    manage_visibility(box, chat);
+    if (gtk_widget_get_name(row) != NULL) {
+        customer = malloc(sizeof(char) * strlen(gtk_widget_get_name(GTK_WIDGET(row))) + 1);
+        sprintf(customer, "%s", gtk_widget_get_name(GTK_WIDGET(row)));
+        char *temp = send_rq_create_room_client(chat->username, customer);
+        enQueue(chat->config->queue_send, temp);
+    }
 }
 
 void create_dialog(int id, char *name, t_chat *chat) {
+    GtkListBox *box = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_found_dlgs"));
+    manage_visibility(box, chat);
     t_room *room = fill_room(i, name, chat);
-    
     add_messages_box(room, chat, name);
     add_dialog_row(room, chat, name);
     chat->curr_chat = room;
@@ -155,8 +155,9 @@ void manage_visibility(GtkListBox *box, t_chat *chat) {
     GtkLabel *lbl_local_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_local_search_nothing_found"));
     GtkLabel *lbl_global_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search"));
     GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
-
-    //clear_listbox_with_found_messages(box);
+    
+    gtk_list_box_unselect_all(box);
+    // clear_listbox_with_found_messages(box);
     gtk_widget_hide(GTK_WIDGET(box));
     gtk_widget_hide(GTK_WIDGET(lbl_local_search));
     gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));

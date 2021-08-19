@@ -2,8 +2,14 @@
 
 void req_delete_room(GtkButton *btn, t_chat *chat) {
     t_room *room = chat->curr_chat;
-    //char *tmp = send_rq_delete_room(chat->curr_chat->room_id);
-    //enQueue(chat->config->queue_send, tmp);
+    char *tmp = send_rq_delete_room(chat->curr_chat->room_id);
+    
+    enQueue(chat->config->queue_send, tmp);
+}
+
+void delete_room_confirm(t_chat *chat) {
+    t_room *room = chat->curr_chat;
+
     gtk_container_foreach(GTK_CONTAINER(chat->curr_chat->listbox_msgs), (GtkCallback)delete_msg, chat->curr_chat);
     delete_room(room, chat);
 }
