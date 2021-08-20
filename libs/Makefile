@@ -1,10 +1,8 @@
 #dependencies
 LIBCJSON_DIR = cJSON
-LIBCJSON = cJSON.a
-# LIBAPI_DIR = API
-# LIBAPI = API.a
+LIBCJSON = libcJSON.a
 LIBSQLITE_DIR = SQLite
-LIBSQLITE = SQLite.a
+LIBSQLITE = libSQLite.a
 
 #TARGETS
 all: $(LIBCJSON) $(LIBSQLITE)
@@ -12,10 +10,6 @@ all: $(LIBCJSON) $(LIBSQLITE)
 $(LIBCJSON):
 	@make -C $(LIBCJSON_DIR)
 	@mv $(LIBCJSON_DIR)/$@ ./$@
-
-# $(LIBAPI):
-# 	@make -C $(LIBAPI_DIR)
-# 	@mv $(LIBAPI_DIR)/$@ ./$@
 
 $(LIBSQLITE):
 	@make -C $(LIBSQLITE_DIR)
@@ -26,8 +20,8 @@ $(LIBSQLITE):
 #remove all temp files
 clean:
 	@make $@ -C $(LIBCJSON_DIR)
-	# @make $@ -C $(LIBAPI_DIR)
 	@make $@ -C $(LIBSQLITE_DIR)
+
 #delete all files
 uninstall:
 	@make $@ -C $(LIBCJSON_DIR)

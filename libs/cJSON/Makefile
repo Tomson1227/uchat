@@ -1,4 +1,4 @@
-NAME = cJSON.a
+NAME = libcJSON.a
 
 SRC_DIR = src
 OBJ_DIR = obj
@@ -9,7 +9,7 @@ OBJ_FILES = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC_FILES:%.c=%.o)))
 INC_FILES = $(wildcard $(INC_DIR)/*.h)
 
 CC = clang
-CFLAGS = -std=c11 -std=c11 -Wall -Wextra -Wpedantic
+CFLAGS = -std=c11 -Wall -Wextra -Wpedantic
 
 AR = ar
 AFLAGS = rcs

@@ -1,6 +1,5 @@
 #dependencies
 NAME = uchat_server
-TEST = test_server
 
 #directories
 IDIR = inc
@@ -9,22 +8,21 @@ SDIR = src
 TDIR = test
 
 #lib includes
-LIBDIR = ../libs/cJSON/inc ../libs/API/inc ../libs/SQLite/inc
-LIB = ../libs/cJSON.a ../libs/SQLite.a
+LIB_DIR		= ../libs/
+LIBLIST 	= ../libs/libcJSON.a ../libs/libSQLite.a
 
 #compiler settings
 CC = clang
-CFLAGS = -std=c11 -pthread
-CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic
+CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic\
+	-Wno-unused-command-line-argument -Wno-unused-variable \
+	-Wno-unused-function -Wno-unused-parameter -g
 DYNAMICS = -pthread -ldl
-FLAGS = $(CFLAGS) -I $(IDIR) $(addprefix -I, $(LIBDIR))
-TEST_FLAGS = $(CCFLAGS)
+FLAGS = $(CFLAGS) -I$(IDIR) 
 
 #headers
 DEPS := $(wildcard $(IDIR)/*.h)
 #sources
 SRCS := $(wildcard $(SDIR)/*.c)
-TEST_SRCS := $(wildcard $(TDIR)/*.c)
 #objects
 _OBJS = $(SRCS:.c=.o)
 OBJS = $(subst $(SDIR),$(ODIR),$(_OBJS))
@@ -36,26 +34,18 @@ all: $(NAME)
 $(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
 	@mkdir -p obj
 	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
-	@$(CC) $(FLAGS) -c $< -o $@ $(PKGCONFIG)
+	@$(CC) $(FLAGS) -c $< -o $@ $(PKGCONFIG) $(LIBLIST)
 
 #make excecutable
-$(NAME): $(OBJS)
-	@$(CC) $(FLAGS) $^ $(LIB) -o $@ $(DYNAMICS)
+$(NAME): $(OBJS) 
+	@$(CC) $(FLAGS) $^ -o $@ $(DYNAMICS) $(LIBLIST)
 	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
 	@printf "Usage: ./$@ <port>\n"
-
-#make test
-$(TEST): $(TEST_SRCS)
-	@printf "\33[2KCompiling \33[0;32m$<\33[m\n"
-	@$(CC) $(TEST_FLAGS) $< -o $@
-	@printf "\r\33[2KExcecutable for \33[0;32m$@\33[m done!\n"
 
 .PHONY: clean uninstall reinstall
 
 #delete all files
 uninstall: clean
-	@printf "\r\33[2K\33[0;33mUninstalling $(TEST)...\33[m\n"
-	@rm -f $(TEST)
 	@printf "\r\33[2K\33[0;33mUninstalling $(NAME)...\33[m\n"
 	@rm -f $(NAME)
 

@@ -7,6 +7,8 @@ CLIENT = uchat
 TEST_SERVER = test_server
 TEST_CLIENT = test_client
 
+.PHONY: clean uninstall reinstall $(SERVER) $(CLIENT)
+
 #TARGETS
 all: $(SERVER) $(CLIENT)
 
@@ -31,7 +33,6 @@ $(TEST_CLIENT):
 	@make $@ -C $(CLIENT_DIR)
 	@mv $(CLIENT_DIR)/$@ ./$@
 
-.PHONY: clean uninstall reinstall
 
 #remove all temp files
 clean:

@@ -1,9 +1,9 @@
 #include "uchat.h"
 
 char *trim_message(char *buffer) {
-    int j = 0;
+    unsigned long j = 0;
     int n = strlen(buffer) / 45;
-    gchar *output = malloc(sizeof(gchar) * strlen(buffer) + n + 1);
+    gchar *output = malloc(sizeof(char) * strlen(buffer) + n + 1);
 
     while (j < strlen(buffer)) {
         if (j % 45 == 0 && j != 0) {

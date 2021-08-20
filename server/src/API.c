@@ -216,7 +216,7 @@ static char *server_delete_room(cJSON *rq)
     cJSON *response = NULL;
     cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "id");
 
-    /* DeleteRoom function from DB*/
+    /* DeleteRoom function from DB */
     DeleteRoom(&message, roomID->valueint);
     
     if((response = create_response(&message))) {

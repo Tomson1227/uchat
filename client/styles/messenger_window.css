@@ -1,9 +1,0 @@
-window {
-	background-color: #000000;
-	background-image: none;
-}
-
-label {
-	color: red;	
-	background-image: url('../client/src/images/tape.png'); 
-}

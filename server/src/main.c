@@ -15,10 +15,9 @@ int main(int argc , char *argv[])
 
     init_server(argv[1]);
 
-    int poll_request;
     struct pollfd fd = {server.fd, POLLIN, 0};
     
-	// SAVE_CURSOR_POS;
+	SAVE_CURSOR_POS;
     
     while(true) {
         if((poll(&fd, 1, 200)) < 0)
@@ -40,11 +39,10 @@ int main(int argc , char *argv[])
             }
         }
 
-        // sockets_status(server.socket_head);
+        sockets_status(server.socket_head);
     }
 
     close_server();
-    // system("leaks -q uls");
 }
 
 void send_message(char *message)
@@ -66,30 +64,6 @@ static bool SetSocketBlockingEnabled(int fd, bool blocking)
     flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
     
     return !fcntl(fd, F_SETFL, flags);
-}
-
-static char *receive_line(int fd)
-{
-    char *line =  NULL;
-    char buff[BUFF_SIZE];
-    ssize_t size;
-
-    while(1) {
-        size = recv(fd, buff, BUFF_SIZE, 0);
-        // printf("buff: %s\n", buff);
-
-        if(size > 0 || size < BUFF_SIZE) {
-            strcpy(line, buff);
-        }
-        else if(errno != EWOULDBLOCK) {
-            if(!line)
-                free(line);
-
-            return NULL;
-        }
-        break;
-    }
-    return line;
 }
 
 static void *thread_socket(void *pointer)

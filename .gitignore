@@ -1,6 +1,9 @@
 uchat
 uchat_server
-*.a
+*.db
+.DS_Store
+.vscode
+.json
 *.o
 */obj/
 .vscode/

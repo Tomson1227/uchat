@@ -21,7 +21,7 @@ void ReadMessage(cJSON *rq, int fd)
     cJSON *response = NULL;
     cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "room_id");
     
-    int length, size, count = 0, senderID;
+    int size, count = 0;
     sqlite3_stmt *stmt;
 
     size = countSelectedRows(roomID->valuedouble, 1);
@@ -36,9 +36,9 @@ void ReadMessage(cJSON *rq, int fd)
             cJSON *roomID = cJSON_CreateNumber(sqlite3_column_int(stmt, 2));
             cJSON *messageID = cJSON_CreateNumber(sqlite3_column_int(stmt, 0));
             cJSON *messageType = cJSON_CreateNumber(M_MESSAGE);
-            cJSON *msg = cJSON_CreateString(sqlite3_column_text(stmt, 4));
+            cJSON *msg = cJSON_CreateString((const char *)sqlite3_column_text(stmt, 4));
             cJSON *sender = cJSON_CreateString(getUserName(sqlite3_column_int(stmt, 1)));
-            cJSON *date = cJSON_CreateString(sqlite3_column_text(stmt, 3));
+            cJSON *date = cJSON_CreateString((const char *)sqlite3_column_text(stmt, 3));
             cJSON *update = cJSON_CreateNumber(true);
 
             cJSON_AddItemToObject(response, "room_id", roomID);
@@ -62,7 +62,7 @@ void ReadMessage(cJSON *rq, int fd)
 
 void DeleteRoom(t_message *message, int roomID)
 {
-    int length, rc;
+    int rc;
     char *errMssg;
 
     message->API = DELETE_ROOM;
@@ -85,7 +85,7 @@ void DeleteMessage(t_message *message, int messageID)
     message->API = DELETE_MSG;
     message->status = 0;
 
-    int length, rc;
+    int rc;
     char *errMssg;
 
     sprintf(query, "DELETE FROM MSSGS WHERE ID = %d", messageID);
@@ -107,7 +107,7 @@ void EditMessage(t_message *message, int messageID, char *newMessage)
     message->API = EDIT_MSG;
     message->status = SUCCESS;
 
-    int length, rc;
+    int rc;
     char *errMssg;
 
     sprintf(query, "UPDATE MSSGS SET message = '%s' WHERE ID = '%d'", newMessage, messageID);
@@ -125,8 +125,7 @@ void EditMessage(t_message *message, int messageID, char *newMessage)
 void UploadOldDialogs(t_message *message, char *username)
 {
     sqlite3_stmt *stmt;
-    int length, rc, count, userID, roomID, size;
-    char *errMssg, *roomName;
+    int count, userID, size;
 
     message->API = OLD_DIALOGS;
     message->status = SUCCESS;
@@ -143,7 +142,7 @@ void UploadOldDialogs(t_message *message, char *username)
     for (count = 0; count < size; ++count) {
         sqlite3_step(stmt);
         message->Data.upload_old_dialogs.id[count] = sqlite3_column_int(stmt, 0);
-        message->Data.upload_old_dialogs.dialogs[count] = strdup(sqlite3_column_text(stmt, 1));
+        message->Data.upload_old_dialogs.dialogs[count] = strdup((const char *)sqlite3_column_text(stmt, 1));
     }
 
     message->Data.upload_old_dialogs.dialogs[count] = NULL;
@@ -151,11 +150,12 @@ void UploadOldDialogs(t_message *message, char *username)
 
 void SendMessage(t_message *message, char *username, int roomID, char *text, t_msg_type M_MESSAGE)
 {
+    (void) M_MESSAGE;
     message->API = SND_MSG;
     message->status = SUCCESS;
     message->Data.create_message.room_id = roomID;
     
-    int length, rc, userID;
+    int rc, userID;
     char *errMsg, Time[50];
     char *selectID = "SELECT MAX(ID) FROM MSSGS";
     sqlite3_stmt *stmt;
@@ -187,7 +187,7 @@ void SendMessage(t_message *message, char *username, int roomID, char *text, t_m
 
 void CreateRoom(t_message *message, char *user, char *customer) 
 {
-    int length, userID, customerID, rc, ID;
+    int userID, customerID, rc;
     char *roomIDQuery = "SELECT MAX(ID) FROM ROOMS";
     char *errMsg = NULL;
     sqlite3_stmt *stmt;
@@ -219,7 +219,7 @@ void UserSearch(t_message *message, char *searchText)
     message->API = SEARCH_USER;
     message->status = SUCCESS;
 
-    int lengthSearch, count = 0, size = 1;
+    int count = 0, size = 1;
     const unsigned char *result;
     sqlite3_stmt *stmt;
 
@@ -233,7 +233,7 @@ void UserSearch(t_message *message, char *searchText)
         result = sqlite3_column_text(stmt, 0);
 
         if (result != NULL) {
-            message->Data.search_user.users[count] = strdup(result);
+            message->Data.search_user.users[count] = strdup((const char *)result);
             message->Data.search_user.users = realloc(message->Data.search_user.users, ++size * sizeof(char *));
         } else {
             message->Data.search_user.users[count] = NULL;
@@ -250,7 +250,7 @@ void SignUp(t_message *message, char *user_login, char *user_pass)
     message->status = SUCCESS;
     sqlite3_stmt *stmt;
     char *zErrMsg = NULL;
-    int lengthSignUp, ID, rc;
+    int ID, rc;
 
     if (checkLogin(user_login)) {
         message->status = SIGNUP_USER_EXIST;
@@ -402,7 +402,7 @@ static int callback(void *data, int argc, char **argv, char **azColName)
 
 static int getUserID(char *username)
 {
-    int length, id;
+    int id;
     static char idQuery[60];
     sqlite3_stmt *stmt;
 
@@ -436,7 +436,6 @@ static int checkLogin(char *user_login)
 
 static char *getUserName(int userID) {
     sqlite3_stmt *stmt;
-    int length;
     static char getNameQuery[50];
     char *userName;
 
