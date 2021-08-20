@@ -86,7 +86,6 @@ static void req_log_in(GtkButton *btn, t_chat *chat) {
         while(QueueisEmpty(chat->config->queue_recv)) {
         }
         char *dq = deQueue(chat->config->queue_recv);
-        printf("%s\n", dq);
         process_rs_client(dq, chat);
     }
 }

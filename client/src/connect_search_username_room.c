@@ -43,7 +43,6 @@ void req_search_user(GtkEntry *entry, t_chat *chat) {
 }
 
 void filter_search(char **users, int n, t_chat *chat) {
-    printf("check1 n = %d\n", n);
     GtkStack *stack = GTK_STACK(gtk_builder_get_object(chat->builder, "stack"));
     GtkListBox *listbox_found_dlgs = GTK_LIST_BOX(gtk_builder_get_object(chat->builder, "listbox_found_dlgs"));
     GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
@@ -56,10 +55,8 @@ void filter_search(char **users, int n, t_chat *chat) {
     int tmp = 0;
 
     gtk_container_foreach((GtkContainer *)chat->listbox_dlgs, (GtkCallback)filter_row, users);
-    printf("finished the cycle\n");
     for (int i = 0; i < n; i++) {
         if (NULL == gtk_stack_get_child_by_name(stack, users[i])) { 
-            printf("entered the cycle\n");
             if (!row_is_already_in_list(users[i], listbox_found_dlgs)) {
                 if (strcmp(chat->username, users[i]) != 0) {
                     GtkWidget *r = gtk_list_box_row_new();
@@ -96,9 +93,7 @@ void filter_row(GtkWidget *wdg, char **users) {
     int i = 0;
     gtk_widget_hide(GTK_WIDGET(wdg));
     for (; users[n] != NULL; n++);
-    printf("n = %d\n", n);
     while (i < n) {
-        printf("got user: %s\n", users[i]);
         if (strcmp(s, users[i]) == 0)
             gtk_widget_show(GTK_WIDGET(wdg));
         i++;

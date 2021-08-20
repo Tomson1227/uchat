@@ -18,7 +18,6 @@ static void receive_rs_delete_room(cJSON *rq, t_chat *chat);
 /*--- Public functions definitions ---*/
 
 void process_rs_client(const char *const string, t_chat *chat) {
-    printf("entered the processing layer\n");
     cJSON *rq = NULL;
 
     if ((rq = cJSON_Parse(string))) {
@@ -86,7 +85,6 @@ static void receive_rs_log_in_client(cJSON *rs, t_chat *chat) {
 static void receive_rs_delete_room(cJSON *rq, t_chat *chat) {
 
     cJSON *status = cJSON_GetObjectItemCaseSensitive(rq, "status");
-    printf("received status: %d\n", status->valueint);
     if (status->valueint == SUCCESS)
         delete_room_confirm(chat);
 }
@@ -171,7 +169,6 @@ static void receive_rs_old_dialogs(cJSON *rs, t_chat *chat) {
 }
 
 static void receive_old_msgs(cJSON *json, t_chat *chat) {
-    printf("entered the function\n");
     cJSON *status = cJSON_GetObjectItemCaseSensitive(json, "status");
 
     if (status->valuedouble == 0) {
@@ -374,7 +371,6 @@ char *send_rq_search_username(char *start_of_username) {
 }
 
 char *send_rq_delete_room(int room_id) {
-    printf("entered the send_rq_delete_room\n");
     char *string = NULL;
     cJSON *rq_delete_room = cJSON_CreateObject();
 
@@ -387,7 +383,6 @@ char *send_rq_delete_room(int room_id) {
         cJSON_Delete(rq_delete_room);
     // } else
         // check_error();
-        printf("formed a delete room request: %s\n", string);
     return string; 
 }
 

@@ -45,6 +45,5 @@ void confirm_delete_msg(t_chat *chat) {
             gtk_list_box_unselect_all(room->listbox_msgs);
         }
         free_msg(msg);
-    } else 
-        printf("no row is selcted\n");
+    }
 }

@@ -22,8 +22,7 @@ static bool row_is_already_uploaded(GtkListBox *box, int msg_id) {
 
 void recv_message(int room_id, int msg_id, char *date, char *sText, 
                             t_chat *chat, char *sender, int update) {
-    t_room *room = chat->curr_chat; 
-    printf("entered the function\n");
+    t_room *room = chat->curr_chat;
     
     if (!row_is_already_uploaded(room->listbox_msgs, msg_id) || update != 0) {
         t_msg *msg = fill_msg(room_id, msg_id, date, sender, sText);

@@ -1,7 +1,6 @@
 #ifndef API_H
 #define API_H
 
-#include "sqlite3.h"
 #include <stdio.h>
 #include "cJSON.h"
 

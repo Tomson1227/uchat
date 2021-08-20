@@ -101,3 +101,9 @@ headerbar {
 headerbar:backdrop {
     background-image: linear-gradient(to bottom, shade(#001100,1.5), shade(#000000, 0.8));
 }
+
+.choise_menu {
+    background-color: black;
+    background-image: url("https://i.pinimg.com/564x/31/00/de/3100de09ea931dee41c09eb32979182b.jpg");
+    background-size: contain;
+}
