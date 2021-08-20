@@ -3,17 +3,12 @@
 }
 
 headerbar {
-    /* background-image: none; */
-    /* background-color: #00ff00; */
     background: black;
-    /* background-image: linear-gradient(to bottom, shade(#002500,1.2), shade(rgb(0, 0, 0), 0.8)); */
     border-width: 0;
     color: #00ff00;
 }
 
 headerbar:backdrop {
-    /* background-image: none; */
-    /* background-color: #000000; */
     background-image: linear-gradient(to bottom, shade(#000c00,1.2), shade(rgb(0, 0, 0), 0.8));
     border-width: 0;
     color: #000000;
@@ -97,4 +92,12 @@ dialog {
 
 .window_log_out window {
     background: #101010;
+}
+
+headerbar {
+    background-image: linear-gradient(to bottom, shade(#003300,1.5), shade(#000000, 0.8));
+}
+
+headerbar:backdrop {
+    background-image: linear-gradient(to bottom, shade(#001100,1.5), shade(#000000, 0.8));
 }
