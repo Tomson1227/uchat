@@ -13,11 +13,11 @@ LIBDIR = ../libs/cJSON/inc ../libs/API/inc ../libs/SQLite/inc
 LIB = ../libs/API.a ../libs/cJSON.a ../libs/SQLite.a
 
 #compiler settings
-CC = gcc
+CC = clang
 CFLAGS = -std=c11
-CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic
-PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0` -rdynamic
-FLAGS = $(CFLAGS) -I $(IDIR) $(addprefix -I, $(LIBDIR))
+CCFLAGS = $(CFLAGS) -Wall -Wextra -Wpedantic
+PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0 -rdynamic`
+FLAGS = $(CCFLAGS) -I$(IDIR) $(addprefix -I, $(LIBDIR))
 TEST_FLAGS = $(CCFLAGS)
 
 #headers

@@ -18,7 +18,7 @@ int main(int argc , char *argv[])
     int poll_request;
     struct pollfd fd = {server.fd, POLLIN, 0};
     
-	SAVE_CURSOR_POS;
+	// SAVE_CURSOR_POS;
     
     while(true) {
         if((poll(&fd, 1, 200)) < 0)
@@ -40,7 +40,7 @@ int main(int argc , char *argv[])
             }
         }
 
-        sockets_status(server.socket_head);
+        // sockets_status(server.socket_head);
     }
 
     close_server();

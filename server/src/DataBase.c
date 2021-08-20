@@ -83,7 +83,7 @@ void DeleteRoom(t_message *message, int roomID)
 void DeleteMessage(t_message *message, int messageID)
 {
     message->API = DELETE_MSG;
-    message->status = SUCCESS;
+    message->status = 0;
 
     int length, rc;
     char *errMssg;
@@ -95,9 +95,11 @@ void DeleteMessage(t_message *message, int messageID)
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", errMssg);
         sqlite3_free(errMssg);
-        message->status = ERROR;
-    } else
+        message->status = 1;
+    } else {
         message->Data.delete_message.id = messageID;
+    }
+    printf("message status = %d, ip = %d\n, message id = %d\n", message->status, message->API, message->Data.delete_message.id);
 }
 
 void EditMessage(t_message *message, int messageID, char *newMessage)

@@ -33,10 +33,24 @@ t_chat *init_chat(t_chat *chat, t_config *config) {
     return chat;
 }
 
-void init_chat_window(t_chat *chat, int type) {
-    GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
-    gtk_widget_set_visible(GTK_WIDGET(wnd_main), FALSE);
+static void reset_sign_in_up_windows(t_chat *chat) {
+    GtkEntry *username = GTK_ENTRY(gtk_builder_get_object(chat->builder, "username"));
+    GtkEntry *password = GTK_ENTRY(gtk_builder_get_object(chat->builder, "password"));
+    GtkEntry *username_sign_up = GTK_ENTRY(gtk_builder_get_object(chat->builder, "username_sign_up"));
+    GtkEntry *password_sign_up = GTK_ENTRY(gtk_builder_get_object(chat->builder, "password_sign_up"));
+    GtkEntry *password_repeated = GTK_ENTRY(gtk_builder_get_object(chat->builder, "repeat_password_sign_up"));
 
+    gtk_entry_set_text(username, "");
+    gtk_entry_set_text(password, "");
+    gtk_entry_set_text(username_sign_up, "");
+    gtk_entry_set_text(password_sign_up, "");
+    gtk_entry_set_text(password_repeated, "");
+}
+
+void init_chat_window(t_chat *chat, int type) {
+    reset_sign_in_up_windows(chat);
+    GObject *wnd_main = gtk_builder_get_object(chat->builder, "window_main");
+    gtk_widget_set_visible(GTK_WIDGET(wnd_main), FALSE);  
     GObject *chat_wndw = gtk_builder_get_object(chat->builder, "chat_main");
     GtkStack *stack_entry = GTK_STACK(gtk_builder_get_object(chat->builder, "stack_entry"));
     GtkButton *btn_send_msg = GTK_BUTTON(gtk_builder_get_object(chat->builder, "btn_send_msg"));
@@ -47,7 +61,6 @@ void init_chat_window(t_chat *chat, int type) {
     GtkLabel *lbl_global_search = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search"));
     GtkLabel *lbl_global_search_nothing_found = GTK_LABEL(gtk_builder_get_object(chat->builder, "lbl_global_search_nothing_found"));
 
-    
     gtk_widget_show(GTK_WIDGET(chat_wndw));
     gtk_label_set_text(lbl, chat->username);
     gtk_widget_hide(GTK_WIDGET(stack_upper_dialog_toolbar));
@@ -57,13 +70,9 @@ void init_chat_window(t_chat *chat, int type) {
     gtk_widget_hide(GTK_WIDGET(lbl_local_search_nothing_found));
     gtk_widget_hide(GTK_WIDGET(lbl_global_search_nothing_found));
     gtk_widget_hide(GTK_WIDGET(lbl_global_search));
-    // char *dialogs[2] = {"1", "2"};
-    // int ids[2] = {1, 2};
-    // int msg_ids[2] = {-1, -1};
     
     if (type == 0) {
-        //char *temp = send_req_old_dialogs(chat->username);
-        //enQueue(chat->config->queue_send, temp);
-        // upload_old_dialogs(dialogs, ids, msg_ids, 2, chat);
+        char *temp = send_req_old_dialogs(chat->username);
+        enQueue(chat->config->queue_send, temp);
     }
 }

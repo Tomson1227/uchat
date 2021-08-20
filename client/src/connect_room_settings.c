@@ -89,14 +89,18 @@ void close_info(GtkButton *btn, t_chat *chat) {
     gtk_widget_hide(GTK_WIDGET(wndw_room_info));
 }
 
- void on_close_edit_profile_clicked(GtkButton *btn, GObject *wnd) {
-     gtk_widget_hide(GTK_WIDGET(wnd));
- }
-
 void on_btn_close_menu_clicked(GtkButton *btn, GObject *wnd) {
     gtk_widget_hide(GTK_WIDGET(wnd));
 }
 
 void on_close_chat_clicked(GtkButton *btn, GObject *wnd) {
     gtk_widget_hide(GTK_WIDGET(wnd));
+}
+
+void on_btn_close_info_clicked(GtkButton *button, GObject *wnd) {
+    gtk_widget_hide(GTK_WIDGET(wnd));
+}
+
+void on_btn_confirm_block_user_clicked(GtkButton *btn, GObject *wndw) {
+    gtk_widget_hide(GTK_WIDGET(wndw));
 }

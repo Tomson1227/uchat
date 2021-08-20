@@ -1,7 +1,5 @@
 #include "uchat.h"
 
-int k = 0;
-
 char *trim_message(char *buffer) {
     int j = 0;
     int n = strlen(buffer) / 45;
@@ -28,7 +26,6 @@ t_msg *fill_msg(int room_id, int msg_id, char *time, char *username, char *text)
     strcpy(msg->sender, username);
     msg->time = malloc(sizeof(char) * strlen(time) + 1);
     strcpy(msg->time, time);
-    // msg->msg_id = k;
     msg->msg_id = msg_id;
     msg->room_id = room_id;
     msg->row_msg = NULL;
@@ -69,7 +66,6 @@ void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat) {
     g_object_set_data(G_OBJECT(msg->row_msg), "msg", msg);
     char *id = my_itoa(msg->msg_id);
     g_object_set_data(G_OBJECT(row), "msg_id", id);
-    // k++;//
     gtk_widget_show(row);
     gtk_widget_show(lbl);
 
@@ -87,7 +83,6 @@ void add_message(int id_of_room, int id_of_msg, char *time, t_chat *chat) {
     char *buffer = NULL;
     buffer = malloc(sizeof(char) * gtk_entry_get_text_length(entry) + 1);
     sprintf(buffer, "%s", gtk_entry_get_text(entry));
-    // t_msg *msg = fill_msg(chat->curr_chat->room_id, k, time, chat->username, buffer);
     t_msg *msg = fill_msg(chat->curr_chat->room_id, id_of_msg, time, chat->username, buffer);
     t_room *room = chat->curr_chat;
 
@@ -100,7 +95,6 @@ void add_message(int id_of_room, int id_of_msg, char *time, t_chat *chat) {
             AddListItem(chat, buffer, msg, room);
         gtk_entry_set_text(entry,""); 
     }
-    // recv_message(-1, -1, "21.40.41", "Hello", chat, "sender");
 }
 
 void req_send_message(GtkEntry *entry, t_chat *chat) {
@@ -109,8 +103,6 @@ void req_send_message(GtkEntry *entry, t_chat *chat) {
     sprintf(buffer, "%s", gtk_entry_get_text(entry));
     char *tmp = send_rq_send_msg_client(chat->username, chat->curr_chat->room_id, buffer);
     enQueue(chat->config->queue_send, tmp);
-    // t_room *room = chat->curr_chat;
-    // add_message(room->room_id, k, "21:78:32", chat);
 }
 
 void on_btn_send_message_clicked(GtkButton *btn, t_chat *chat) {

@@ -21,7 +21,6 @@
 #include "API.h"
 #include "back.h"
 
-
 typedef struct s_msg t_msg;
 typedef struct s_room t_room;
 typedef struct s_chat t_chat;
@@ -61,15 +60,10 @@ struct s_msg {
     char *sender;
     char *time;
     char *msg;
-    gint msg_type;
-    gint room_id;
-    gint msg_id;
+    int msg_type;
+    int room_id;
+    int msg_id;
 };
-
-// typedef enum s_user_info_type {
-//     NAME_OF_USER,
-//     DESCRIPTION
-// }            t_user_info_type;
 
 //gui
 void load_css(char *path);
@@ -90,8 +84,6 @@ void display_error_wrong_password_login(t_chat *chat);
 void display_error_user_exists(t_chat *chat);
 void create_room(GtkButton *btn, t_chat *chat);
 void req_delete_msg(GtkButton *btn, t_chat *chat);
-void show_room_settings(GtkButton *button, t_chat *chat);
-void show_profile_settings(GtkButton *button, t_chat *chat);
 void on_btn_send_message_clicked(GtkButton *btn, t_chat *chat);
 void show_room_info(GtkButton *btn, t_chat *chat);
 void show_clear_history_window(GtkButton *btn, t_chat *chat);
@@ -113,7 +105,7 @@ t_msg *fill_msg(int room_id, int msg_id, char *time, char *username, char *text)
 void free_msg(t_msg *msg);
 void add_row_msg(t_room *room, t_msg *msg, char *message, t_chat *chat);
 void recv_message(int room_id, int msg_id, gchar *date, gchar *sText, 
-                                                     t_chat *chat, gchar *sender);
+                                                     t_chat *chat, gchar *sender, int update);
 void AddListItem(t_chat *chat, char *sText, t_msg *msg, t_room *room);                                                     
 void log_out(GtkButton *btn, t_chat *chat);
 void close_info(GtkButton *btn, t_chat *chat); 
@@ -129,12 +121,14 @@ void restore_listbox(GtkEntry *entry, GtkListBox *box);
 void req_create_dialog(GtkListBox *box, GtkListBoxRow *row, t_chat *chat);
 void manage_visibility(GtkListBox *box, t_chat *chat);
 void create_dialog(int id, char *customer_string, t_chat *chat);
-void upload_old_dialogs(char **dialogs, int *ids, int *msg_ids, int n, t_chat *chat);
+void upload_old_dialogs(char **dialogs, int *ids, int n, t_chat *chat);
 void mx_free(void **ptr);
 void set_default_settings(t_room *room, GtkBuilder *builder);
 void set_widget_class(GtkWidget *widget, gchar *class_name);
 void confirm_delete_msg(t_chat *chat);
 void delete_room_confirm(t_chat *chat);
+void back_setup(t_chat *chat);
+void manage_room_visibility(t_chat *chat);
 
 //api
 void process_rs_client(const char *const string, t_chat *chat);
@@ -148,10 +142,11 @@ char *send_rq_delete_room(int room_id);
 char *send_rq_delete_msg(int msg_id);
 char *send_rq_search_username(char *start_of_username);
 char *send_req_edit_msg(int msg_id, char *new_text);
+char *send_req_upload_messages(int room_id);
 
 //additional functions
 char *my_itoa(long long number);
-
-void back_setup(t_chat *chat);
-
+char *mx_strnew(const int size);
+char *mx_strdup(const char *str);
+char *mx_strcpy(char *dst, const char *src);
 #endif /* UCHAT_H */

@@ -11,7 +11,7 @@ SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC_FILES:%.c=%.o)))
 INC_FILES = $(wildcard $(INC_DIR)/*.h)
 
-CC = gcc
+CC = clang
 CFLAGS = -std=c11 -std=c11 -Wall -Wextra -Wpedantic
 FLAGS = $(CFLAGS) -I$(INC_DIR) $(addprefix -I, $(LIBDIR))
 

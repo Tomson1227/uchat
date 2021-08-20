@@ -22,7 +22,7 @@ void process_rq_server(const char *const string, int fd)
     if ((rq = cJSON_Parse(string))) {
         cJSON *type = cJSON_GetObjectItemCaseSensitive(rq, "type");
 
-        switch((int)type->valuedouble) {
+        switch((int)type->valueint) {
             case LOGIN: 
                 response = server_log_in(rq);
                 break;
@@ -131,7 +131,7 @@ static char *server_send_message(cJSON *rq)
     cJSON *msg = cJSON_GetObjectItemCaseSensitive(rq, "message");
     cJSON *message_type = cJSON_GetObjectItemCaseSensitive(rq, "msg_type");
 
-    SendMessage(&message, username->valuestring, roomID->valuedouble, msg->valuestring, (t_msg_type) message_type->valuedouble);
+    SendMessage(&message, username->valuestring, roomID->valueint, msg->valuestring, (t_msg_type) message_type->valueint);
 
     if((response = create_response(&message))) {
         cJSON *roomID = cJSON_CreateNumber(message.Data.create_message.room_id);
@@ -216,8 +216,8 @@ static char *server_delete_room(cJSON *rq)
     cJSON *response = NULL;
     cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "id");
 
-    /* DeleteRoom function from DB */
-    // DeleteRoom(&message, roomID->valuedouble);
+    /* DeleteRoom function from DB*/
+    DeleteRoom(&message, roomID->valueint);
     
     if((response = create_response(&message))) {
         cJSON *ID = cJSON_CreateNumber(message.Data.delete_room.id);
@@ -238,7 +238,7 @@ static char *server_delete_message(cJSON *rq)
     cJSON *response = NULL;
     cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "id");
 
-    DeleteMessage(&message, roomID->valuedouble);
+    DeleteMessage(&message, roomID->valueint);
     
     if((response = create_response(&message))) {
         cJSON *ID = cJSON_CreateNumber(message.Data.delete_message.id);
@@ -248,7 +248,7 @@ static char *server_delete_message(cJSON *rq)
         line = cJSON_Print(response);
         cJSON_Delete(response);
     }
-    
+    printf("formed a line: %s\n", line);
     return line;
 }
 
@@ -260,7 +260,7 @@ static char *server_edit_message(cJSON *rq)
     cJSON *roomID = cJSON_GetObjectItemCaseSensitive(rq, "id");
     cJSON *newMessage = cJSON_GetObjectItemCaseSensitive(rq, "new_msg");
     
-    EditMessage(&message, roomID->valuedouble, newMessage->valuestring);
+    EditMessage(&message, roomID->valueint, newMessage->valuestring);
     
     if((response = create_response(&message))) {
         line = cJSON_Print(response);

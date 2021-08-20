@@ -13,7 +13,7 @@ LIBDIR = ../libs/cJSON/inc ../libs/API/inc ../libs/SQLite/inc
 LIB = ../libs/cJSON.a ../libs/SQLite.a
 
 #compiler settings
-CC = gcc
+CC = clang
 CFLAGS = -std=c11 -pthread
 CCFLAGS = -std=c11 -Wall -Wextra -Wpedantic
 DYNAMICS = -pthread -ldl

@@ -28,9 +28,9 @@ typedef enum s_rs_status {
 }            t_rs_status;
 
 typedef enum s_msg_type {
-    MESSAGE,
-    FILE_M,
-    IMAGE
+    M_MESSAGE,
+    M_FILE,
+    M_IMAGE
 }            t_msg_type;
 
 #endif /* API_H */

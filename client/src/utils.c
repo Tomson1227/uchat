@@ -25,3 +25,44 @@ char *my_itoa(long long number) {
     str[count] = '\0';
     return str;
 }
+
+char *mx_strnew(const int size) {
+    if(size >= 0) {
+        char *strnew = (char *) malloc(size + 1);
+        
+        if(NULL == strnew)
+            return NULL;
+        
+        for(int i = 0; i <= size; ++i) {
+            strnew[i] = '\0';
+        }
+        
+        return strnew;
+    }
+    
+    return NULL;
+}
+
+char *mx_strdup(const char *str) {
+    char *strcopy = mx_strnew(strlen(str));
+    return mx_strcpy(strcopy, str);
+}
+
+char *mx_strcpy(char *dst, const char *src) {
+    char *dst_return = dst;
+    while (*src)
+    {
+        *dst = *src;
+        dst++;
+        src++;
+    }
+    *dst = '\0';
+    return dst_return;
+}
+
+void mx_free(void **ptr) {
+    if (ptr && *ptr) {
+        free(*ptr);
+        *ptr = NULL;
+    }
+}

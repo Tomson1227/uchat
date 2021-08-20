@@ -1,27 +1,38 @@
 #include "uchat.h"
 
-void recv_message(int room_id, int msg_id, char *date, char *sText, 
-                                         t_chat *chat, char *sender) {
-    // GObject *stack = gtk_builder_get_object(chat->builder, "stack");
-    // if (gtk_stack_get_child_by_name(stack, my_itoa(room_id)) == NULL) {
-        // create_dialog(room_id, sender, chat);
-        // GtkWidget *scroll = GTK_WIDGET(gtk_stack_get_child_by_name(stack, my_itoa(room_id)));
-        // t_room *room = g_object_get_data(scroll, "dialog");
-    // }
-    // else {
-        // GtkWidget *scroll = GTK_WIDGET(gtk_stack_get_child_by_name(stack, my_itoa(room_id)));
-        // t_room *room = g_object_get_data(scroll, "dialog");
-    // }
+static bool row_is_already_uploaded(GtkListBox *box, int msg_id) {
+    bool result = false;
+    GList *rows = NULL;
+    GList *listrunner;
+    t_msg *msg = NULL;
 
+    if (gtk_container_get_children(GTK_CONTAINER(box)) != NULL) {
+        rows = gtk_container_get_children(GTK_CONTAINER(box));
+        listrunner = g_list_first(rows);    
+        while (listrunner) {
+            msg = g_object_get_data(G_OBJECT(listrunner->data), "msg");
+            if (msg->msg_id == msg_id) {
+                result = true; 
+            }
+            listrunner = g_list_next(listrunner);
+        }
+    }
+    return result;
+}
+
+void recv_message(int room_id, int msg_id, char *date, char *sText, 
+                            t_chat *chat, char *sender, int update) {
     t_room *room = chat->curr_chat; 
-    // if (NULL == g_object_get_data(my_itoa(msg_id), "msg_id")) {
+    printf("entered the function\n");
+    
+    if (!row_is_already_uploaded(room->listbox_msgs, msg_id) || update != 0) {
         t_msg *msg = fill_msg(room_id, msg_id, date, sender, sText);
 
-       if (strlen(sText) > 45) {
-           gchar *new_buffer = trim_message(sText);
-           AddListItem(chat, new_buffer, msg, room);
-       }
-       else 
-           AddListItem(chat, sText, msg, room);
-    // }   
+        if (strlen(sText) > 45) {
+            char *new_buffer = trim_message(sText);
+            AddListItem(chat, new_buffer, msg, room);
+        }
+        else 
+            AddListItem(chat, sText, msg, room);
+    }   
 }
